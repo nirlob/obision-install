@@ -7,7 +7,6 @@ import { GroupsList } from './components/GroupsList.js';
 import { ApplicationsList } from './components/ApplicationsList.js';
 
 
-
 // Application class
 class ObisionInstallApplication {
     private application: Adw.Application;
@@ -66,13 +65,11 @@ class ObisionInstallApplication {
         // Create the main window
         const window = new Adw.ApplicationWindow({
             application: this.application as any,
-            title: 'Test GNOME App',
+            title: 'Obision Install',
             default_width: 800,
             default_height: 600,
         });
         
-        console.log('Window properties - Title:', window.get_title(), 'Size:', window.get_default_size());
-
         // Load UI from resource
         const builder = Gtk.Builder.new();
         
@@ -96,19 +93,12 @@ class ObisionInstallApplication {
         // Get the main content from the UI file
         const mainContent = builder.get_object('main_content') as Gtk.Box;
         
-        console.log('Main content found:', !!mainContent);
-        
         if (mainContent) {
             console.log('Setting up UI with loaded content');
             // Create toast overlay
             const toastOverlay = new Adw.ToastOverlay();
             
             // Create header bar with menu button
-            // const headerBar = new Adw.HeaderBar({
-            //     title_widget: new Adw.WindowTitle({
-            //         title: 'Test GNOME App',
-            //     }),
-            // });
             const headerBar = new Adw.HeaderBar();
 
             // Create menu model
@@ -133,68 +123,53 @@ class ObisionInstallApplication {
             toolbarView.set_content(mainContent);
             
             toastOverlay.set_child(toolbarView);
+
             // Use the content property for Adw.ApplicationWindow
             (window as any).content = toastOverlay;
             
             // Get the notebook widget
-            const notebook = builder.get_object('main_notebook') as Gtk.Notebook;
+            // const notebook = builder.get_object('main_notebook') as Gtk.Notebook;
             
             // Connect button signals from Applications tab
-            const helloButton = builder.get_object('hello_button') as Gtk.Button;
-            const aboutButton = builder.get_object('about_button') as Gtk.Button;
-            const counterLabel = builder.get_object('counter_label') as Gtk.Label;
+            // const helloButton = builder.get_object('hello_button') as Gtk.Button;
+            // const aboutButton = builder.get_object('about_button') as Gtk.Button;
+            // const counterLabel = builder.get_object('counter_label') as Gtk.Label;
             
             // Connect button signals from Groups tab
             const addGroupButton = builder.get_object('add_group_button') as Gtk.Button;
+
             // const groupsScroll = builder.get_object('groups_scroll') as Gtk.ScrolledWindow;
             const groupsContent = builder.get_object('groups_content') as Gtk.Box;
             const applicationsContent = builder.get_object('applications_content') as Gtk.Box;
             
-            // Prueba de Stack y StackSwitcher
-            const stack = new Gtk.Stack({
-                transition_type: Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
-                transition_duration: 500,
-                hexpand: true,
-                vexpand: true,
-            });
-            stack.add_titled(applicationsContent, "tab1", "Applications");
-            stack.add_titled(groupsContent, "tab2", "Groups");
-            const stackSwitcher = new Gtk.StackSwitcher({
-                hexpand: true,
-                vexpand: true,
-            });
-            stackSwitcher.set_stack(stack);
-            headerBar.pack_start(stackSwitcher);
-            
-            if (aboutButton) {
-                aboutButton.connect('clicked', () => {
-                    this.showAboutDialog(window);
-                });
+            if (groupsContent) {
+                // Create our component and populate the existing listbox
+                const groupsList = new GroupsList(window);
+                groupsContent.append(groupsList.getWidget());
             }
+           
+            if (applicationsContent) {
+                // Create our component and populate the existing listbox
+                const applicationsList = new ApplicationsList(window);
+                applicationsContent.append(applicationsList.getWidget());
+            }
+            
+            // Prueba de Stack y StackSwitcher
+            const mainStack = builder.get_object('main_stack') as Gtk.Stack;
+            mainStack.add_titled(applicationsContent, "applications_content", "Applications");
+            mainStack.add_titled(groupsContent, "groups_content", "Groups");
+            mainStack.set_visible_child_name("applications_content");
+
+            const stackSwitcher = new Gtk.StackSwitcher();
+            stackSwitcher.set_stack(mainStack);
+
+            headerBar.pack_start(stackSwitcher);
             
             // Groups tab functionality
             if (addGroupButton) {
                 addGroupButton.connect('clicked', () => {
                     this.showCreateGroupDialog(window);
                 });
-            }
-            
-            if (groupsContent) {
-                // Create our component and populate the existing listbox
-                // const groupsList = new GroupsList(window);
-                // groupsContent.append(groupsList.getWidget());
-                groupsContent.append(new Gtk.Label({ label: 'Group 1' }));
-                groupsContent.append(new Gtk.Label({ label: 'Group 2' }));
-                groupsContent.append(new Gtk.Label({ label: 'Group 3' }));  
-            }
-           
-            if (applicationsContent) {
-                // Create our component and populate the existing listbox
-                // const applicationsList = new ApplicationsList(window);
-                // applicationsContent.append(applicationsList.getWidget());
-                applicationsContent.append(new Gtk.Label({ label: 'Application A' }));
-                applicationsContent.append(new Gtk.Label({ label: 'Application B' }));
-                applicationsContent.append(new Gtk.Label({ label: 'Application C' }));
             }
         }
 
