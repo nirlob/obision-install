@@ -1,5 +1,6 @@
 # Build directories
 builddir/
+mesonbuilddir/
 build/
 dist/
 
@@ -22,7 +23,6 @@ yarn-error.log*
 subprojects/
 
 # IDE files
-.vscode/
 .idea/
 *.swp
 *.swo
