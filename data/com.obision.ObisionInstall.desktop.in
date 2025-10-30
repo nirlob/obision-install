@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Test GNOME App
+Comment=A GNOME application built with TypeScript
+Icon=@app_id@
+Exec=obision-install
+Terminal=false
+Categories=Utility;Development;
+StartupNotify=true
+StartupWMClass=@app_id@

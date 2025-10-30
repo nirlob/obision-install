@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkBox" id="main_content">
+    <property name="orientation">vertical</property>
+    <property name="spacing">0</property>
+    
+    <!-- <child>
+      <object class="GtkNotebook" id="main_notebook">
+        <property name="hexpand">true</property>
+        <property name="vexpand">true</property>
+        <property name="show-tabs">true</property>
+        <property name="show-border">false</property> -->
+        
+        <!-- Applications Tab -->
+        <child>
+          <object class="GtkBox" id="applications_content">
+            <property name="orientation">vertical</property>
+            <property name="spacing">12</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <property name="margin-start">24</property>
+            <property name="margin-end">24</property>
+          </object>
+        </child>
+        <!-- <child type="tab">
+          <object class="GtkLabel">
+            <property name="label">Applications</property>
+          </object>
+        </child> -->
+        
+        <!-- Groups Tab -->
+        <child>
+          <object class="GtkBox" id="groups_content">
+            <property name="orientation">vertical</property>
+            <property name="spacing">12</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <property name="margin-start">24</property>
+            <property name="margin-end">24</property>
+            
+            <!-- Header with title and add button -->
+            <child>
+              <object class="GtkBox" id="groups_header">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">12</property>
+                <property name="margin-bottom">12</property>
+                
+                <child>
+                  <object class="GtkLabel" id="groups_title">
+                    <property name="label">&lt;span size="large" weight="bold"&gt;Application Groups&lt;/span&gt;</property>
+                    <property name="use-markup">true</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">true</property>
+                  </object>
+                </child>
+                
+                <child>
+                  <object class="GtkButton" id="add_group_button">
+                    <property name="label">Add Group</property>
+                    <property name="tooltip-text">Create a new application group</property>
+                    <style>
+                      <class name="suggested-action"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <!-- <child type="tab">
+          <object class="GtkLabel">
+            <property name="label">Groups</property>
+          </object>
+        </child> -->
+      <!-- </object>
+    </child> -->
+  </object>
+</interface>

@@ -1,0 +1,64 @@
+project('obision-install',
+  version: '1.0.0',
+  meson_version: '>= 0.59.0',
+)
+
+gnome = import('gnome')
+
+# Application ID
+app_id = 'com.obision.ObisionInstall'
+
+# Configuration
+conf = configuration_data()
+conf.set('app_id', app_id)
+conf.set('version', meson.project_version())
+
+# Dependencies (GJS is available but not as pkg-config)
+# dependency('gjs-1.0', version: '>= 1.66.0')
+
+# Install directories
+bindir = get_option('bindir')
+datadir = get_option('datadir')
+pkgdatadir = datadir / app_id
+
+# Install the main script (from builddir, not src)
+install_data('builddir/main.js',
+  install_dir: pkgdatadir,
+)
+
+# Install UI files
+install_subdir('data/ui',
+  install_dir: pkgdatadir,
+)
+
+# Install resources
+gnome.compile_resources(
+  app_id + '.src',
+  'data/' + app_id + '.gresource.xml',
+  gresource_bundle: true,
+  install: true,
+  install_dir: pkgdatadir,
+)
+
+# Create and install desktop file
+desktop_file = configure_file(
+  input: 'data/' + app_id + '.desktop.in',
+  output: app_id + '.desktop',
+  configuration: conf,
+  install: true,
+  install_dir: datadir / 'applications',
+)
+
+# Install schema (if needed)
+install_data('data/' + app_id + '.gschema.xml',
+  install_dir: datadir / 'glib-2.0' / 'schemas'
+)
+
+# Create launcher script (disabled - using npm workflow)
+# configure_file(
+#   input: 'bin/obision-install.in',
+#   output: 'obision-install',
+#   configuration: conf,
+#   install: true,
+#   install_dir: bindir,
+# )

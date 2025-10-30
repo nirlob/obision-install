@@ -1,0 +1,42 @@
+{
+  "name": "obision-install",
+  "version": "1.0.0",
+  "description": "A GNOME application built with TypeScript",
+  "main": "builddir/main.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "tsc --watch",
+    "start": "npm run build && ./builddir/main.js",
+    "start:en": "npm run build && node scripts/run-with-locale.js en",
+    "start:es": "npm run build && node scripts/run-with-locale.js es",
+    "start:fr": "npm run build && node scripts/run-with-locale.js fr",
+    "clean": "rm -rf builddir && rm -rf mesonbuilddir",
+    "meson-setup": "meson setup mesonbuilddir",
+    "meson-compile": "meson compile -C mesonbuilddir", 
+    "meson-install": "npm run build && npm run meson-setup && npm run meson-compile && cd mesonbuilddir && meson install",
+    "meson-clean": "rm -rf mesonbuilddir"
+  },
+  "keywords": [
+    "gnome",
+    "gtk",
+    "gjs",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@girs/adw-1": "^1.9.0-4.0.0-beta.38",
+    "@girs/gio-2.0": "^2.86.0-4.0.0-beta.38",
+    "@girs/gjs": "^4.0.0-beta.38",
+    "@girs/glib-2.0": "^2.86.0-4.0.0-beta.38",
+    "@girs/gobject-2.0": "^2.86.0-4.0.0-beta.38",
+    "@girs/gtk-4.0": "^4.20.1-4.0.0-beta.38"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.23",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
