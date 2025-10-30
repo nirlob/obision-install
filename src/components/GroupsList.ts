@@ -108,8 +108,6 @@ export class GroupsList {
   }
 
   private addGroup(groupData: GroupData): void {
-    // console.log(groupData);
-
     const row = new Gtk.ListBoxRow({
       activatable: true,
     });
@@ -168,6 +166,7 @@ export class GroupsList {
       halign: Gtk.Align.END,
       css_classes: ["suggested-action"],
     });
+    
     installButton.connect("clicked", () => {
       this.installApplications(groupData);
     });

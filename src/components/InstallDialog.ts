@@ -79,7 +79,7 @@ export class InstallDialog {
 
     this.buttonInstall = this.dialog.add_button(
       "Install",
-      Gtk.ResponseType.ACCEPT
+      Gtk.ResponseType.ACCEPT,
     ) as Gtk.Button;
     this.buttonCancel = this.dialog.add_button(
       "Cancel",
