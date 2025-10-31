@@ -126,21 +126,24 @@ class ObisionInstallApplication {
 
             // Use the content property for Adw.ApplicationWindow
             (window as any).content = toastOverlay;
-            
-            // Get the notebook widget
-            // const notebook = builder.get_object('main_notebook') as Gtk.Notebook;
-            
-            // Connect button signals from Applications tab
-            // const helloButton = builder.get_object('hello_button') as Gtk.Button;
-            // const aboutButton = builder.get_object('about_button') as Gtk.Button;
-            // const counterLabel = builder.get_object('counter_label') as Gtk.Label;
-            
-            // Connect button signals from Groups tab
-            const addGroupButton = builder.get_object('add_group_button') as Gtk.Button;
 
-            // const groupsScroll = builder.get_object('groups_scroll') as Gtk.ScrolledWindow;
-            const groupsContent = builder.get_object('groups_content') as Gtk.Box;
-            const applicationsContent = builder.get_object('applications_content') as Gtk.Box;
+            const groupsContent = new Gtk.Box({
+                orientation: Gtk.Orientation.VERTICAL,
+                spacing: 12,
+                margin_top: 24,
+                margin_bottom: 24,
+                margin_start: 24,
+                margin_end: 24,
+            });
+
+            const applicationsContent = new Gtk.Box({
+                orientation: Gtk.Orientation.VERTICAL,
+                spacing: 12,
+                margin_top: 24,
+                margin_bottom: 24,
+                margin_start: 24,
+                margin_end: 24,
+            });
             
             if (groupsContent) {
                 // Create our component and populate the existing listbox
@@ -153,26 +156,23 @@ class ObisionInstallApplication {
                 const applicationsList = new ApplicationsList(window);
                 applicationsContent.append(applicationsList.getWidget());
             }
-            
-            // Prueba de Stack y StackSwitcher
-            const mainStack = builder.get_object('main_stack') as Gtk.Stack;
+
+            const mainStack = new Gtk.Stack({
+                transition_type: Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
+                transition_duration: 500,
+            });
+
+            mainContent.append(mainStack);
+
             mainStack.add_titled(applicationsContent, "applications_content", "Applications");
-            // TODO: Here are the error of NULL when running application, check if mainStack is properly initialized
             mainStack.add_titled(groupsContent, "groups_content", "Groups");
             mainStack.set_visible_child_name("applications_content");
 
             const stackSwitcher = new Gtk.StackSwitcher({
-                stack: mainStack
+                stack: mainStack,
             });
 
             headerBar.pack_start(stackSwitcher);
-            
-            // Groups tab functionality
-            if (addGroupButton) {
-                addGroupButton.connect('clicked', () => {
-                    this.showCreateGroupDialog(window);
-                });
-            }
         }
 
         return window;
