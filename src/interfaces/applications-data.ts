@@ -1,5 +1,4 @@
 export interface Package {
-    [x: string]: any;
     title: string;
     description?: string;
     packageName: string;

@@ -81,6 +81,7 @@ export class InstallDialog {
       "Install",
       Gtk.ResponseType.ACCEPT,
     ) as Gtk.Button;
+    
     this.buttonCancel = this.dialog.add_button(
       "Cancel",
       Gtk.ResponseType.CANCEL

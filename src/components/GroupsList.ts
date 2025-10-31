@@ -2,9 +2,14 @@ import Gtk from "@girs/gtk-4.0";
 import Adw from "@girs/adw-1";
 import Pango from "@girs/pango-1.0";
 import Gio from "@girs/gio-2.0";
-import { ApplicationsData, Group, Package } from "../interfaces/applications-data.js";
+import {
+  ApplicationsData,
+  Group,
+  Package,
+} from "../interfaces/applications-data.js";
 import { InstallDialog } from "./InstallDialog.js";
 import { UtilsService } from "../services/UtilsService.js";
+import { PackageRow } from "./PackageRow.js";
 
 // GroupData interface for UI display
 export interface GroupData {
@@ -42,9 +47,11 @@ export class GroupsList {
     });
 
     // Connect row activation
-    this.listbox.connect("row-activated", (listbox: Gtk.ListBox, row: Gtk.ListBoxRow) => {
+    this.listbox.connect(
+      "row-activated",
+      (listbox: Gtk.ListBox, row: Gtk.ListBoxRow) => {
         const groupData = this.getGroupDataFromRow(row);
-        this.showGroupDetailsFromData(groupData)
+        this.showGroupDetailsFromData(groupData);
       }
     );
 
@@ -52,7 +59,7 @@ export class GroupsList {
   }
 
   private loadGroupsFromJson(): void {
-    console.log('🔍 Starting to load groups from JSON');
+    console.log("🔍 Starting to load groups from JSON");
     try {
       // Load applications data from applications.json
       const applicationsFile = Gio.File.new_for_path(
@@ -68,8 +75,8 @@ export class GroupsList {
       const applicationsData: ApplicationsData = JSON.parse(
         new TextDecoder().decode(contents)
       );
-      
-      console.log('🔍 Loaded data:', applicationsData.groups?.length, 'groups');
+
+      console.log("🔍 Loaded data:", applicationsData.groups?.length, "groups");
 
       // Clear existing groups and load only from applications.json groups
       this.clearGroups();
@@ -162,11 +169,11 @@ export class GroupsList {
     });
 
     const installButton = new Gtk.Button({
-      label: 'Install',
+      label: "Install",
       halign: Gtk.Align.END,
       css_classes: ["suggested-action"],
     });
-    
+
     installButton.connect("clicked", () => {
       this.installApplications(groupData);
     });
@@ -198,58 +205,114 @@ export class GroupsList {
     if (storedData) {
       return storedData;
     } else {
-      return (
-        {
-          icon: "📂",
-          title: "Unknown Group",
-          description: "Group information not available",
-          appCount: "0 apps",
-        }
-      );
+      return {
+        icon: "📂",
+        title: "Unknown Group",
+        description: "Group information not available",
+        appCount: "0 apps",
+      };
     }
   }
 
-  private showGroupDetailsFromData(
-    groupData: GroupData
-  ): void {
-    let bodyText = `${groupData.description}\n\nThis group contains ${groupData.appCount}.`;
+  private showGroupDetailsFromData(groupData: GroupData): void {
+    const dialog = new Gtk.Dialog({
+      title: `Group ${groupData.title} details`,
+      modal: true,
+      transient_for: this.parentWindow,
+      width_request: 500,
+    });
+
+    const contentArea = dialog.get_content_area();
+    contentArea.set_margin_top(12);
+    contentArea.set_margin_bottom(12);
+    contentArea.set_margin_start(12);
+    contentArea.set_margin_end(12);
+
+    const contentBox = new Gtk.Box({
+      orientation: Gtk.Orientation.VERTICAL,
+      spacing: 12,
+    });
+    contentArea.append(contentBox);
+
+    contentBox.append(
+      new Gtk.Label({
+        label: `<span weight="bold">${groupData.description}\n\nThis group contains ${groupData.appCount} packages.</span>`,
+        use_markup: true,
+        halign: Gtk.Align.CENTER,
+      })
+    );
+
+    const packagesScrolledWindow = new Gtk.ScrolledWindow({
+      height_request: 200,
+      hscrollbar_policy: Gtk.PolicyType.NEVER,
+      vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
+      margin_top: 12,
+    });
+
+    const packagesList = new Gtk.ListBox({
+      selection_mode: Gtk.SelectionMode.NONE,
+      css_classes: ["boxed-list"],
+    });
 
     if (groupData.packages && groupData.packages.length > 0) {
-      bodyText += "\n\nPackages in this group:";
-      groupData.packages.forEach((pkg) => {
-        bodyText += `\n• ${pkg}`;
+      groupData.packages.forEach((pkgName) => {
+        const packageData = this.packages.find((pkg) => pkg.packageName === pkgName);
+        if (packageData) {
+          const packageRow = new PackageRow(packageData, false);
+          packagesList.append(packageRow.getWidget());
+        }
       });
     }
 
-    const dialog = new Adw.MessageDialog({
-      heading: `${groupData.title} Details`,
-      body: bodyText,
-      modal: true,
-      transient_for: this.parentWindow,
-    });
+    packagesScrolledWindow.set_child(packagesList);
+    contentArea.append(packagesScrolledWindow);
 
-    dialog.add_response("close", "Close");
-    dialog.add_response("manage", "Manage Apps");
-    dialog.set_default_response("manage");
+    dialog.add_button("Close", Gtk.ResponseType.CLOSE) as Gtk.Button;
 
     dialog.connect("response", (dialog, response) => {
-      if (response === "manage") {
-        console.log(`Managing apps for ${groupData.title}...`);
-        console.log("Packages:", groupData.packages);
-      }
+        dialog.close();
     });
 
     dialog.present();
+
+    // let bodyText = `${groupData.description}\n\nThis group contains ${groupData.appCount}.`;
+
+    // if (groupData.packages && groupData.packages.length > 0) {
+    //   bodyText += "\n\nPackages in this group:";
+    //   groupData.packages.forEach((pkg) => {
+    //     bodyText += `\n• ${pkg}`;
+    //   });
+    // }
+
+    // const dialog = new Adw.MessageDialog({
+    //   heading: `${groupData.title} Details`,
+    //   body: bodyText,
+    //   modal: true,
+    //   transient_for: this.parentWindow,
+    // });
+
+    // dialog.add_response("close", "Close");
+    // dialog.add_response("manage", "Manage Apps");
+    // dialog.set_default_response("manage");
+
+    // dialog.connect("response", (dialog, response) => {
+    //   if (response === "manage") {
+    //     console.log(`Managing apps for ${groupData.title}...`);
+    //     console.log("Packages:", groupData.packages);
+    //   }
+    // });
+
+    // dialog.present();
   }
 
-  private installApplications(
-    groupData: GroupData
-  ): void {
+  private installApplications(groupData: GroupData): void {
     if (groupData.packages && groupData.packages.length > 0) {
       // Here you would map package names to Package objects as needed
-      const packagesToInstall: Package[] = groupData.packages.map((pkgName) => {
-        return this.packages.find(pkg => pkg.packageName === pkgName);
-      }).filter((pkg): pkg is Package => pkg !== undefined);
+      const packagesToInstall: Package[] = groupData.packages
+        .map((pkgName) => {
+          return this.packages.find((pkg) => pkg.packageName === pkgName);
+        })
+        .filter((pkg): pkg is Package => pkg !== undefined);
 
       if (packagesToInstall.length === 0 || packagesToInstall === undefined) {
         console.error(`No valid packages found for group ${groupData.title}.`);

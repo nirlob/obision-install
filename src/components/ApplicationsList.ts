@@ -1,18 +1,9 @@
 import Gtk from "@girs/gtk-4.0";
 import Adw from "@girs/adw-1";
-import Pango from "@girs/pango-1.0";
 import Gio from "@girs/gio-2.0";
 import { ApplicationsData, Package } from "../interfaces/applications-data.js";
 import { InstallDialog } from "./InstallDialog.js";
-import { UtilsService } from "../services/UtilsService.js";
-
-// ApplicationData interface for UI display
-export interface ApplicationData {
-  icon: string;
-  title: string;
-  description: string;
-  packageName: string;
-}
+import { PackageRow } from "./PackageRow.js";
 
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
@@ -44,8 +35,8 @@ export class ApplicationsList {
     this.listbox.connect(
       "row-activated",
       (listbox: Gtk.ListBox, row: Gtk.ListBoxRow) => {
-        const applicationData = this.getApplicationDataFromRow(row);
-        this.showApplicationDetailsFromData(applicationData);
+        const packageData = this.getPackageDataFromRow(row);
+        this.showPackageDetailsFromData(packageData);
       }
     );
 
@@ -106,14 +97,7 @@ export class ApplicationsList {
       applicationsData.applications.forEach((application: string) => {
         const pkg = this.packages.find((pkg: Package) => pkg.packageName === application);
         if (pkg) {
-          const applicationData: ApplicationData = {
-            icon: pkg.icon || "📄",
-            title: pkg.title,
-            description: pkg.description || "No description available",
-            packageName: pkg.packageName,
-          };
-
-          this.addApplication(applicationData);
+          this.addPackage(pkg);
         }
       });
     }
@@ -128,88 +112,23 @@ export class ApplicationsList {
     }
   }
 
-  private addApplication(applicationData: ApplicationData): void {
-    // console.log(applicationData);
+  private addPackage(packageData: Package): void {
+    const row = new PackageRow(packageData);
 
-    const row = new Gtk.ListBoxRow({
-      activatable: true,
-    });
+    row.setInstallCallback(
+      this.installPackage.bind(this, packageData)
+    );
 
-    const box = new Gtk.Box({
-      orientation: Gtk.Orientation.HORIZONTAL,
-      spacing: 16,
-      margin_top: 12,
-      margin_bottom: 12,
-      margin_start: 12,
-      margin_end: 12,
-    });
-
-    const iconImage = new Gtk.Image({
-      file: applicationData.icon,
-      pixel_size: 50,
-    });
-
-    // Content box
-    const contentBox = new Gtk.Box({
-      orientation: Gtk.Orientation.VERTICAL,
-      spacing: 4,
-      hexpand: true,
-    });
-
-    // Title
-    const titleLabel = new Gtk.Label({
-      label: `<span weight="bold">${applicationData.title}</span>`,
-      use_markup: true,
-      halign: Gtk.Align.START,
-    });
-
-    // Description and app count
-    const descBox = new Gtk.Box({
-      orientation: Gtk.Orientation.HORIZONTAL,
-      spacing: 8,
-    });
-
-    const descLabel = new Gtk.Label({
-      label: applicationData.description,
-      halign: Gtk.Align.START,
-      hexpand: true,
-      css_classes: ["dim-label"],
-      ellipsize: Pango.EllipsizeMode.END,
-      tooltip_text: applicationData.description,
-    });
-
-    const installButton = new Gtk.Button({
-      label: 'Install',
-      halign: Gtk.Align.END,
-      css_classes: ["suggested-action"],
-    });
-    installButton.connect("clicked", () => {
-      this.installApplication(applicationData);
-    });
-    
-    descBox.append(descLabel);
-    descBox.append(installButton);
-
-    contentBox.append(titleLabel);
-    contentBox.append(descBox);
-
-    box.append(iconImage);
-    box.append(contentBox);
-
-    // Store application data in the row for later retrieval
-    (row as any).applicationData = applicationData;
-
-    row.set_child(box);
-    this.listbox.append(row);
+    this.listbox.append(row.getWidget());
   }
 
   public getWidget(): Gtk.ScrolledWindow {
     return this.scrolledWindow;
   }
 
-  private getApplicationDataFromRow(row: Gtk.ListBoxRow): ApplicationData {
+  private getPackageDataFromRow(row: Gtk.ListBoxRow): Package {
     // Return stored application data or create default
-    const storedData = (row as any).applicationData;
+    const storedData = (row as any).packageData;
     if (storedData) {
       return storedData;
     } else {
@@ -218,17 +137,18 @@ export class ApplicationsList {
         title: "Unknown Application",
         description: "Application information not available",
         packageName: "unknown",
+        packageType: "DEBIAN",
       };
     }
   }
 
-  private showApplicationDetailsFromData(
-    applicationData: ApplicationData
+  private showPackageDetailsFromData(
+    packageData: Package
   ): void {
-    let bodyText = `${applicationData.description}\n\nPackage Name: ${applicationData.packageName}`;
+    let bodyText = `${packageData.description}\n\nPackage Name: ${packageData.packageName}`;
 
     const dialog = new Adw.MessageDialog({
-      heading: `${applicationData.title}`,
+      heading: `${packageData.title}`,
       body: bodyText,
       modal: true,
       transient_for: this.parentWindow,
@@ -240,24 +160,22 @@ export class ApplicationsList {
 
     dialog.connect("response", (dialog, response) => {
       if (response === "manage") {
-        console.log(`Managing apps for ${applicationData.title}...`);
-        console.log("Packages:", applicationData.packageName);
+        console.log(`Managing apps for ${packageData.title}...`);
+        console.log("Packages:", packageData.packageName);
       }
     });
 
     dialog.present();
   }
 
-  private installApplication(
-    applicationData: ApplicationData
+  private installPackage(
+    pkg: Package
   ): void {
-    const pkg = this.packages.find((pkg: Package) => pkg.packageName === applicationData.packageName);
-
     if (pkg) {
       new InstallDialog(this.parentWindow, [pkg]);
     } else {
       new Gtk.AlertDialog({
-        message: `Package ${applicationData.packageName} not found.`,
+        message: `Package not found.`,
         modal: true,
       });
     }

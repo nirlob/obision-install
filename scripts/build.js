@@ -76,7 +76,7 @@ if (fs.existsSync(utilsServiceFile)) {
     combinedContent += utilsServiceContent + '\n';
 }
 
-// Add GroupsList component
+// Add InstallDialog component
 const installDialogFile = path.join(BUILD_DIR, 'components', 'InstallDialog.js');
 if (fs.existsSync(installDialogFile)) {
     console.log('📋 Adding InstallDialog component...');
@@ -100,6 +100,29 @@ if (fs.existsSync(installDialogFile)) {
     combinedContent += installDialogContent + '\n';
 }
 
+// Add PackageRow component
+const packageRow = path.join(BUILD_DIR, 'components', 'PackageRow.js');
+if (fs.existsSync(packageRow)) {
+    console.log('📋 Adding PackageRow component...');
+    let packageRowContent = fs.readFileSync(packageRow, 'utf8');
+
+    // Clean up the content - find the class definition start
+    const classStartIndex = packageRowContent.indexOf('class PackageRow {');
+    if (classStartIndex !== -1) {
+        packageRowContent = packageRowContent.substring(classStartIndex);
+    }
+    
+    // Clean up TypeScript/CommonJS artifacts
+    packageRowContent = packageRowContent
+        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
+        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
+        .replace(/gio_2_0_1\.default\./g, 'Gio.')
+        .replace(/pango_1_0_1\.default\./g, 'Pango.')
+        .replace(/adw_1_1\.default\./g, 'Adw.');
+
+    combinedContent += packageRowContent + '\n';
+}
+
 // Add GroupsList component
 const groupsListFile = path.join(BUILD_DIR, 'components', 'GroupsList.js');
 if (fs.existsSync(groupsListFile)) {
@@ -120,6 +143,7 @@ if (fs.existsSync(groupsListFile)) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/InstallDialog_js_1\./g, '')
         .replace(/UtilsService_js_1\./g, '')
+        .replace(/PackageRow_js_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
     
     combinedContent += groupsContent + '\n';
@@ -145,6 +169,7 @@ if (fs.existsSync(applicationsListFile)) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/InstallDialog_js_1\./g, '')
         .replace(/UtilsService_1\./g, '')
+        .replace(/PackageRow_js_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 
     combinedContent += applicationsContent + '\n';

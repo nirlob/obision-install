@@ -157,11 +157,13 @@ class ObisionInstallApplication {
             // Prueba de Stack y StackSwitcher
             const mainStack = builder.get_object('main_stack') as Gtk.Stack;
             mainStack.add_titled(applicationsContent, "applications_content", "Applications");
+            // TODO: Here are the error of NULL when running application, check if mainStack is properly initialized
             mainStack.add_titled(groupsContent, "groups_content", "Groups");
             mainStack.set_visible_child_name("applications_content");
 
-            const stackSwitcher = new Gtk.StackSwitcher();
-            stackSwitcher.set_stack(mainStack);
+            const stackSwitcher = new Gtk.StackSwitcher({
+                stack: mainStack
+            });
 
             headerBar.pack_start(stackSwitcher);
             
