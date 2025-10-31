@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3584e4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1c71d8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="box-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f9f06b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f5c211;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="arrow-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#26a269;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2ec27e;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="56" fill="url(#bg-gradient)" filter="url(#shadow)"/>
+  
+  <!-- Main package box -->
+  <rect x="32" y="40" width="32" height="32" rx="4" ry="4" fill="url(#box-gradient)" stroke="#f5c211" stroke-width="1"/>
+  
+  <!-- Package box lines (indicating it's a package/box) -->
+  <line x1="36" y1="48" x2="60" y2="48" stroke="#e5a50a" stroke-width="1.5"/>
+  <line x1="36" y1="56" x2="60" y2="56" stroke="#e5a50a" stroke-width="1.5"/>
+  <line x1="36" y1="64" x2="60" y2="64" stroke="#e5a50a" stroke-width="1.5"/>
+  
+  <!-- Download/Install arrow -->
+  <path d="M 76 45 L 76 65 L 70 65 L 82 77 L 94 65 L 88 65 L 88 45 Z" fill="url(#arrow-gradient)" stroke="#26a269" stroke-width="1"/>
+  
+  <!-- Destination indicator (representing system/installation) -->
+  <rect x="70" y="85" width="24" height="8" rx="2" ry="2" fill="#deddda" stroke="#9a9996" stroke-width="1"/>
+  
+  <!-- Connection line -->
+  <line x1="64" y1="72" x2="82" y2="85" stroke="#77767b" stroke-width="2" stroke-dasharray="2,2"/>
+  
+  <!-- Small decorative dots indicating multiple packages -->
+  <circle cx="24" cy="32" r="3" fill="#c0bfbc"/>
+  <circle cx="104" cy="32" r="3" fill="#c0bfbc"/>
+  <circle cx="24" cy="96" r="3" fill="#c0bfbc"/>
+  <circle cx="104" cy="96" r="3" fill="#c0bfbc"/>
+</svg>
