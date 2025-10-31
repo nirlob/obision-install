@@ -4,6 +4,7 @@ import Gio from "@girs/gio-2.0";
 import { ApplicationsData, Package } from "../interfaces/applications-data.js";
 import { InstallDialog } from "./InstallDialog.js";
 import { PackageRow } from "./PackageRow.js";
+import { PackageInfoDialog } from "./PackageInfoDialog.js";
 
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
@@ -145,27 +146,29 @@ export class ApplicationsList {
   private showPackageDetailsFromData(
     packageData: Package
   ): void {
-    let bodyText = `${packageData.description}\n\nPackage Name: ${packageData.packageName}`;
+    new PackageInfoDialog(this.parentWindow, packageData);
 
-    const dialog = new Adw.MessageDialog({
-      heading: `${packageData.title}`,
-      body: bodyText,
-      modal: true,
-      transient_for: this.parentWindow,
-    });
+    // let bodyText = `${packageData.description}\n\nPackage Name: ${packageData.packageName}`;
 
-    dialog.add_response("close", "Close");
-    dialog.add_response("manage", "Manage Apps");
-    dialog.set_default_response("manage");
+    // const dialog = new Adw.MessageDialog({
+    //   heading: `${packageData.title}`,
+    //   body: bodyText,
+    //   modal: true,
+    //   transient_for: this.parentWindow,
+    // });
 
-    dialog.connect("response", (dialog, response) => {
-      if (response === "manage") {
-        console.log(`Managing apps for ${packageData.title}...`);
-        console.log("Packages:", packageData.packageName);
-      }
-    });
+    // dialog.add_response("close", "Close");
+    // dialog.add_response("manage", "Manage Apps");
+    // dialog.set_default_response("manage");
 
-    dialog.present();
+    // dialog.connect("response", (dialog, response) => {
+    //   if (response === "manage") {
+    //     console.log(`Managing apps for ${packageData.title}...`);
+    //     console.log("Packages:", packageData.packageName);
+    //   }
+    // });
+
+    // dialog.present();
   }
 
   private installPackage(

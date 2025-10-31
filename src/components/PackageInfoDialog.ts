@@ -1,0 +1,107 @@
+import Adw from "@girs/adw-1";
+import { Package } from "../interfaces/applications-data";
+import Gtk from "@girs/gtk-4.0";
+import { UtilsService } from "../services/UtilsService";
+
+export class PackageInfoDialog {
+  private propertiesList!: Gtk.ListBox;
+
+  constructor(
+    private parentWindow: Adw.ApplicationWindow,
+    private pkg: Package
+  ) {
+    this.createDialog();
+    this.loadProperties();
+  }
+
+  private createDialog(): void {
+    const dialog = new Gtk.Dialog({
+      transient_for: this.parentWindow,
+      modal: true,
+      title: this.pkg.title,
+      width_request: 700,
+      default_width: 700,
+    });
+
+    const contentArea = dialog.get_content_area();
+    contentArea.set_margin_top(24);
+    contentArea.set_margin_bottom(24);
+    contentArea.set_margin_start(24);
+    contentArea.set_margin_end(24);
+
+    const descriptionLabel = new Gtk.Label({
+      label: this.pkg.description || "No description available.",
+      justify: Gtk.Justification.FILL,
+      wrap: true,
+      margin_top: 12,
+    });
+    contentArea.append(descriptionLabel);
+
+    dialog.add_button("Close", Gtk.ResponseType.CLOSE);
+    dialog.connect("response", () => {
+      dialog.destroy();
+    });
+
+    const expander = new Gtk.Expander({
+        label: "Advanced information",
+        margin_top: 12,
+    });
+
+    const propertiesScrolledWindow = new Gtk.ScrolledWindow({
+      height_request: 200,
+      hscrollbar_policy: Gtk.PolicyType.NEVER,
+      vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
+      margin_top: 12,
+    });
+
+    this.propertiesList = new Gtk.ListBox({
+      selection_mode: Gtk.SelectionMode.NONE,
+      css_classes: ["boxed-list"],
+    });
+
+    propertiesScrolledWindow.set_child(this.propertiesList);
+    expander.set_child(propertiesScrolledWindow);
+    contentArea.append(expander);
+
+    dialog.show();
+  }
+
+  private loadProperties() : void {
+    try {
+      UtilsService.executeCommand(
+        this.pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
+        this.pkg.packageType === "FLATPAK"
+          ? ["remote-info", "flathub",this.pkg.packageName]
+          : ["install", this.pkg.packageName, "-y"]
+      ).then(({ stdout, stderr }) => {
+        const labels = stdout.split("\n");
+        labels.forEach((line) => {
+            // if (line.trim() === "") return;
+
+          const row = new Gtk.ListBoxRow();
+        //   const hbox = new Gtk.Box({
+        //     orientation: Gtk.Orientation.HORIZONTAL,
+        //     spacing: 12,
+        //     margin_top: 6,
+        //     margin_bottom: 6,
+        //     margin_start: 6,
+        //     margin_end: 6,
+        //   });
+
+          const label = new Gtk.Label({
+            label: line.trim(),
+            wrap: true,
+            xalign: 0,
+          });
+
+        //   hbox.append(label);
+        //   row.set_child(hbox);
+          row.set_child(label);
+          this.propertiesList.append(row);
+        });
+      });
+    } catch (error: any) {
+      console.error("Error loading properties:", error);
+    }
+  }
+}

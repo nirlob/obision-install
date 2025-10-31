@@ -10,8 +10,8 @@ export class InstallDialog {
   private buttonInstall!: Gtk.Button;
   private buttonCancel!: Gtk.Button;
   private packagesLabel!: Gtk.Label;
-  private errorsScrolledWindow!: Gtk.ScrolledWindow;
-  private errorsList!: Gtk.ListBox;
+  private messagesScrolledWindow!: Gtk.ScrolledWindow;
+  private messagesList!: Gtk.ListBox;
 
   constructor(
     private parentWindow: Adw.ApplicationWindow,
@@ -24,16 +24,16 @@ export class InstallDialog {
     this.dialog = new Gtk.Dialog({
       title: "Install Application",
       height_request: Gtk.Orientation.VERTICAL,
-      width_request: 600,
+      width_request: 700,
       transient_for: this.parentWindow,
       modal: true,
     });
 
     const contentArea = this.dialog.get_content_area();
-    contentArea.set_margin_top(12);
-    contentArea.set_margin_bottom(12);
-    contentArea.set_margin_start(12);
-    contentArea.set_margin_end(12);
+    contentArea.set_margin_top(24);
+    contentArea.set_margin_bottom(24);
+    contentArea.set_margin_start(24);
+    contentArea.set_margin_end(24);
 
     this.packagesLabel = new Gtk.Label({
       label:
@@ -55,19 +55,19 @@ export class InstallDialog {
       contentArea.append(this.progressBarApplication);
     }
 
-    this.errorsScrolledWindow = new Gtk.ScrolledWindow({
-      height_request: 130,
+    this.messagesScrolledWindow = new Gtk.ScrolledWindow({
+      height_request: 200,
       hscrollbar_policy: Gtk.PolicyType.NEVER,
       vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
       margin_top: 12,
     });
 
-    this.errorsList = new Gtk.ListBox({
+    this.messagesList = new Gtk.ListBox({
       selection_mode: Gtk.SelectionMode.NONE,
       css_classes: ["boxed-list"],
     });
-    this.errorsScrolledWindow.set_child(this.errorsList);
-    contentArea.append(this.errorsScrolledWindow);
+    this.messagesScrolledWindow.set_child(this.messagesList);
+    contentArea.append(this.messagesScrolledWindow);
 
     this.dialog.connect("response", (dialog, response) => {
       if (response === Gtk.ResponseType.ACCEPT) {
@@ -183,6 +183,6 @@ export class InstallDialog {
 
     row.set_child(box);
 
-    this.errorsList.append(row);
+    this.messagesList.append(row);
   }
 }

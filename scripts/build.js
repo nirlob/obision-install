@@ -100,6 +100,29 @@ if (fs.existsSync(installDialogFile)) {
     combinedContent += installDialogContent + '\n';
 }
 
+// Add InstallDialog component
+const packageInfoDialogFile = path.join(BUILD_DIR, 'components', 'PackageInfoDialog.js');
+if (fs.existsSync(packageInfoDialogFile)) {
+    console.log('📋 Adding PackageInfoDialog component...');
+    let packageInfoDialogContent = fs.readFileSync(packageInfoDialogFile, 'utf8');
+
+    // Clean up the content - find the class definition start
+    const classStartIndex = packageInfoDialogContent.indexOf('class PackageInfoDialog {');
+    if (classStartIndex !== -1) {
+        packageInfoDialogContent = packageInfoDialogContent.substring(classStartIndex);
+    }
+    
+    // Clean up TypeScript/CommonJS artifacts
+    packageInfoDialogContent = packageInfoDialogContent
+        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
+        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
+        .replace(/gio_2_0_1\.default\./g, 'Gio.')
+        .replace(/UtilsService_1\./g, '')
+        .replace(/adw_1_1\.default\./g, 'Adw.');
+
+    combinedContent += packageInfoDialogContent + '\n';
+}
+
 // Add PackageRow component
 const packageRow = path.join(BUILD_DIR, 'components', 'PackageRow.js');
 if (fs.existsSync(packageRow)) {
@@ -168,6 +191,7 @@ if (fs.existsSync(applicationsListFile)) {
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/InstallDialog_js_1\./g, '')
+        .replace(/PackageInfoDialog_js_1\./g, '')
         .replace(/UtilsService_1\./g, '')
         .replace(/PackageRow_js_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
