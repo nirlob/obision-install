@@ -29,13 +29,27 @@ export class PackageInfoDialog {
     contentArea.set_margin_start(24);
     contentArea.set_margin_end(24);
 
+    const packageBox = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      spacing: 24,
+      hexpand: true,
+    });
+    contentArea.append(packageBox);
+
+    const image = new Gtk.Image({
+        pixel_size: 64,
+        file: this.pkg.icon || "",
+        halign: Gtk.Align.START,
+    });
+    packageBox.append(image);
+
     const descriptionLabel = new Gtk.Label({
       label: this.pkg.description || "No description available.",
-      justify: Gtk.Justification.FILL,
       wrap: true,
-      margin_top: 12,
+      justify: Gtk.Justification.FILL,
+      hexpand: true,
     });
-    contentArea.append(descriptionLabel);
+    packageBox.append(descriptionLabel);
 
     dialog.add_button("Close", Gtk.ResponseType.CLOSE);
     dialog.connect("response", () => {
@@ -44,7 +58,7 @@ export class PackageInfoDialog {
 
     const expander = new Gtk.Expander({
         label: "Advanced information",
-        margin_top: 12,
+        margin_top: 24,
     });
 
     const propertiesScrolledWindow = new Gtk.ScrolledWindow({
@@ -78,7 +92,9 @@ export class PackageInfoDialog {
         labels.forEach((line) => {
             // if (line.trim() === "") return;
 
-          const row = new Gtk.ListBoxRow();
+          const row = new Gtk.ListBoxRow({
+            activatable: false,
+          });
         //   const hbox = new Gtk.Box({
         //     orientation: Gtk.Orientation.HORIZONTAL,
         //     spacing: 12,
