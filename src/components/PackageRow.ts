@@ -1,12 +1,15 @@
 import Gtk from "@girs/gtk-4.0";
 import { Package } from "../interfaces/applications-data";
 import Pango from "@girs/pango-1.0";
+import { PackageInfoDialog } from "./PackageInfoDialog";
+import Adw from "@girs/adw-1";
 
 export class PackageRow {
   private row!: Gtk.ListBoxRow;
   private installCallback: (() => void) | null = null;
 
   constructor(
+    private parentWindow: Adw.ApplicationWindow,
     private packageData: Package,
     private showInstallButton: boolean = true
   ) {
@@ -16,6 +19,9 @@ export class PackageRow {
   private setupUI(): void {
     this.row = new Gtk.ListBoxRow({
       activatable: true,
+    });
+    this.row.connect("activate", () => {
+      this.showPackageInfoDialog.bind(this)();
     });
 
     const box = new Gtk.Box({
@@ -74,7 +80,6 @@ export class PackageRow {
         if (this.installCallback) {
           this.installCallback();
         }
-        //   this.installApplication(this.packageData);
       });
 
       descBox.append(installButton);
@@ -98,5 +103,9 @@ export class PackageRow {
 
   public getWidget(): Gtk.ListBoxRow {
     return this.row;
+  }
+
+  private showPackageInfoDialog() {
+    return new PackageInfoDialog(this.parentWindow, this.packageData);
   }
 }

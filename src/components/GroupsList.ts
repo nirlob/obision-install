@@ -258,7 +258,7 @@ export class GroupsList {
       groupData.packages.forEach((pkgName) => {
         const packageData = this.packages.find((pkg) => pkg.packageName === pkgName);
         if (packageData) {
-          const packageRow = new PackageRow(packageData, false);
+          const packageRow = new PackageRow(this.parentWindow, packageData, false);
           packagesList.append(packageRow.getWidget());
         }
       });

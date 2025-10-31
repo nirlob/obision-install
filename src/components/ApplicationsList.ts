@@ -114,7 +114,7 @@ export class ApplicationsList {
   }
 
   private addPackage(packageData: Package): void {
-    const row = new PackageRow(packageData);
+    const row = new PackageRow(this.parentWindow, packageData);
 
     row.setInstallCallback(
       this.installPackage.bind(this, packageData)
