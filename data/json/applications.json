@@ -78,6 +78,13 @@
       "icon": "data/icons/packages/intellij.png"
     },
     {
+      "title": "WebStorm",
+      "description": "WebStorm is a powerful and feature-rich integrated development environment (IDE) for JavaScript and web development. It offers advanced code editing, debugging, and testing tools to enhance developer productivity.",
+      "packageName": "com.jetbrains.WebStorm",
+      "packageType": "FLATPAK",
+      "icon": "data/icons/packages/webstorm.png"
+    },
+    {
       "title": "Edge Browser",
       "description": "Microsoft Edge is a free and open-source web browser developed by Microsoft. It is built on the Chromium engine and offers features such as enhanced security, privacy controls, and integration with Microsoft services.",
       "packageName": "com.microsoft.Edge",
@@ -97,12 +104,6 @@
       "packageName": "com.opera.Opera",
       "packageType": "FLATPAK",
       "icon": "data/icons/packages/opera.png"
-    },
-    {
-      "title": "Build Essential",
-      "description": "A package that includes essential tools for building software on Debian-based systems, such as GCC, make, and other development utilities.",
-      "packageName": "build-essential",
-      "packageType": "DEBIAN"
     },
     {
       "title": "Transmission",
@@ -292,14 +293,90 @@
       "packageName": "org.videolan.VLC",
       "packageType": "FLATPAK",
       "icon": "data/icons/packages/vlc.png"
+    },
+    {
+      "title": "Java JDK",
+      "description": "Java JDK is a free and open-source software development kit used for developing Java applications. It includes a runtime environment, compiler, and various tools for building and debugging Java applications.",
+      "packageName": "openjdk-21-jdk",
+      "packageType": "DEBIAN",
+      "icon": "data/icons/packages/java.png"
+    },
+    {
+      "title": "Git",
+      "description": "Git is a free and open-source distributed version control system used for tracking changes in source code during software development. It allows multiple developers to work on a project simultaneously and provides tools for branching, merging, and collaboration.",
+      "packageName": "git",
+      "packageType": "DEBIAN",
+      "icon": "data/icons/packages/git.png"
+    },
+    {
+      "title": "Build Essentials",
+      "description": "Build Essentials is a package that includes a list of packages which are essential for building Debian packages. It includes the GNU Compiler Collection (GCC), make, and other utilities.",
+      "packageName": "build-essential",
+      "packageType": "DEBIAN",
+      "icon": "data/icons/packages/build-essential.png"
+    },
+    {
+      "title": "Node.js",
+      "description": "Node.js is a free and open-source JavaScript runtime built on Chrome's V8 JavaScript engine. It allows developers to run JavaScript code outside of a web browser, making it suitable for server-side development and building scalable network applications.",
+      "packageName": "nodejs",
+      "packageType": "DEBIAN",
+      "icon": "data/icons/packages/nodejs.png"
+    },
+    {
+      "title": "npm",
+      "description": "npm (Node Package Manager) is a free and open-source package manager for JavaScript programming language. It is the default package manager for the Node.js runtime environment and allows developers to install, share, and manage dependencies for their JavaScript projects.",
+      "packageName": "npm",
+      "packageType": "DEBIAN",
+      "icon": "data/icons/packages/npm.png"
     }
   ],
-  "applications": ["com.brave.Browser", "com.calibre_ebook.calibre", "org.gimp.GIMP", "org.inkscape.Inkscape", "org.blender.Blender", "org.krita.Krita", "org.audacityteam.Audacity", "org.videolan.VLC", "org.photopea.Photopea", "org.chromium.Chrome", "com.jetbrains.IntelliJ-IDEA-Community", "com.microsoft.Edge", "com.obsproject.Studio", "com.opera.Opera",  "com.transmissionbt.Transmission", "com.valvesoftware.Steam", "com.visualstudio.code", "com.wps.Office", "com.github.maoschanz.drawing", "fr.natron.Natron", "io.dbeaver.DBeaverCommunity", "com.github.jorchube.monitoret", "io.github.OpenToonz", "io.lmms.LMMS", "me.hyliu.fluentreader", "net.scribus.Scribus", "org.darktable.Darktable", "org.gnome.Aisleriot", "org.gnome.Boxes", "org.gnome.Builder", "org.gustavoperedo.FontDownloader", "org.inkscape.Inkscape", "org.libreoffice.LibreOffice", "org.mixxx.Mixxx", "org.mozilla.Thunderbird", "org.pencil2d.Pencil2D", "org.synfig.SynfigStudio", "org.telegram.Telegram", "org.videolan.VLC"],
+  "applications": [
+    "com.brave.Browser", 
+    "com.calibre_ebook.calibre", 
+    "org.gimp.GIMP", 
+    "org.inkscape.Inkscape", 
+    "org.blender.Blender", 
+    "org.krita.Krita", 
+    "org.audacityteam.Audacity", 
+    "org.videolan.VLC", 
+    "org.photopea.Photopea", 
+    "org.chromium.Chrome", 
+    "com.jetbrains.IntelliJ-IDEA-Community", 
+    "com.jetbrains.WebStorm",
+    "com.microsoft.Edge", 
+    "com.obsproject.Studio", 
+    "com.opera.Opera",  
+    "com.transmissionbt.Transmission", 
+    "com.valvesoftware.Steam", 
+    "com.visualstudio.code", 
+    "com.wps.Office", 
+    "com.github.maoschanz.drawing", 
+    "fr.natron.Natron", 
+    "io.dbeaver.DBeaverCommunity", 
+    "com.github.jorchube.monitoret", 
+    "io.github.OpenToonz", 
+    "io.lmms.LMMS", 
+    "me.hyliu.fluentreader", 
+    "net.scribus.Scribus", 
+    "org.darktable.Darktable", 
+    "org.gnome.Aisleriot", 
+    "org.gnome.Boxes", 
+    "org.gnome.Builder", 
+    "org.gustavoperedo.FontDownloader", 
+    "org.inkscape.Inkscape", 
+    "org.libreoffice.LibreOffice", 
+    "org.mixxx.Mixxx", 
+    "org.mozilla.Thunderbird", 
+    "org.pencil2d.Pencil2D", 
+    "org.synfig.SynfigStudio", 
+    "org.telegram.Telegram", 
+    "org.videolan.VLC"
+  ],
   "groups": [
     {
       "title": "Development Tools",
       "description": "Tools for software development and coding.",
-      "packagesNames": ["com.brave.Browser", "com.calibre_ebook.calibre"],
+      "packagesNames": ["openjdk-21-jdk", "git", "build-essential", "nodejs", "npm", "com.jetbrains.IntelliJ-IDEA-Community", "org.gnome.Builder", "com.visualstudio.code", "com.jetbrains.WebStorm", "io.dbeaver.DBeaverCommunity"],
       "icon": "data/icons/groups/develop.png"
     },
     {
