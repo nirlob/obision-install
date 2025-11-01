@@ -124,11 +124,13 @@ export class ApplicationsList {
 
   private async addPackage(packageData: Package): Promise<void> {
     const packageInstalled = await UtilsService.testPackageInstalled(packageData);
-    const row = new PackageRow(packageData, !packageInstalled);
+    const row = new PackageRow(packageData, true, packageInstalled);
 
-    row.setInstallCallback(
-      this.installPackage.bind(this, packageData)
-    );
+    if (!packageInstalled) {
+      row.setInstallCallback(
+        this.installPackage.bind(this, packageData)
+      );
+    }
 
     this.listbox.append(row.getWidget());
   }

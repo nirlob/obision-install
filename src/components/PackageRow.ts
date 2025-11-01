@@ -9,7 +9,8 @@ export class PackageRow {
 
   constructor(
     private packageData: Package,
-    private showInstallButton: boolean = true
+    private showInstallButton: boolean = true,
+    private packageInstalled: boolean = false
   ) {
     this.setupUI();
   }
@@ -70,6 +71,8 @@ export class PackageRow {
         halign: Gtk.Align.END,
         css_classes: ["suggested-action"],
       });
+
+      installButton.set_sensitive(!this.packageInstalled);
 
       installButton.connect("clicked", () => {
         if (this.installCallback) {
