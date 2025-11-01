@@ -10,6 +10,7 @@ import {
 import { InstallDialog } from "./InstallDialog.js";
 import { UtilsService } from "../services/UtilsService.js";
 import { PackageRow } from "./PackageRow.js";
+import { PackageInfoDialog } from "./PackageInfoDialog.js";
 
 // GroupData interface for UI display
 export interface GroupData {
@@ -131,7 +132,7 @@ export class GroupsList {
     // Icon image
     const iconImage = new Gtk.Image({
       file: groupData.icon,
-      pixel_size: 50,
+      pixel_size: 64,
     });
 
     // Content box
@@ -166,6 +167,7 @@ export class GroupsList {
       label: groupData.appCount,
       halign: Gtk.Align.END,
       css_classes: ["accent"],
+      margin_end: 12,
     });
 
     const installButton = new Gtk.Button({
@@ -236,14 +238,14 @@ export class GroupsList {
 
     contentBox.append(
       new Gtk.Label({
-        label: `<span weight="bold">${groupData.description}\n\nThis group contains ${groupData.appCount} packages.</span>`,
+        label: `<span weight="bold">${groupData.description}</span>\n\n<span>This group contains ${groupData.appCount} packages.</span>`,
         use_markup: true,
         halign: Gtk.Align.CENTER,
       })
     );
 
     const packagesScrolledWindow = new Gtk.ScrolledWindow({
-      height_request: 200,
+      height_request: 250,
       hscrollbar_policy: Gtk.PolicyType.NEVER,
       vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
       margin_top: 12,
@@ -253,6 +255,22 @@ export class GroupsList {
       selection_mode: Gtk.SelectionMode.NONE,
       css_classes: ["boxed-list"],
     });
+
+    packagesList.connect(
+      "row-activated",
+      (listbox: Gtk.ListBox, row: Gtk.ListBoxRow) => {
+        const packageData = UtilsService.getPackageDataFromRow(row);
+        if (!packageData) {
+          new Gtk.AlertDialog({
+            message: `Package data not found.`,
+            modal: true,
+          });
+          return;
+        }
+
+        new PackageInfoDialog(this.parentWindow, packageData);
+      }
+    );
 
     if (groupData.packages && groupData.packages.length > 0) {
       groupData.packages.forEach((pkgName) => {

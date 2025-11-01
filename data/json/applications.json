@@ -38,7 +38,7 @@
     {
       "title": "Krita",
       "description": "Krita is a free and open-source digital painting software designed for artists. It offers a wide range of brushes, tools, and features for creating stunning digital artwork.",
-      "packageName": "org.krita.Krita",
+      "packageName": "org.kde.krita",
       "packageType": "FLATPAK",
       "icon": "data/icons/packages/krita.png"
     },
@@ -303,13 +303,13 @@
       "icon": "data/icons/groups/develop.png"
     },
     {
-      "title": "Games &amp; Entertainment",
+      "title": "Games and Entertainment",
       "description": "Games and entertainment applications.",
-      "packagesNames": ["GIMP", "Inkscape", "Blender"],
+      "packagesNames": ["com.valvesoftware.Steam", "org.gnome.Aisleriot"],
       "icon": "data/icons/groups/games.png"
     },
     {
-      "title": "Office &amp; Productivity",
+      "title": "Office and Productivity",
       "description": "Office and productivity applications.",
       "packagesNames": ["Firefox", "Thunderbird", "Slack"],
       "icon": "data/icons/groups/office.png"
@@ -321,16 +321,16 @@
       "icon": "data/icons/groups/multimedia.png"
     },
     {
-      "title": "Design &amp; Creativity",
+      "title": "Design and Creativity",
       "description": "Applications for graphic design, illustration, and creativity.",
-      "packagesNames": ["Chromium", "Signal", "Zoom"],
-      "icon": "data/icons/groups/web.png"
+      "packagesNames": ["org.gimp.GIMP", "org.inkscape.Inkscape", "org.blender.Blender", "org.kde.krita"],
+      "icon": "data/icons/groups/design.png"
     },
     {
-      "title": "Utilities",
+      "title": "Tools",
       "description": "Utility applications for system management and maintenance.",
       "packagesNames": ["io.github.jorchube.monitoret", "BleachBit", "HTop"],
-      "icon": "data/icons/groups/utilities.png"
+      "icon": "data/icons/groups/tools.png"
     }
   ]
 }

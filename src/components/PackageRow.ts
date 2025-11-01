@@ -20,9 +20,6 @@ export class PackageRow {
     this.row = new Gtk.ListBoxRow({
       activatable: true,
     });
-    this.row.connect("activate", () => {
-      this.showPackageInfoDialog.bind(this)();
-    });
 
     const box = new Gtk.Box({
       orientation: Gtk.Orientation.HORIZONTAL,
@@ -35,7 +32,7 @@ export class PackageRow {
 
     const iconImage = new Gtk.Image({
       file: this.packageData.icon,
-      pixel_size: 50,
+      pixel_size: 64,
     });
 
     // Content box
@@ -103,9 +100,5 @@ export class PackageRow {
 
   public getWidget(): Gtk.ListBoxRow {
     return this.row;
-  }
-
-  private showPackageInfoDialog() {
-    return new PackageInfoDialog(this.parentWindow, this.packageData);
   }
 }

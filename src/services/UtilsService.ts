@@ -1,5 +1,6 @@
 import Gio from "@girs/gio-2.0";
 import { Package } from "../interfaces/applications-data";
+import { Gtk } from "@girs/gtk-4.0";
 
 export class UtilsService {
   static executeCommand(
@@ -64,6 +65,16 @@ export class UtilsService {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  static getPackageDataFromRow(row: Gtk.ListBoxRow): Package | null {
+    // Return stored package data or null
+    const storedData = (row as any).packageData;
+    if (storedData) {
+      return storedData;
+    } else {
+      return null;
     }
   }
 }

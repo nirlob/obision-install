@@ -66,8 +66,8 @@ class ObisionInstallApplication {
         const window = new Adw.ApplicationWindow({
             application: this.application as any,
             title: 'Obision Install',
-            default_width: 800,
-            default_height: 600,
+            default_width: 1000,
+            default_height: 800,
         });
         
         // Load UI from resource

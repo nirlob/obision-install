@@ -166,6 +166,7 @@ if (fs.existsSync(groupsListFile)) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/InstallDialog_js_1\./g, '')
         .replace(/UtilsService_js_1\./g, '')
+        .replace(/PackageInfoDialog_js_1\./g, '')
         .replace(/PackageRow_js_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
     
@@ -192,7 +193,7 @@ if (fs.existsSync(applicationsListFile)) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/InstallDialog_js_1\./g, '')
         .replace(/PackageInfoDialog_js_1\./g, '')
-        .replace(/UtilsService_1\./g, '')
+        .replace(/UtilsService_js_1\./g, '')
         .replace(/PackageRow_js_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 

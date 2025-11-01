@@ -5,6 +5,7 @@ import { ApplicationsData, Package } from "../interfaces/applications-data.js";
 import { InstallDialog } from "./InstallDialog.js";
 import { PackageRow } from "./PackageRow.js";
 import { PackageInfoDialog } from "./PackageInfoDialog.js";
+import { UtilsService } from "../services/UtilsService.js";
 
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
@@ -36,8 +37,16 @@ export class ApplicationsList {
     this.listbox.connect(
       "row-activated",
       (listbox: Gtk.ListBox, row: Gtk.ListBoxRow) => {
-        const packageData = this.getPackageDataFromRow(row);
-        this.showPackageDetailsFromData(packageData);
+        const packageData = UtilsService.getPackageDataFromRow(row);
+        if (!packageData) {
+          new Gtk.AlertDialog({
+            message: `Package data not found.`,
+            modal: true,
+          });
+          return;
+        }
+
+        new PackageInfoDialog(this.parentWindow, packageData);
       }
     );
 
@@ -125,50 +134,6 @@ export class ApplicationsList {
 
   public getWidget(): Gtk.ScrolledWindow {
     return this.scrolledWindow;
-  }
-
-  private getPackageDataFromRow(row: Gtk.ListBoxRow): Package {
-    // Return stored application data or create default
-    const storedData = (row as any).packageData;
-    if (storedData) {
-      return storedData;
-    } else {
-      return {
-        icon: "",
-        title: "Unknown Application",
-        description: "Application information not available",
-        packageName: "unknown",
-        packageType: "DEBIAN",
-      };
-    }
-  }
-
-  private showPackageDetailsFromData(
-    packageData: Package
-  ): void {
-    new PackageInfoDialog(this.parentWindow, packageData);
-
-    // let bodyText = `${packageData.description}\n\nPackage Name: ${packageData.packageName}`;
-
-    // const dialog = new Adw.MessageDialog({
-    //   heading: `${packageData.title}`,
-    //   body: bodyText,
-    //   modal: true,
-    //   transient_for: this.parentWindow,
-    // });
-
-    // dialog.add_response("close", "Close");
-    // dialog.add_response("manage", "Manage Apps");
-    // dialog.set_default_response("manage");
-
-    // dialog.connect("response", (dialog, response) => {
-    //   if (response === "manage") {
-    //     console.log(`Managing apps for ${packageData.title}...`);
-    //     console.log("Packages:", packageData.packageName);
-    //   }
-    // });
-
-    // dialog.present();
   }
 
   private installPackage(
