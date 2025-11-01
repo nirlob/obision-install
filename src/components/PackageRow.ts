@@ -1,22 +1,20 @@
 import Gtk from "@girs/gtk-4.0";
 import { Package } from "../interfaces/applications-data";
 import Pango from "@girs/pango-1.0";
-import { PackageInfoDialog } from "./PackageInfoDialog";
-import Adw from "@girs/adw-1";
+import { UtilsService } from "../services/UtilsService";
 
 export class PackageRow {
   private row!: Gtk.ListBoxRow;
   private installCallback: (() => void) | null = null;
 
   constructor(
-    private parentWindow: Adw.ApplicationWindow,
     private packageData: Package,
     private showInstallButton: boolean = true
   ) {
     this.setupUI();
   }
 
-  private setupUI(): void {
+  private async setupUI(): Promise<void> {
     this.row = new Gtk.ListBoxRow({
       activatable: true,
     });

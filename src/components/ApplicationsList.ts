@@ -122,8 +122,9 @@ export class ApplicationsList {
     }
   }
 
-  private addPackage(packageData: Package): void {
-    const row = new PackageRow(this.parentWindow, packageData);
+  private async addPackage(packageData: Package): Promise<void> {
+    const packageInstalled = await UtilsService.testPackageInstalled(packageData);
+    const row = new PackageRow(packageData, !packageInstalled);
 
     row.setInstallCallback(
       this.installPackage.bind(this, packageData)

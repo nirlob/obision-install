@@ -94,7 +94,6 @@ if (fs.existsSync(installDialogFile)) {
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/UtilsService_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 
     combinedContent += installDialogContent + '\n';
@@ -141,6 +140,7 @@ if (fs.existsSync(packageRow)) {
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
+        .replace(/UtilsService_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 
     combinedContent += packageRowContent + '\n';

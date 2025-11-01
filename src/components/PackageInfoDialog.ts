@@ -86,7 +86,7 @@ export class PackageInfoDialog {
         this.pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
         this.pkg.packageType === "FLATPAK"
           ? ["remote-info", "flathub",this.pkg.packageName]
-          : ["install", this.pkg.packageName, "-y"]
+          : ["show", this.pkg.packageName]
       ).then(({ stdout, stderr }) => {
         const labels = stdout.split("\n");
         labels.forEach((line) => {

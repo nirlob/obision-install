@@ -7,7 +7,6 @@ export class UtilsService {
     command: string,
     args: string[] = []
   ): Promise<{ stdout: string; stderr: string }> {
-    console.log(`Executing command: ${command} ${args.join(" ")}`);
     return new Promise((resolve, reject) => {
       try {
         const process = new Gio.Subprocess({
@@ -75,6 +74,22 @@ export class UtilsService {
       return storedData;
     } else {
       return null;
+    }
+  }
+
+
+  static async testPackageInstalled(packageData: Package): Promise<boolean> {
+    try {
+      const { stdout, stderr } = await UtilsService.executeCommand(
+        packageData.packageType === "FLATPAK" ? "flatpak" : "apt",
+        packageData.packageType === "FLATPAK"
+          ? ["info", packageData.packageName]
+          : ["show", packageData.packageName]
+      );
+      return stdout.trim().length > 0;
+    } catch (error: any) {
+      console.error("Error testing package installation:", error);
+      return false;
     }
   }
 }
