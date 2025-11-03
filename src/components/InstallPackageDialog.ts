@@ -4,7 +4,7 @@ import { Package } from "../interfaces/applications-data";
 import { UtilsService } from "../services/UtilsService";
 
 export class InstallPackageDialog {
-  private dialog!: Gtk.Dialog;
+  private dialog!: Adw.Dialog;
   private progressBarPackage!: Gtk.ProgressBar;
   private buttonInstall!: Gtk.Button;
   private buttonCancel!: Gtk.Button;
@@ -18,54 +18,72 @@ export class InstallPackageDialog {
   }
 
   private setupUI(): void {
-    this.dialog = new Gtk.Dialog({
-      title: "Install Application",
-      height_request: Gtk.Orientation.VERTICAL,
-      width_request: 700,
-      transient_for: this.parentWindow,
-      modal: true,
+    const mainBox = new Gtk.Box({
+      orientation: Gtk.Orientation.VERTICAL,
+      spacing: 12,
     });
 
-    const contentArea = this.dialog.get_content_area();
-    contentArea.set_margin_top(24);
-    contentArea.set_margin_bottom(24);
-    contentArea.set_margin_start(24);
-    contentArea.set_margin_end(24);
+    const headerBar = new Adw.HeaderBar({
+      title_widget: new Gtk.Label({ label: "Install Application" }),
+    });
+    mainBox.append(headerBar);
+
+    const contentBox = new Gtk.Box({
+      orientation: Gtk.Orientation.VERTICAL,
+      margin_top: 24,
+      margin_bottom: 24,
+      margin_start: 24,
+      margin_end: 24,
+      spacing: 12,
+    });
+    mainBox.append(contentBox);
 
     this.packageLabel = new Gtk.Label({
       label: `You are about to install ${this.pkg.title}.`,
       wrap: true,
       justify: Gtk.Justification.FILL,
     });
-    contentArea.append(this.packageLabel);
+    contentBox.append(this.packageLabel);
 
-      this.progressBarPackage = new Gtk.ProgressBar({
-        margin_top: 12,
-        show_text: true,
-        fraction: 0,
-        text: "Installing...",
-      });
-      contentArea.append(this.progressBarPackage);
+    this.progressBarPackage = new Gtk.ProgressBar({
+      show_text: true,
+      fraction: 0,
+      text: "Installing...",
+    });
+    contentBox.append(this.progressBarPackage);
 
-    this.dialog.connect("response", (dialog, response) => {
-      if (response === Gtk.ResponseType.ACCEPT) {
-        this.installPackage();
-      } else {
-        this.dialog.close();
-      }
+    const buttonBox = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      spacing: 12,
+      halign: Gtk.Align.END,
+      margin_top: 12,
     });
 
-    this.buttonInstall = this.dialog.add_button(
-      "Install",
-      Gtk.ResponseType.ACCEPT,
-    ) as Gtk.Button;
-    
-    this.buttonCancel = this.dialog.add_button(
-      "Cancel",
-      Gtk.ResponseType.CANCEL
-    ) as Gtk.Button;
+    this.buttonCancel = new Gtk.Button({
+      label: "Cancel",
+    });
+    this.buttonCancel.connect("clicked", () => {
+      this.dialog.close();
+    });
 
-    this.dialog.present();
+    this.buttonInstall = new Gtk.Button({
+      label: "Install",
+    });
+    this.buttonInstall.add_css_class("suggested-action");
+    this.buttonInstall.connect("clicked", () => {
+      this.installPackage();
+    });
+
+    buttonBox.append(this.buttonCancel);
+    buttonBox.append(this.buttonInstall);
+    contentBox.append(buttonBox);
+
+    this.dialog = new Adw.Dialog({
+      child: mainBox,
+      width_request: 700,
+    });
+
+    this.dialog.present(this.parentWindow);
   }
 
   private async installPackage(): Promise<void> {
@@ -99,9 +117,9 @@ export class InstallPackageDialog {
   }
 
   showMessage(message: string, status: 'FAILED' | 'SUCCESS', iconFile: string) {
-    const alertDialog = new Adw.AlertDialog({
+    const alertDialog = new Adw.MessageDialog({
       title: status === 'FAILED' ? 'Error' : 'Success',
       body: message,
-    })
+    });
   }
 }
