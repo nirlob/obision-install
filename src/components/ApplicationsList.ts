@@ -2,10 +2,10 @@ import Gtk from "@girs/gtk-4.0";
 import Adw from "@girs/adw-1";
 import Gio from "@girs/gio-2.0";
 import { ApplicationsData, Package } from "../interfaces/applications-data.js";
-import { InstallDialog } from "./InstallDialog.js";
 import { PackageRow } from "./PackageRow.js";
 import { PackageInfoDialog } from "./PackageInfoDialog.js";
 import { UtilsService } from "../services/UtilsService.js";
+import { InstallPackageDialog } from "./InstallPackageDialog.js";
 
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
@@ -143,7 +143,7 @@ export class ApplicationsList {
     pkg: Package
   ): void {
     if (pkg) {
-      new InstallDialog(this.parentWindow, [pkg]);
+      new InstallPackageDialog(this.parentWindow, pkg);
     } else {
       new Gtk.AlertDialog({
         message: `Package not found.`,

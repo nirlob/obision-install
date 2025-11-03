@@ -71,15 +71,12 @@ if (fs.existsSync(utilsServiceFile)) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 
-        console.log(utilsServiceContent)
-
     combinedContent += utilsServiceContent + '\n';
 }
 
 // Add InstallDialog component
 const installDialogFile = path.join(BUILD_DIR, 'components', 'InstallDialog.js');
 if (fs.existsSync(installDialogFile)) {
-    console.log('📋 Adding InstallDialog component...');
     let installDialogContent = fs.readFileSync(installDialogFile, 'utf8');
 
     // Clean up the content - find the class definition start
@@ -99,7 +96,29 @@ if (fs.existsSync(installDialogFile)) {
     combinedContent += installDialogContent + '\n';
 }
 
-// Add InstallDialog component
+// Add InstallPackageDialog component
+const installPackageDialogFile = path.join(BUILD_DIR, 'components', 'InstallPackageDialog.js');
+if (fs.existsSync(installPackageDialogFile)) {
+    console.log('📋 Adding InstallPackage Dialog component...');
+    let installPackageDialogContent = fs.readFileSync(installPackageDialogFile, 'utf8');
+    const classStartIndex = installPackageDialogContent.indexOf('class InstallPackageDialog {');
+    if (classStartIndex !== -1) {
+        installPackageDialogContent = installPackageDialogContent.substring(classStartIndex);
+    }
+    
+    // Clean up TypeScript/CommonJS artifacts
+    installPackageDialogContent = installPackageDialogContent
+        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
+        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
+        .replace(/gio_2_0_1\.default\./g, 'Gio.')
+        .replace(/pango_1_0_1\.default\./g, 'Pango.')
+        .replace(/adw_1_1\.default\./g, 'Adw.')
+        .replace(/UtilsService_1\./g, '');
+
+    combinedContent += installPackageDialogContent + '\n';
+}
+
+// Add PackageInfoDialog component
 const packageInfoDialogFile = path.join(BUILD_DIR, 'components', 'PackageInfoDialog.js');
 if (fs.existsSync(packageInfoDialogFile)) {
     console.log('📋 Adding PackageInfoDialog component...');
@@ -191,7 +210,7 @@ if (fs.existsSync(applicationsListFile)) {
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/InstallDialog_js_1\./g, '')
+        .replace(/InstallPackageDialog_js_1\./g, '')
         .replace(/PackageInfoDialog_js_1\./g, '')
         .replace(/UtilsService_js_1\./g, '')
         .replace(/PackageRow_js_1\./g, '')

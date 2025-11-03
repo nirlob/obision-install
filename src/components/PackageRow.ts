@@ -1,7 +1,6 @@
 import Gtk from "@girs/gtk-4.0";
 import { Package } from "../interfaces/applications-data";
 import Pango from "@girs/pango-1.0";
-import { UtilsService } from "../services/UtilsService";
 
 export class PackageRow {
   private row!: Gtk.ListBoxRow;
