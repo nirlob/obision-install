@@ -62,6 +62,7 @@ export class InstallPackageDialog {
     this.buttonCancel = new Gtk.Button({
       label: "Cancel",
     });
+    
     this.buttonCancel.connect("clicked", () => {
       this.dialog.close();
     });

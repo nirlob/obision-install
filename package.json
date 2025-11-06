@@ -12,7 +12,7 @@
     "start:fr": "npm run build && node scripts/run-with-locale.js fr",
     "clean": "rm -rf builddir && rm -rf mesonbuilddir",
     "meson-setup": "meson setup mesonbuilddir",
-    "meson-compile": "meson compile -C mesonbuilddir", 
+    "meson-compile": "meson compile -C mesonbuilddir",
     "meson-install": "npm run build && npm run meson-setup && npm run meson-compile && cd mesonbuilddir && meson install",
     "meson-clean": "rm -rf mesonbuilddir"
   },
