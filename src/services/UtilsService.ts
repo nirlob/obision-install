@@ -1,6 +1,7 @@
 import Gio from "@girs/gio-2.0";
 import { Application } from "../interfaces/application";
 import { Gtk } from "@girs/gtk-4.0";
+import { Category } from "../interfaces/category";
 
 export class UtilsService {
   static executeCommand(
@@ -35,27 +36,27 @@ export class UtilsService {
     });
   }
 
-  static loadPackagesFromJson(): Application[] {
-    let packages: Application[] = [];
+  static loadCategoriesFromJson(): Category[] {
+    let categories: Category[] = [];
 
     try {
-      // Load applications data from applications.json
-      const packagesFile = Gio.File.new_for_path(
-        "./data/json/applications.json"
+      // Load categories data from categories.json
+      const categoriesFile = Gio.File.new_for_path(
+        "./data/json/categories.json"
       );
-      const [success, contents] = packagesFile.load_contents(null);
+      const [success, contents] = categoriesFile.load_contents(null);
 
       if (!success) {
-        console.error("Could not load applications.json");
-        return packages;
+        console.error("Could not load categories.json");
+        return categories;
       }
 
-      packages = JSON.parse(new TextDecoder().decode(contents)).packages;
+      categories = JSON.parse(new TextDecoder().decode(contents)).categories;
     } catch (error) {
-      console.error("Error loading JSON data:", error);
+      console.error("Error loading categories JSON data:", error);
     }
 
-    return packages;
+    return categories;
   }
 
   static getPackageDataFromRow(row: Gtk.ListBoxRow): Application | null {

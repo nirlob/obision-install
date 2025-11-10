@@ -28,7 +28,7 @@ export class GroupsList {
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
-    this.packages = UtilsService.loadPackagesFromJson();
+    this.packages = UtilsService.loadCategoriesFromJson();
     this.loadGroupsFromJson();
   }
 
