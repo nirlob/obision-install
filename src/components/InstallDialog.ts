@@ -1,7 +1,7 @@
 import Adw from "@girs/adw-1";
 import Gio from "@girs/gio-2.0";
 import Gtk from "@girs/gtk-4.0";
-import { Package } from "../interfaces/applications-data";
+import { Application } from "../interfaces/application";
 import { UtilsService } from "../services/UtilsService";
 
 export class InstallDialog {
@@ -15,7 +15,7 @@ export class InstallDialog {
 
   constructor(
     private parentWindow: Adw.ApplicationWindow,
-    private packages: Package[]
+    private packages: Application[]
   ) {
     this.createDialog();
   }
@@ -116,7 +116,7 @@ export class InstallDialog {
     }
   }
 
-  private async installApplication(pkg: Package): Promise<void> {
+  private async installApplication(pkg: Application): Promise<void> {
     await UtilsService.executeCommand(
       pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
       pkg.packageType === "FLATPAK"

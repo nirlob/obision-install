@@ -1,5 +1,5 @@
 import Adw from "@girs/adw-1";
-import { Package } from "../interfaces/applications-data";
+import { Application } from "../interfaces/application";
 import Gtk from "@girs/gtk-4.0";
 import { UtilsService } from "../services/UtilsService";
 
@@ -8,7 +8,7 @@ export class PackageInfoDialog {
 
   constructor(
     private parentWindow: Adw.ApplicationWindow,
-    private pkg: Package
+    private pkg: Application
   ) {
     this.createDialog();
     this.loadProperties();

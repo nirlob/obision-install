@@ -1,7 +1,7 @@
 import Gtk from "@girs/gtk-4.0";
 import Adw from "@girs/adw-1";
 import Gio from "@girs/gio-2.0";
-import { ApplicationsData, Package } from "../interfaces/applications-data.js";
+import { Packages, Application } from "../interfaces/application.js";
 import { PackageRow } from "./PackageRow.js";
 import { PackageInfoDialog } from "./PackageInfoDialog.js";
 import { UtilsService } from "../services/UtilsService.js";
@@ -10,7 +10,7 @@ import { InstallPackageDialog } from "./InstallPackageDialog.js";
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
   private scrolledWindow!: Gtk.ScrolledWindow;
-  private packages: Package[] = [];
+  private packages: Application[] = [];
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
@@ -67,7 +67,7 @@ export class ApplicationsList {
         return;
       }
 
-      const applicationsData: ApplicationsData = JSON.parse(
+      const applicationsData: Packages = JSON.parse(
         new TextDecoder().decode(contents)
       );
 
@@ -99,13 +99,13 @@ export class ApplicationsList {
   }
 
   private loadApplicationsFromApplicationsData(
-    applicationsData: ApplicationsData
+    applicationsData: Packages
   ): void {
     if (
       applicationsData.applications && Array.isArray(applicationsData.applications)
     ) {
       applicationsData.applications.forEach((application: string) => {
-        const pkg = this.packages.find((pkg: Package) => pkg.packageName === application);
+        const pkg = this.packages.find((pkg: Application) => pkg.packageName === application);
         if (pkg) {
           this.addPackage(pkg);
         }
@@ -122,8 +122,8 @@ export class ApplicationsList {
     }
   }
 
-  private async addPackage(packageData: Package): Promise<void> {
-    const packageInstalled = await UtilsService.testPackageInstalled(packageData);
+  private async addPackage(packageData: Application): Promise<void> {
+    const packageInstalled = await UtilsService.isApplicationInstalled(packageData);
     const row = new PackageRow(packageData, true, packageInstalled);
 
     if (!packageInstalled) {
@@ -140,7 +140,7 @@ export class ApplicationsList {
   }
 
   private installPackage(
-    pkg: Package
+    pkg: Application
   ): void {
     if (pkg) {
       new InstallPackageDialog(this.parentWindow, pkg);

@@ -1,5 +1,5 @@
 import Gio from "@girs/gio-2.0";
-import { Package } from "../interfaces/applications-data";
+import { Application } from "../interfaces/application";
 import { Gtk } from "@girs/gtk-4.0";
 
 export class UtilsService {
@@ -35,8 +35,8 @@ export class UtilsService {
     });
   }
 
-  static loadPackagesFromJson(): Package[] {
-    let packages: Package[] = [];
+  static loadPackagesFromJson(): Application[] {
+    let packages: Application[] = [];
 
     try {
       // Load applications data from applications.json
@@ -58,16 +58,7 @@ export class UtilsService {
     return packages;
   }
 
-  static async testInstalledPackage(packageName: string): Promise<boolean> {
-    try {
-      await this.executeCommand("dpkg", ["-s", packageName]);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  static getPackageDataFromRow(row: Gtk.ListBoxRow): Package | null {
+  static getPackageDataFromRow(row: Gtk.ListBoxRow): Application | null {
     // Return stored package data or null
     const storedData = (row as any).packageData;
     if (storedData) {
@@ -77,18 +68,17 @@ export class UtilsService {
     }
   }
 
-
-  static async testPackageInstalled(packageData: Package): Promise<boolean> {
+  static async isApplicationInstalled(application: Application): Promise<boolean> {
     try {
       const { stdout, stderr } = await UtilsService.executeCommand(
-        packageData.packageType === "FLATPAK" ? "flatpak" : "apt",
-        packageData.packageType === "FLATPAK"
-          ? ["info", packageData.packageName]
-          : ["show", packageData.packageName]
+        application.packageType === "FLATPAK" ? "flatpak" : "apt",
+        application.packageType === "FLATPAK"
+          ? ["info", application.packageName]
+          : ["show", application.packageName]
       );
       return stdout.trim().length > 0;
     } catch (error: any) {
-      console.error("Error testing package installation:", error);
+      console.error("Error testing application installation:", error);
       return false;
     }
   }

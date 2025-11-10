@@ -1,5 +1,5 @@
 import Gtk from "@girs/gtk-4.0";
-import { Package } from "../interfaces/applications-data";
+import { Application } from "../interfaces/application";
 import Pango from "@girs/pango-1.0";
 
 export class PackageRow {
@@ -7,7 +7,7 @@ export class PackageRow {
   private installCallback: (() => void) | null = null;
 
   constructor(
-    private packageData: Package,
+    private packageData: Application,
     private showInstallButton: boolean = true,
     private packageInstalled: boolean = false
   ) {

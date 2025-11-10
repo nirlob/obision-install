@@ -1,6 +1,6 @@
 import Adw from "@girs/adw-1";
 import Gtk from "@girs/gtk-4.0";
-import { Package } from "../interfaces/applications-data";
+import { Application } from "../interfaces/application";
 import { UtilsService } from "../services/UtilsService";
 
 export class InstallPackageDialog {
@@ -12,7 +12,7 @@ export class InstallPackageDialog {
 
   constructor(
     private parentWindow: Adw.ApplicationWindow,
-    private pkg: Package
+    private pkg: Application
   ) {
     this.setupUI();
   }

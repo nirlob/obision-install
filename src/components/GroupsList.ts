@@ -3,10 +3,10 @@ import Adw from "@girs/adw-1";
 import Pango from "@girs/pango-1.0";
 import Gio from "@girs/gio-2.0";
 import {
-  ApplicationsData,
+  Packages,
   Group,
-  Package,
-} from "../interfaces/applications-data.js";
+  Application,
+} from "../interfaces/application.js";
 import { InstallDialog } from "./InstallDialog.js";
 import { UtilsService } from "../services/UtilsService.js";
 import { PackageRow } from "./PackageRow.js";
@@ -24,7 +24,7 @@ export interface GroupData {
 export class GroupsList {
   private listbox!: Gtk.ListBox;
   private scrolledWindow!: Gtk.ScrolledWindow;
-  private packages: Package[] = [];
+  private packages: Application[] = [];
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
@@ -73,7 +73,7 @@ export class GroupsList {
         return;
       }
 
-      const applicationsData: ApplicationsData = JSON.parse(
+      const applicationsData: Packages = JSON.parse(
         new TextDecoder().decode(contents)
       );
 
@@ -89,7 +89,7 @@ export class GroupsList {
   }
 
   private loadGroupsFromApplicationsData(
-    applicationsData: ApplicationsData
+    applicationsData: Packages
   ): void {
     if (applicationsData.groups && Array.isArray(applicationsData.groups)) {
       applicationsData.groups.forEach((group: Group) => {
@@ -326,11 +326,11 @@ export class GroupsList {
   private installApplications(groupData: GroupData): void {
     if (groupData.packages && groupData.packages.length > 0) {
       // Here you would map package names to Package objects as needed
-      const packagesToInstall: Package[] = groupData.packages
+      const packagesToInstall: Application[] = groupData.packages
         .map((pkgName) => {
           return this.packages.find((pkg) => pkg.packageName === pkgName);
         })
-        .filter((pkg): pkg is Package => pkg !== undefined);
+        .filter((pkg): pkg is Application => pkg !== undefined);
 
       if (packagesToInstall.length === 0 || packagesToInstall === undefined) {
         console.error(`No valid packages found for group ${groupData.title}.`);
