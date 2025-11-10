@@ -27,6 +27,35 @@ try {
 
 console.log('🔄 Converting for GJS...');
 
+// Function to clean CommonJS/TypeScript artifacts from generated JS
+function cleanJSContent(content) {
+    return content
+        // Remove CommonJS exports
+        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
+        .replace(/Object\.defineProperty\(exports,.*?\n/g, '')
+        .replace(/exports\s*=\s*void 0;\s*\n?/g, '')
+        .replace(/"use strict";\s*\n?/g, '')
+        .replace(/var __importDefault.*?\n/g, '')
+        .replace(/this && this\.__importDefault.*?\n/g, '')
+        .replace(/return \(mod && mod\.__esModule\).*?\n/g, '')
+        .replace(/\};\s*\n?/g, '')
+        
+        // Remove require statements and imports
+        .replace(/const.*?require\(.*?\).*?;\s*\n?/g, '')
+        .replace(/const.*?__importDefault.*?;\s*\n?/g, '')
+        
+        // Replace TypeScript generated references
+        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
+        .replace(/gio_2_0_1\.default\./g, 'Gio.')
+        .replace(/pango_1_0_1\.default\./g, 'Pango.')
+        .replace(/adw_1_1\.default\./g, 'Adw.')
+        
+        // Remove other artifacts
+        .replace(/\s*void 0;\s*\n?/g, '')
+        .replace(/^\s*\n/gm, '') // Remove empty lines
+        .trim();
+}
+
 // GJS header
 const gjsHeader = `#!/usr/bin/env gjs
 
@@ -71,13 +100,8 @@ if (fs.existsSync(utilsServiceFile)) {
         utilsServiceContent = utilsServiceContent.substring(classStartIndex);
     }
 
-    // Clean up TypeScript/CommonJS artifacts
-    utilsServiceContent = utilsServiceContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+    // Clean up TypeScript/CommonJS artifacts using our function
+    utilsServiceContent = cleanJSContent(utilsServiceContent);
 
     combinedContent += utilsServiceContent + '\n';
 }
@@ -94,13 +118,8 @@ if (fs.existsSync(dataServiceFile)) {
         dataServiceContent = dataServiceContent.substring(classStartIndex);
     }
 
-    // Clean up TypeScript/CommonJS artifacts
-    dataServiceContent = dataServiceContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+    // Clean up TypeScript/CommonJS artifacts using our function
+    dataServiceContent = cleanJSContent(dataServiceContent);
 
     combinedContent += dataServiceContent + '\n';
 }
@@ -116,13 +135,8 @@ if (fs.existsSync(installDialogFile)) {
         installDialogContent = installDialogContent.substring(classStartIndex);
     }
     
-    // Clean up TypeScript/CommonJS artifacts
-    installDialogContent = installDialogContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+    // Clean up TypeScript/CommonJS artifacts using our function
+    installDialogContent = cleanJSContent(installDialogContent);
 
     combinedContent += installDialogContent + '\n';
 }
@@ -139,39 +153,47 @@ if (fs.existsSync(applicationInfoDialogFile)) {
         applicationInfoDialogContent = applicationInfoDialogContent.substring(classStartIndex);
     }
     
-    // Clean up TypeScript/CommonJS artifacts
-    applicationInfoDialogContent = applicationInfoDialogContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/UtilsService_1\./g, '')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+    // Clean up TypeScript/CommonJS artifacts using our function
+    applicationInfoDialogContent = cleanJSContent(applicationInfoDialogContent)
+        .replace(/UtilsService_1\./g, ''); // Additional cleanup for this component
 
     combinedContent += applicationInfoDialogContent + '\n';
 }
 
-// Add PackageRow component
-const packageRow = path.join(BUILD_DIR, 'components', 'PackageRow.js');
-if (fs.existsSync(packageRow)) {
-    console.log('📋 Adding PackageRow component...');
-    let packageRowContent = fs.readFileSync(packageRow, 'utf8');
+// Add CategoryRow component
+const categoryRowFile = path.join(BUILD_DIR, 'components', 'category-row.js');
+if (fs.existsSync(categoryRowFile)) {
+    console.log('📋 Adding CategoryRow component...');
+    let categoryRowContent = fs.readFileSync(categoryRowFile, 'utf8');
 
     // Clean up the content - find the class definition start
-    const classStartIndex = packageRowContent.indexOf('class PackageRow {');
+    const classStartIndex = categoryRowContent.indexOf('class CategoryRow {');
     if (classStartIndex !== -1) {
-        packageRowContent = packageRowContent.substring(classStartIndex);
+        categoryRowContent = categoryRowContent.substring(classStartIndex);
     }
     
-    // Clean up TypeScript/CommonJS artifacts
-    packageRowContent = packageRowContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/UtilsService_1\./g, '')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+    // Clean up TypeScript/CommonJS artifacts using our function
+    categoryRowContent = cleanJSContent(categoryRowContent);
 
-    combinedContent += packageRowContent + '\n';
+    combinedContent += categoryRowContent + '\n';
+}
+
+// Add ApplicationRow component
+const applicationRowFile = path.join(BUILD_DIR, 'components', 'application-row.js');
+if (fs.existsSync(applicationRowFile)) {
+    console.log('📋 Adding ApplicationRow component...');
+    let applicationRowContent = fs.readFileSync(applicationRowFile, 'utf8');
+
+    // Clean up the content - find the class definition start
+    const classStartIndex = applicationRowContent.indexOf('class ApplicationRow {');
+    if (classStartIndex !== -1) {
+        applicationRowContent = applicationRowContent.substring(classStartIndex);
+    }
+    
+    // Clean up TypeScript/CommonJS artifacts using our function
+    applicationRowContent = cleanJSContent(applicationRowContent);
+
+    combinedContent += applicationRowContent + '\n';
 }
 
 // Add ApplicationsList component
@@ -186,17 +208,12 @@ if (fs.existsSync(applicationsListFile)) {
         applicationsContent = applicationsContent.substring(classStartIndex);
     }
 
-    // Clean up TypeScript/CommonJS artifacts
-    applicationsContent = applicationsContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
+    // Clean up TypeScript/CommonJS artifacts using our function
+    applicationsContent = cleanJSContent(applicationsContent)
         .replace(/InstallPackageDialog_js_1\./g, '')
         .replace(/PackageInfoDialog_js_1\./g, '')
         .replace(/data_service_js_1\./g, '')
-        .replace(/category_row_js_1\./g, '')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+        .replace(/category_row_js_1\./g, '');
 
     combinedContent += applicationsContent + '\n';
 }
@@ -213,14 +230,11 @@ if (fs.existsSync(mainJsFile)) {
         mainContent = mainContent.substring(classStartIndex);
     }
     
-    // Clean up TypeScript/CommonJS artifacts
-    mainContent = mainContent
+    // Clean up TypeScript/CommonJS artifacts using our function
+    mainContent = cleanJSContent(mainContent)
         .replace(/applications_list_js_1\.ApplicationsList/g, 'ApplicationsList')
         .replace(/applications_list_js_1\./g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
+        .replace(/data_service_js_1\./g, '');
     
     combinedContent += mainContent + '\n';
 }
