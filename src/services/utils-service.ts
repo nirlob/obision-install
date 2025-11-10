@@ -36,29 +36,6 @@ export class UtilsService {
     });
   }
 
-  static loadCategoriesFromJson(): Category[] {
-    let categories: Category[] = [];
-
-    try {
-      // Load categories data from categories.json
-      const categoriesFile = Gio.File.new_for_path(
-        "./data/json/categories.json"
-      );
-      const [success, contents] = categoriesFile.load_contents(null);
-
-      if (!success) {
-        console.error("Could not load categories.json");
-        return categories;
-      }
-
-      categories = JSON.parse(new TextDecoder().decode(contents)).categories;
-    } catch (error) {
-      console.error("Error loading categories JSON data:", error);
-    }
-
-    return categories;
-  }
-
   static getPackageDataFromRow(row: Gtk.ListBoxRow): Application | null {
     // Return stored package data or null
     const storedData = (row as any).packageData;

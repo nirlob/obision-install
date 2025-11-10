@@ -2,7 +2,7 @@ import Gtk from "@girs/gtk-4.0";
 import { Application } from "../interfaces/application";
 import Pango from "@girs/pango-1.0";
 
-export class PackageRow {
+export class ApplicationRow {
   private row!: Gtk.ListBoxRow;
   private installCallback: (() => void) | null = null;
 

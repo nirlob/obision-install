@@ -1,7 +1,7 @@
 import Adw from "@girs/adw-1";
 import Gtk from "@girs/gtk-4.0";
 import { Application } from "../interfaces/application";
-import { UtilsService } from "../services/UtilsService";
+import { UtilsService } from "../services/utils-service";
 
 export class InstallPackageDialog {
   private dialog!: Adw.Dialog;

@@ -3,8 +3,8 @@
 import Gio from '@girs/gio-2.0';
 import Gtk from '@girs/gtk-4.0';
 import Adw from '@girs/adw-1';
-import { GroupsList } from './components/GroupsList.js';
-import { ApplicationsList } from './components/ApplicationsList.js';
+import { ApplicationsList } from './components/applications-list.js';
+import { DataService } from './services/data-service.js';
 
 
 // Application class
@@ -127,15 +127,6 @@ class ObisionInstallApplication {
             // Use the content property for Adw.ApplicationWindow
             (window as any).content = toastOverlay;
 
-            const groupsContent = new Gtk.Box({
-                orientation: Gtk.Orientation.VERTICAL,
-                spacing: 12,
-                margin_top: 24,
-                margin_bottom: 24,
-                margin_start: 24,
-                margin_end: 24,
-            });
-
             const applicationsContent = new Gtk.Box({
                 orientation: Gtk.Orientation.VERTICAL,
                 spacing: 12,
@@ -144,12 +135,6 @@ class ObisionInstallApplication {
                 margin_start: 24,
                 margin_end: 24,
             });
-            
-            if (groupsContent) {
-                // Create our component and populate the existing listbox
-                const groupsList = new GroupsList(window);
-                groupsContent.append(groupsList.getWidget());
-            }
            
             if (applicationsContent) {
                 // Create our component and populate the existing listbox
@@ -157,22 +142,7 @@ class ObisionInstallApplication {
                 applicationsContent.append(applicationsList.getWidget());
             }
 
-            const mainStack = new Gtk.Stack({
-                transition_type: Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
-                transition_duration: 500,
-            });
-
-            mainContent.append(mainStack);
-
-            mainStack.add_titled(applicationsContent, "applications_content", "Applications");
-            mainStack.add_titled(groupsContent, "groups_content", "Groups");
-            mainStack.set_visible_child_name("applications_content");
-
-            const stackSwitcher = new Gtk.StackSwitcher({
-                stack: mainStack,
-            });
-
-            headerBar.pack_start(stackSwitcher);
+            mainContent.append(applicationsContent);
         }
 
         return window;

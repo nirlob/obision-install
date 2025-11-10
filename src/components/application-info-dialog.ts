@@ -1,9 +1,9 @@
 import Adw from "@girs/adw-1";
 import { Application } from "../interfaces/application";
 import Gtk from "@girs/gtk-4.0";
-import { UtilsService } from "../services/UtilsService";
+import { UtilsService } from "../services/utils-service";
 
-export class PackageInfoDialog {
+export class ApplicationInfoDialog {
   private propertiesList!: Gtk.ListBox;
 
   constructor(

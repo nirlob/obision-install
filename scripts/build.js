@@ -44,15 +44,23 @@ imports.gi.versions.Adw = '1';
 let combinedContent = gjsHeader;
 
 // First, add the interfaces from interfaces file if it exists
-const interfacesFile = path.join(BUILD_DIR, 'interfaces', 'applications-data.js');
-if (fs.existsSync(interfacesFile)) {
-    let interfacesContent = fs.readFileSync(interfacesFile, 'utf8');
+const applicationInterfaceFile = path.join(BUILD_DIR, 'interfaces', 'application.js');
+if (fs.existsSync(applicationInterfaceFile)) {
+    let applicationInterfaceContent = fs.readFileSync(applicationInterfaceFile, 'utf8');
+    // Extract interface definitions (they will be removed by transpilation)
+    console.log('📋 Adding interfaces...');
+}
+
+// First, add the interfaces from interfaces file if it exists
+const categoryInterfaceFile = path.join(BUILD_DIR, 'interfaces', 'category.js');
+if (fs.existsSync(categoryInterfaceFile)) {
+    let categoryInterfaceContent = fs.readFileSync(categoryInterfaceFile, 'utf8');
     // Extract interface definitions (they will be removed by transpilation)
     console.log('📋 Adding interfaces...');
 }
 
 // Add UtilsService service
-const utilsServiceFile = path.join(BUILD_DIR, 'services', 'UtilsService.js');
+const utilsServiceFile = path.join(BUILD_DIR, 'services', 'utils-service.js');
 if (fs.existsSync(utilsServiceFile)) {
     console.log('📋 Adding UtilsService service...');
     let utilsServiceContent = fs.readFileSync(utilsServiceFile, 'utf8');
@@ -74,8 +82,31 @@ if (fs.existsSync(utilsServiceFile)) {
     combinedContent += utilsServiceContent + '\n';
 }
 
+// Add DataService service
+const dataServiceFile = path.join(BUILD_DIR, 'services', 'data-service.js');
+if (fs.existsSync(dataServiceFile)) {
+    console.log('📋 Adding DataService service...');
+    let dataServiceContent = fs.readFileSync(dataServiceFile, 'utf8');
+
+    // Clean up the content - find the class definition start
+    const classStartIndex = dataServiceContent.indexOf('class DataService {');
+    if (classStartIndex !== -1) {
+        dataServiceContent = dataServiceContent.substring(classStartIndex);
+    }
+
+    // Clean up TypeScript/CommonJS artifacts
+    dataServiceContent = dataServiceContent
+        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
+        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
+        .replace(/gio_2_0_1\.default\./g, 'Gio.')
+        .replace(/pango_1_0_1\.default\./g, 'Pango.')
+        .replace(/adw_1_1\.default\./g, 'Adw.');
+
+    combinedContent += dataServiceContent + '\n';
+}
+
 // Add InstallDialog component
-const installDialogFile = path.join(BUILD_DIR, 'components', 'InstallDialog.js');
+const installDialogFile = path.join(BUILD_DIR, 'components', 'install-dialog.js');
 if (fs.existsSync(installDialogFile)) {
     let installDialogContent = fs.readFileSync(installDialogFile, 'utf8');
 
@@ -96,49 +127,27 @@ if (fs.existsSync(installDialogFile)) {
     combinedContent += installDialogContent + '\n';
 }
 
-// Add InstallPackageDialog component
-const installPackageDialogFile = path.join(BUILD_DIR, 'components', 'InstallPackageDialog.js');
-if (fs.existsSync(installPackageDialogFile)) {
-    console.log('📋 Adding InstallPackage Dialog component...');
-    let installPackageDialogContent = fs.readFileSync(installPackageDialogFile, 'utf8');
-    const classStartIndex = installPackageDialogContent.indexOf('class InstallPackageDialog {');
-    if (classStartIndex !== -1) {
-        installPackageDialogContent = installPackageDialogContent.substring(classStartIndex);
-    }
-    
-    // Clean up TypeScript/CommonJS artifacts
-    installPackageDialogContent = installPackageDialogContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/adw_1_1\.default\./g, 'Adw.')
-        .replace(/UtilsService_1\./g, '');
-
-    combinedContent += installPackageDialogContent + '\n';
-}
-
-// Add PackageInfoDialog component
-const packageInfoDialogFile = path.join(BUILD_DIR, 'components', 'PackageInfoDialog.js');
-if (fs.existsSync(packageInfoDialogFile)) {
-    console.log('📋 Adding PackageInfoDialog component...');
-    let packageInfoDialogContent = fs.readFileSync(packageInfoDialogFile, 'utf8');
+// Add ApplicationInfoDialog component
+const applicationInfoDialogFile = path.join(BUILD_DIR, 'components', 'application-info-dialog.js');
+if (fs.existsSync(applicationInfoDialogFile)) {
+    console.log('📋 Adding ApplicationInfoDialog component...');
+    let applicationInfoDialogContent = fs.readFileSync(applicationInfoDialogFile, 'utf8');
 
     // Clean up the content - find the class definition start
-    const classStartIndex = packageInfoDialogContent.indexOf('class PackageInfoDialog {');
+    const classStartIndex = applicationInfoDialogContent.indexOf('class ApplicationInfoDialog {');
     if (classStartIndex !== -1) {
-        packageInfoDialogContent = packageInfoDialogContent.substring(classStartIndex);
+        applicationInfoDialogContent = applicationInfoDialogContent.substring(classStartIndex);
     }
     
     // Clean up TypeScript/CommonJS artifacts
-    packageInfoDialogContent = packageInfoDialogContent
+    applicationInfoDialogContent = applicationInfoDialogContent
         .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/UtilsService_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 
-    combinedContent += packageInfoDialogContent + '\n';
+    combinedContent += applicationInfoDialogContent + '\n';
 }
 
 // Add PackageRow component
@@ -165,35 +174,8 @@ if (fs.existsSync(packageRow)) {
     combinedContent += packageRowContent + '\n';
 }
 
-// Add GroupsList component
-const groupsListFile = path.join(BUILD_DIR, 'components', 'GroupsList.js');
-if (fs.existsSync(groupsListFile)) {
-    console.log('📋 Adding GroupsList component...');
-    let groupsContent = fs.readFileSync(groupsListFile, 'utf8');
-    
-    // Clean up the content - find the class definition start
-    const classStartIndex = groupsContent.indexOf('class GroupsList {');
-    if (classStartIndex !== -1) {
-        groupsContent = groupsContent.substring(classStartIndex);
-    }
-    
-    // Clean up TypeScript/CommonJS artifacts
-    groupsContent = groupsContent
-        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
-        .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
-        .replace(/gio_2_0_1\.default\./g, 'Gio.')
-        .replace(/pango_1_0_1\.default\./g, 'Pango.')
-        .replace(/InstallDialog_js_1\./g, '')
-        .replace(/UtilsService_js_1\./g, '')
-        .replace(/PackageInfoDialog_js_1\./g, '')
-        .replace(/PackageRow_js_1\./g, '')
-        .replace(/adw_1_1\.default\./g, 'Adw.');
-    
-    combinedContent += groupsContent + '\n';
-}
-
 // Add ApplicationsList component
-const applicationsListFile = path.join(BUILD_DIR, 'components', 'ApplicationsList.js');
+const applicationsListFile = path.join(BUILD_DIR, 'components', 'applications-list.js');
 if (fs.existsSync(applicationsListFile)) {
     console.log('📋 Adding ApplicationsList component...');
     let applicationsContent = fs.readFileSync(applicationsListFile, 'utf8');
@@ -212,8 +194,8 @@ if (fs.existsSync(applicationsListFile)) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/InstallPackageDialog_js_1\./g, '')
         .replace(/PackageInfoDialog_js_1\./g, '')
-        .replace(/UtilsService_js_1\./g, '')
-        .replace(/PackageRow_js_1\./g, '')
+        .replace(/data_service_js_1\./g, '')
+        .replace(/category_row_js_1\./g, '')
         .replace(/adw_1_1\.default\./g, 'Adw.');
 
     combinedContent += applicationsContent + '\n';
@@ -233,10 +215,8 @@ if (fs.existsSync(mainJsFile)) {
     
     // Clean up TypeScript/CommonJS artifacts
     mainContent = mainContent
-        .replace(/GroupsList_js_1\.GroupsList/g, 'GroupsList')
-        .replace(/GroupsList_js_1\./g, '')
-        .replace(/ApplicationsList_js_1\.ApplicationsList/g, 'ApplicationsList')
-        .replace(/ApplicationsList_js_1\./g, '')
+        .replace(/applications_list_js_1\.ApplicationsList/g, 'ApplicationsList')
+        .replace(/applications_list_js_1\./g, '')
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
