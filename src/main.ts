@@ -202,7 +202,9 @@ class ObisionInstallApplication {
         dialog.present();
     }
 
-
+    public onInstallButtonClicked(a: Gtk.Button) : void {
+        console.log('Install button clicked');
+    }
 
     private showGroupDetails(window: Gtk.ApplicationWindow, row: Gtk.ListBoxRow): void {
         // Get the group name from the row (this is a simplified example)

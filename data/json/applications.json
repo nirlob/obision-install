@@ -119,7 +119,8 @@
       "description": "Steam is a digital distribution platform for video games developed by Valve Corporation. It offers a wide range of games, community features, and tools for game developers.",
       "packageName": "com.valvesoftware.Steam",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/steam.png"
+      "icon": "data/icons/applications/steam.png",
+      "categoryId": 2
     },
     {
       "title": "Visual Studio Code",
@@ -219,7 +220,8 @@
       "description": "AisleRiot Solitaire is a free and open-source collection of solitaire card games for GNOME desktop environment. It offers a variety of solitaire games with different rules and layouts.",
       "packageName": "org.gnome.Aisleriot",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/aisleriot.png"
+      "icon": "data/icons/applications/aisleriot.png",
+      "categoryId": 2
     },
     {
       "title": "Boxes",
