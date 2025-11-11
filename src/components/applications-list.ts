@@ -1,19 +1,17 @@
 import Gtk from "@girs/gtk-4.0";
 import Adw from "@girs/adw-1";
-import Gio from "@girs/gio-2.0";
 import { Application } from "../interfaces/application.js";
-import { ApplicationRow } from "./application-row.js";
 import { ApplicationInfoDialog } from "./application-info-dialog.js";
 import { UtilsService } from "../services/utils-service.js";
 import { InstallPackageDialog } from "./install-dialog.js";
 import { DataService } from "../services/data-service.js";
-import { CategoryRow } from "./category-row.js";
+import { Category } from "../interfaces/category.js";
 
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
   private scrolledWindow!: Gtk.ScrolledWindow;
-  private applications: Application[] = [];
   private dataService = DataService.instance;
+  private utilsService = UtilsService.instance;
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
@@ -59,35 +57,51 @@ export class ApplicationsList {
     console.log("🔍 Starting to load categories");
     try {
       this.dataService.getCategories().forEach((category) => {
-        this.listbox.append(
-          new CategoryRow(category).getWidget()
-        );
+        const expanderRow = new Adw.ExpanderRow({
+          title: category.title,
+          subtitle: category.description,
+          activatable: false,
+        });
+
+        expanderRow.add_prefix(new Gtk.Image({
+          file: category.icon,
+          pixel_size: 64,
+        }));
+
+        this.loadApplications(expanderRow, category);
+        this.listbox.append(expanderRow);
       });
     } catch (error) {
-      console.error("Error loading JSON data:", error);
+      console.error("Error loading categories data:", error);
     }
   }
 
-  public clearApplications(): void {
-    let child = this.listbox.get_first_child();
-    while (child) {
-      const next = child.get_next_sibling();
-      this.listbox.remove(child);
-      child = next;
+  private loadApplications(expanderRow: Adw.ExpanderRow, category: Category): void {
+    try {
+      this.dataService.getApplicationsByCategory(category.id).forEach(async (app) => {
+        console.log("Checking installation status for:", app.packageName);
+        const packageInstalled = await this.utilsService.isApplicationInstalled(app);
+        console.log("Application installation status:", packageInstalled);
+
+        const row = new Adw.SwitchRow({
+          title: app.title,
+          subtitle: app.description,
+          activatable: true,
+          subtitle_lines: 2,
+          active: packageInstalled,
+        });
+
+        row.add_prefix(new Gtk.Image({
+          file: app.icon,
+          pixel_size: 64,
+          margin_start: 30
+        }));
+
+        expanderRow.add_row(row);
+      });
+    } catch (error) {
+      console.error("Error loading applications data:", error);
     }
-  }
-
-  private async addPackage(packageData: Application): Promise<void> {
-    const packageInstalled = await UtilsService.isApplicationInstalled(packageData);
-    const row = new ApplicationRow(packageData, true, packageInstalled);
-
-    if (!packageInstalled) {
-      row.setInstallCallback(
-        this.installPackage.bind(this, packageData)
-      );
-    }
-
-    this.listbox.append(row.getWidget());
   }
 
   public getWidget(): Gtk.ScrolledWindow {

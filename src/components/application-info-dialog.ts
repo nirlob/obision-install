@@ -5,6 +5,7 @@ import { UtilsService } from "../services/utils-service";
 
 export class ApplicationInfoDialog {
   private propertiesList!: Gtk.ListBox;
+  private utilsService = UtilsService.instance;
 
   constructor(
     private parentWindow: Adw.ApplicationWindow,
@@ -82,7 +83,7 @@ export class ApplicationInfoDialog {
 
   private loadProperties() : void {
     try {
-      UtilsService.executeCommand(
+      this.utilsService.executeCommand(
         this.pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
         this.pkg.packageType === "FLATPAK"
           ? ["remote-info", "flathub",this.pkg.packageName]

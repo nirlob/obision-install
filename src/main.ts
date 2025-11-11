@@ -127,14 +127,7 @@ class ObisionInstallApplication {
             // Use the content property for Adw.ApplicationWindow
             (window as any).content = toastOverlay;
 
-            const applicationsContent = new Gtk.Box({
-                orientation: Gtk.Orientation.VERTICAL,
-                spacing: 12,
-                margin_top: 24,
-                margin_bottom: 24,
-                margin_start: 24,
-                margin_end: 24,
-            });
+            const applicationsContent = builder.get_object('applications_content') as Gtk.Box;
            
             if (applicationsContent) {
                 // Create our component and populate the existing listbox

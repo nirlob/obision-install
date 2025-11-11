@@ -136,7 +136,8 @@ if (fs.existsSync(installDialogFile)) {
     }
     
     // Clean up TypeScript/CommonJS artifacts using our function
-    installDialogContent = cleanJSContent(installDialogContent);
+    installDialogContent = cleanJSContent(installDialogContent)
+        .replace(/UtilsService_1\./g, ''); // Additional cleanup for this component
 
     combinedContent += installDialogContent + '\n';
 }
@@ -160,42 +161,6 @@ if (fs.existsSync(applicationInfoDialogFile)) {
     combinedContent += applicationInfoDialogContent + '\n';
 }
 
-// Add CategoryRow component
-const categoryRowFile = path.join(BUILD_DIR, 'components', 'category-row.js');
-if (fs.existsSync(categoryRowFile)) {
-    console.log('📋 Adding CategoryRow component...');
-    let categoryRowContent = fs.readFileSync(categoryRowFile, 'utf8');
-
-    // Clean up the content - find the class definition start
-    const classStartIndex = categoryRowContent.indexOf('class CategoryRow {');
-    if (classStartIndex !== -1) {
-        categoryRowContent = categoryRowContent.substring(classStartIndex);
-    }
-    
-    // Clean up TypeScript/CommonJS artifacts using our function
-    categoryRowContent = cleanJSContent(categoryRowContent);
-
-    combinedContent += categoryRowContent + '\n';
-}
-
-// Add ApplicationRow component
-const applicationRowFile = path.join(BUILD_DIR, 'components', 'application-row.js');
-if (fs.existsSync(applicationRowFile)) {
-    console.log('📋 Adding ApplicationRow component...');
-    let applicationRowContent = fs.readFileSync(applicationRowFile, 'utf8');
-
-    // Clean up the content - find the class definition start
-    const classStartIndex = applicationRowContent.indexOf('class ApplicationRow {');
-    if (classStartIndex !== -1) {
-        applicationRowContent = applicationRowContent.substring(classStartIndex);
-    }
-    
-    // Clean up TypeScript/CommonJS artifacts using our function
-    applicationRowContent = cleanJSContent(applicationRowContent);
-
-    combinedContent += applicationRowContent + '\n';
-}
-
 // Add ApplicationsList component
 const applicationsListFile = path.join(BUILD_DIR, 'components', 'applications-list.js');
 if (fs.existsSync(applicationsListFile)) {
@@ -212,8 +177,8 @@ if (fs.existsSync(applicationsListFile)) {
     applicationsContent = cleanJSContent(applicationsContent)
         .replace(/InstallPackageDialog_js_1\./g, '')
         .replace(/PackageInfoDialog_js_1\./g, '')
-        .replace(/data_service_js_1\./g, '')
-        .replace(/category_row_js_1\./g, '');
+        .replace(/utils_service_js_1\./g, '')
+        .replace(/data_service_js_1\./g, '');
 
     combinedContent += applicationsContent + '\n';
 }

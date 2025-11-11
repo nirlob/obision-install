@@ -75,14 +75,16 @@
       "description": "IntelliJ IDEA is a powerful and feature-rich integrated development environment (IDE) for Java and other programming languages. It offers advanced code editing, debugging, and testing tools to enhance developer productivity.",
       "packageName": "com.jetbrains.IntelliJ-IDEA-Community",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/intellij.png"
+      "icon": "data/icons/applications/intellij.png",
+      "categoryId": 1
     },
     {
       "title": "WebStorm",
       "description": "WebStorm is a powerful and feature-rich integrated development environment (IDE) for JavaScript and web development. It offers advanced code editing, debugging, and testing tools to enhance developer productivity.",
       "packageName": "com.jetbrains.WebStorm",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/webstorm.png"
+      "icon": "data/icons/applications/webstorm.png",
+      "categoryId": 1
     },
     {
       "title": "Edge Browser",
@@ -124,7 +126,8 @@
       "description": "Visual Studio Code is a free and open-source code editor developed by Microsoft. It offers a range of features such as syntax highlighting, debugging, and extensions for various programming languages.",
       "packageName": "com.visualstudio.code",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/vscode.png"
+      "icon": "data/icons/applications/vscode.png",
+      "categoryId": 1
     },
     {
       "title": "WPS Office",
@@ -152,7 +155,8 @@
       "description": "DBeaver is a free and open-source database management tool that supports a wide range of database systems. It provides a user-friendly interface for managing and querying databases.",
       "packageName": "io.dbeaver.DBeaverCommunity",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/dbeaver.png"
+      "icon": "data/icons/applications/dbeaver.png",
+      "categoryId": 1
     },
     {
       "title": "Monitoret",
@@ -229,7 +233,8 @@
       "description": "GNOME Builder is a free and open-source integrated development environment (IDE) for GNOME applications. It provides a range of tools and features for developing, debugging, and testing GNOME applications.",
       "packageName": "org.gnome.Builder",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/gnome-builder.png"
+      "icon": "data/icons/applications/gnome-builder.png",
+      "categoryId": 1
     },
     {
       "title": "Font downloader",
@@ -299,35 +304,40 @@
       "description": "Java JDK is a free and open-source software development kit used for developing Java applications. It includes a runtime environment, compiler, and various tools for building and debugging Java applications.",
       "packageName": "openjdk-21-jdk",
       "packageType": "DEBIAN",
-      "icon": "data/icons/applications/java.png"
+      "icon": "data/icons/applications/java.png",
+      "categoryId": 1
     },
     {
       "title": "Git",
       "description": "Git is a free and open-source distributed version control system used for tracking changes in source code during software development. It allows multiple developers to work on a project simultaneously and provides tools for branching, merging, and collaboration.",
       "packageName": "git",
       "packageType": "DEBIAN",
-      "icon": "data/icons/applications/git.png"
+      "icon": "data/icons/applications/git.png",
+      "categoryId": 1
     },
     {
       "title": "Build Essentials",
       "description": "Build Essentials is a package that includes a list of applications which are essential for building Debian applications. It includes the GNU Compiler Collection (GCC), make, and other utilities.",
       "packageName": "build-essential",
       "packageType": "DEBIAN",
-      "icon": "data/icons/applications/build-essential.png"
+      "icon": "data/icons/applications/build-essential.png",
+      "categoryId": 1
     },
     {
       "title": "Node.js",
       "description": "Node.js is a free and open-source JavaScript runtime built on Chrome's V8 JavaScript engine. It allows developers to run JavaScript code outside of a web browser, making it suitable for server-side development and building scalable network applications.",
       "packageName": "nodejs",
       "packageType": "DEBIAN",
-      "icon": "data/icons/applications/nodejs.png"
+      "icon": "data/icons/applications/nodejs.png",
+      "categoryId": 1
     },
     {
       "title": "npm",
       "description": "npm (Node Package Manager) is a free and open-source package manager for JavaScript programming language. It is the default package manager for the Node.js runtime environment and allows developers to install, share, and manage dependencies for their JavaScript projects.",
       "packageName": "npm",
       "packageType": "DEBIAN",
-      "icon": "data/icons/applications/npm.png"
+      "icon": "data/icons/applications/npm.png",
+      "categoryId": 1
     }
   ]
 }

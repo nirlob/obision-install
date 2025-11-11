@@ -9,6 +9,7 @@ export class InstallPackageDialog {
   private buttonInstall!: Gtk.Button;
   private buttonCancel!: Gtk.Button;
   private packageLabel!: Gtk.Label;
+  private utilsService = UtilsService.instance;
 
   constructor(
     private parentWindow: Adw.ApplicationWindow,
@@ -101,7 +102,7 @@ export class InstallPackageDialog {
     }
 
   private async executeInstall(): Promise<void> {
-    await UtilsService.executeCommand(
+    await this.utilsService.executeCommand(
       this.pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
       this.pkg.packageType === "FLATPAK"
         ? ["install", "-y", this.pkg.packageName]

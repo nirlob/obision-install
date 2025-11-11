@@ -1,10 +1,19 @@
 import Gio from "@girs/gio-2.0";
 import { Application } from "../interfaces/application";
 import { Gtk } from "@girs/gtk-4.0";
-import { Category } from "../interfaces/category";
 
 export class UtilsService {
-  static executeCommand(
+  static _instance: UtilsService;
+
+  public static get instance(): UtilsService {
+    if (!UtilsService._instance) {
+      UtilsService._instance = new UtilsService();
+    }
+
+    return UtilsService._instance;
+  }
+
+  public executeCommand(
     command: string,
     args: string[] = []
   ): Promise<{ stdout: string; stderr: string }> {
@@ -46,14 +55,17 @@ export class UtilsService {
     }
   }
 
-  static async isApplicationInstalled(application: Application): Promise<boolean> {
+  public async isApplicationInstalled(application: Application): Promise<boolean> {
     try {
-      const { stdout, stderr } = await UtilsService.executeCommand(
+      console.log("Checking installation status for:", application.packageName);
+      const { stdout, stderr } = await this.executeCommand(
         application.packageType === "FLATPAK" ? "flatpak" : "apt",
         application.packageType === "FLATPAK"
           ? ["info", application.packageName]
           : ["show", application.packageName]
       );
+
+      console.log("Application installation status:", stdout.trim());
       return stdout.trim().length > 0;
     } catch (error: any) {
       console.error("Error testing application installation:", error);
