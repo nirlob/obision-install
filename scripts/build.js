@@ -137,7 +137,7 @@ if (fs.existsSync(installDialogFile)) {
     
     // Clean up TypeScript/CommonJS artifacts using our function
     installDialogContent = cleanJSContent(installDialogContent)
-        .replace(/UtilsService_1\./g, ''); // Additional cleanup for this component
+        .replace(/utils_service_1\./g, ''); // Additional cleanup for this component
 
     combinedContent += installDialogContent + '\n';
 }
@@ -199,6 +199,7 @@ if (fs.existsSync(mainJsFile)) {
     mainContent = cleanJSContent(mainContent)
         .replace(/applications_list_js_1\.ApplicationsList/g, 'ApplicationsList')
         .replace(/applications_list_js_1\./g, '')
+        .replace(/install_dialog_js_1\./g, '')
         .replace(/data_service_js_1\./g, '');
     
     combinedContent += mainContent + '\n';
