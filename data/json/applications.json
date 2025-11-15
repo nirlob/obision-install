@@ -1,4 +1,42 @@
 {
+  "categories": [
+    {
+      "id": 1,
+      "title": "Development Tools",
+      "description": "Tools for software development and coding.",
+      "icon": "data/icons/categories/develop.png"
+    },
+    {
+      "id": 2,
+      "title": "Games and Entertainment",
+      "description": "Games and entertainment applications.",
+      "icon": "data/icons/categories/games.png"
+    },
+    {
+      "id": 3,
+      "title": "Office and Productivity",
+      "description": "Office and productivity applications.",
+      "icon": "data/icons/categories/office.png"
+    },
+    {
+      "id": 4,
+      "title": "Multimedia",
+      "description": "Multimedia applications for audio and video editing.",
+      "icon": "data/icons/categories/multimedia.png"
+    },
+    {
+      "id": 5,
+      "title": "Design and Creativity",
+      "description": "Applications for graphic design, illustration, and creativity.",
+      "icon": "data/icons/categories/design.png"
+    },
+    {
+      "id": 6,
+      "title": "Tools",
+      "description": "Utility applications for system management and maintenance.",
+      "icon": "data/icons/categories/tools.png"
+    }
+  ],
   "applications": [
     {
       "title": "Brave Browser",

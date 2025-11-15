@@ -65,10 +65,8 @@ export class UtilsService {
           : ["show", application.packageName]
       );
 
-      console.log("Application installation status:", stdout.trim());
       return stdout.trim().length > 0;
     } catch (error: any) {
-      console.error("Error testing application installation:", error);
       return false;
     }
   }
