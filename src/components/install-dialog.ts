@@ -1,10 +1,7 @@
 import Adw from '@girs/adw-1';
 import Gtk from '@girs/gtk-4.0';
-import { Application } from '../interfaces/application';
 import { UtilsService } from '../services/utils-service';
 import { InstallApplicationData } from '../interfaces/install-application';
-import { resolve } from 'path';
-import GObject from '@girs/gobject-2.0';
 
 export class InstallDialog {
   private dialog!: Adw.Dialog;
@@ -14,7 +11,11 @@ export class InstallDialog {
   private utilsService = UtilsService.instance;
   private applicationsInstalledCallback: (() => void) | null = null;
 
-  constructor(private parentWindow: Adw.ApplicationWindow, private installApplicationsData: InstallApplicationData[]) {
+  constructor(
+    private parentWindow: Adw.ApplicationWindow, 
+    private installApplicationsData: InstallApplicationData[],
+    private installInFolder: boolean
+  ) {
     this.setupUI();
   }
 
@@ -141,28 +142,36 @@ export class InstallDialog {
         console.log(`Starting installation for: ${appData.application.title}`);
         wait += 2000;
         promises.push(
-          new Promise<void>(resolve => {
-            setTimeout(() => {
-              const fraction = index++ / this.installApplicationsData.length;
-              this.progressBar.set_fraction(fraction);
-              console.log(`Finished installation for: ${appData.application.title}`);
-              this.setSuffixToRow(appData.row!);
-              resolve();
-            }, wait);
+          // new Promise<void>(resolve => {
+          //   setTimeout(() => {
+          //     const fraction = index++ / this.installApplicationsData.length;
+          //     this.progressBar.set_fraction(fraction);
+          //     console.log(`Finished installation for: ${appData.application.title}`);
+          //     this.setSuffixToRow(appData.row!);
+          //     resolve();
+          //   }, wait);
+          // })
+          this.executeInstall(appData).then(() => {
+            console.log(`Finished installation for: ${appData.application.title}`);
+            this.setSuffixToRow(appData.row!);
+          }).catch((error) => {
+            console.log(`Installation failed for: ${appData.application.title}, error: ${error} `);
+            this.setSuffixToRow(appData.row!, true);
+          }).finally(() => {
+            const fraction = index++ / this.installApplicationsData.length;
+            this.progressBar.set_fraction(fraction);
           })
         );
-        // this.executeInstall(appData).then(() => {
-        //   const fraction = index++ / this.installApplicationsData.length;
-        //   this.progressBar.set_fraction(fraction);
-        //   console.log(`Finished installation for: ${appData.application.title}`);
-        // });
       } catch (error) {
         console.error(`Failed to install ${appData.application.title}:`, error);
       }
     });
 
     Promise.allSettled(promises).then(results => {
-      console.log(results);
+      if (this.installInFolder) {
+        console.log('Generating application folders...');
+        this.createFolders();
+      }
       this.buttonCancel.set_sensitive(true);
       if (this.applicationsInstalledCallback) {
         this.applicationsInstalledCallback();
@@ -170,6 +179,9 @@ export class InstallDialog {
     });
 
     console.log('All installations processed.');
+  }
+  private createFolders() {
+    throw new Error('Method not implemented.');
   }
 
   private executeInstall(appData: InstallApplicationData): Promise<{ stdout: string; stderr: string }> {

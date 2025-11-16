@@ -13,6 +13,7 @@ class ObisionInstallApplication {
   private application: Adw.Application;
   private installApplicationsData: InstallApplicationData[] = [];
   private installButton!: Gtk.Button;
+  private installInFolderToggleButton!: Gtk.ToggleButton;
 
   constructor() {
     // Create the application
@@ -108,7 +109,7 @@ class ObisionInstallApplication {
 
       this.installButton = builder.get_object('install_button') as Gtk.Button;
       this.installButton.connect('clicked', () => { 
-        const installDialog = new InstallDialog(window, this.installApplicationsData);
+        const installDialog = new InstallDialog(window, this.installApplicationsData, this.installInFolderToggleButton.get_active());
         installDialog.setApplicationsInstalledCallback(() => this.onApplicationsInstalled());
       });
 
@@ -130,9 +131,13 @@ class ObisionInstallApplication {
         menu_model: menuModel,
         tooltip_text: 'Application menu',
       });
-
-      // Add menu button to header bar
       headerBar.pack_end(menuButton);
+
+      this.installInFolderToggleButton = new Gtk.ToggleButton({
+        tooltip_text: 'Generates a new folder in applications screen if not exists with the name of the category',
+        icon_name: 'folder-symbolic',
+      });
+      headerBar.pack_end(this.installInFolderToggleButton);
 
       // Set up toolbar view with header and content
       const toolbarView = new Adw.ToolbarView();
