@@ -3,13 +3,14 @@ import Gtk from '@girs/gtk-4.0';
 import { Application } from '../interfaces/application';
 import { UtilsService } from '../services/utils-service';
 import { InstallApplicationData } from '../interfaces/install-application';
+import { resolve } from 'path';
+import GObject from '@girs/gobject-2.0';
 
 export class InstallDialog {
   private dialog!: Adw.Dialog;
-  private progressBarApplication!: Gtk.ProgressBar;
-  private buttonInstall!: Gtk.Button;
+  private progressBar!: Gtk.ProgressBar;
+  private btnAddRemove!: Gtk.Button;
   private buttonCancel!: Gtk.Button;
-  private applicationLabel!: Gtk.Label;
   private utilsService = UtilsService.instance;
 
   constructor(private parentWindow: Adw.ApplicationWindow, private installApplicationsData: InstallApplicationData[]) {
@@ -23,13 +24,12 @@ export class InstallDialog {
     });
 
     const headerBar = new Adw.HeaderBar({
-      title_widget: new Gtk.Label({ label: 'Install Application' }),
+      title_widget: new Gtk.Label({ label: 'Add/Remove Applications' }),
     });
     mainBox.append(headerBar);
 
     const contentBox = new Gtk.Box({
       orientation: Gtk.Orientation.VERTICAL,
-      margin_top: 24,
       margin_bottom: 24,
       margin_start: 24,
       margin_end: 24,
@@ -37,21 +37,14 @@ export class InstallDialog {
     });
     mainBox.append(contentBox);
 
-    this.applicationLabel = new Gtk.Label({
-      label: `You are about to install ${this.installApplicationsData[0].application.title}.`,
-      wrap: true,
-      justify: Gtk.Justification.FILL,
-    });
-    contentBox.append(this.applicationLabel);
+    this.loadApplicationsListbox(contentBox, true);
+    this.loadApplicationsListbox(contentBox, false);
 
-    contentBox.append(this.loadApplicationsListbox(true));
-    contentBox.append(this.loadApplicationsListbox(false));
-
-    this.progressBarApplication = new Gtk.ProgressBar({
+    this.progressBar = new Gtk.ProgressBar({
       show_text: true,
       fraction: 0,
     });
-    contentBox.append(this.progressBarApplication);
+    contentBox.append(this.progressBar);
 
     const buttonBox = new Gtk.Box({
       orientation: Gtk.Orientation.HORIZONTAL,
@@ -68,112 +61,153 @@ export class InstallDialog {
       this.dialog.close();
     });
 
-    this.buttonInstall = new Gtk.Button({
-      label: 'Install',
+    this.btnAddRemove = new Gtk.Button({
+      label: 'Add/Remove',
     });
-    this.buttonInstall.add_css_class('suggested-action');
-    this.buttonInstall.connect('clicked', () => {
+    this.btnAddRemove.add_css_class('suggested-action');
+    this.btnAddRemove.connect('clicked', () => {
       this.installApplications();
     });
 
     buttonBox.append(this.buttonCancel);
-    buttonBox.append(this.buttonInstall);
+    buttonBox.append(this.btnAddRemove);
     contentBox.append(buttonBox);
 
     this.dialog = new Adw.Dialog({
       child: mainBox,
       width_request: 700,
+      can_close: true,
     });
 
     this.dialog.present(this.parentWindow);
   }
 
-  private loadApplicationsListbox(install: boolean): Gtk.ScrolledWindow {
-    const scrolledWindow = new Gtk.ScrolledWindow({
-      hexpand: true,
-      vexpand: true,
-      hscrollbar_policy: Gtk.PolicyType.NEVER,
-      vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-      height_request: 200,
-    });
-
+  private loadApplicationsListbox(contentBox: Gtk.Box, install: boolean): void {
     const installApplicationsData = this.installApplicationsData.filter(installApp => installApp.install === install);
 
-    if (installApplicationsData.length === 0) {
-      const emptyLabel = new Gtk.Label({
-        label: install ? 'No applications selected for installation.' : 'No applications selected to skip installation.',
-        margin_top: 12,
-        margin_bottom: 12,
-        margin_start: 12,
-        margin_end: 12,
-        justify: Gtk.Justification.CENTER,
-        css_classes: ['boxed-list'],
+    if (installApplicationsData.length > 0) {
+      const applicationsLabel = new Gtk.Label({
+        label: `You are about to ${install ? 'add' : 'remove'} ${installApplicationsData.length} application(s).`,
+        wrap: true,
+        justify: Gtk.Justification.FILL,
       });
-  
-      scrolledWindow.set_child(emptyLabel);
-    } else {
+      contentBox.append(applicationsLabel);
+
+      const scrolledWindow = new Gtk.ScrolledWindow({
+        vexpand: true,
+        hscrollbar_policy: Gtk.PolicyType.NEVER,
+        vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
+        height_request: installApplicationsData.length === 1 ? 100 : 200,
+      });
+
       const listBox = new Gtk.ListBox({
         selection_mode: Gtk.SelectionMode.NONE,
         css_classes: ['boxed-list'],
       });
 
       installApplicationsData.forEach(async appData => {
-          const row = new Adw.ActionRow();
-          row.set_title(appData.application.title);
-          row.set_subtitle(appData.application.description || '');
-          row.add_prefix(
-            new Gtk.Image({
-              file: appData.application.icon,
-              pixel_size: 64,
-            })
-          );
-          listBox.append(row);
-        });
-
-      scrolledWindow.set_child(listBox);
-    }
-
-    return scrolledWindow;
-  }
-
-  private async installApplications(): Promise<void> {
-    this.buttonInstall.set_sensitive(false);
-
-    this.installApplicationsData
-      .filter(installApp => installApp.install === true)
-      .forEach(async appData => {
-        try {
-          await this.executeInstall(appData.application);
-        } catch (error) {
-          console.error(`Failed to install ${appData.application.title}:`, error);
-        }
+        const row = new Adw.ActionRow();
+        row.set_title(appData.application.title);
+        row.set_subtitle(appData.application.description || '');
+        row.set_subtitle_lines(3);
+        row.add_prefix(
+          new Gtk.Image({
+            file: appData.application.icon,
+            pixel_size: 64,
+          })
+        );
+        appData.row = row;
+        listBox.append(row);
       });
 
-    this.buttonInstall.set_visible(false);
+      scrolledWindow.set_child(listBox);
+      contentBox.append(scrolledWindow);
+    }
+  }
+
+  private installApplications(): void {
+    let index = 1;
+    let wait = 1000;
+    let promises: Promise<void>[] = [];
+
+    this.btnAddRemove.set_visible(false);
     this.buttonCancel.set_label('Close');
+    this.buttonCancel.set_sensitive(false);
+
+    this.installApplicationsData.forEach(appData => {
+      try {
+        this.setSuffixToRow(appData.row!);
+        console.log(`Starting installation for: ${appData.application.title}`);
+        wait += 2000;
+        promises.push(
+          new Promise<void>(resolve => {
+            setTimeout(() => {
+              const fraction = index++ / this.installApplicationsData.length;
+              this.progressBar.set_fraction(fraction);
+              console.log(`Finished installation for: ${appData.application.title}`);
+              this.setSuffixToRow(appData.row!);
+              resolve();
+            }, wait);
+          })
+        );
+        // this.executeInstall(appData).then(() => {
+        //   const fraction = index++ / this.installApplicationsData.length;
+        //   this.progressBar.set_fraction(fraction);
+        //   console.log(`Finished installation for: ${appData.application.title}`);
+        // });
+      } catch (error) {
+        console.error(`Failed to install ${appData.application.title}:`, error);
+      }
+    });
+
+    Promise.allSettled(promises).then(results => {
+      console.log(results);
+      this.buttonCancel.set_sensitive(true);
+    });
+
+    console.log('All installations processed.');
   }
 
-  private async executeInstall(app: Application): Promise<void> {
-    console.log(`Starting installation for: ${app.title}`);
-    // await this.utilsService.executeCommand(
-    //   this.installApplicationsData.packageType === "FLATPAK" ? "flatpak" : "apt",
-    //   this.installApplicationsData.packageType === "FLATPAK"
-    //     ? ["install", "-y", this.installApplicationsData.packageName]
-    //     : ["install", this.installApplicationsData.packageName, "-y"]
-    // ).then(({ stdout, stderr }) => {
-    //   const iconFile = this.installApplicationsData.icon || "";
-    //   if (stderr) {
-    //     this.showMessage(`${this.installApplicationsData.title}: ${stderr}`, 'FAILED', iconFile);
-    //   } else {
-    //     this.showMessage(`${this.installApplicationsData.title} installed successfully.`, 'SUCCESS', iconFile);
-    //   }
-    // });
+  private executeInstall(appData: InstallApplicationData): Promise<{ stdout: string; stderr: string }> {
+    const operation = appData.install ? 'install' : appData.application.packageType === 'FLATPAK' ? 'uninstall' : 'remove';
+
+    console.log(`Executing ${operation} for: ${appData.application.title}`);
+
+    try {
+      return this.utilsService.executeCommandAsync(appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', [operation, '-y', appData.application.packageName]);
+    } catch (error: any) {
+      const iconFile = appData.application.icon || '';
+      this.showMessage(`${appData.application.title}: ${error.message}`, 'FAILED', iconFile);
+      throw error;
+    }
   }
 
-  showMessage(message: string, status: 'FAILED' | 'SUCCESS', iconFile: string) {
+  private showMessage(message: string, status: 'FAILED' | 'SUCCESS', iconFile: string) {
     const alertDialog = new Adw.MessageDialog({
       title: status === 'FAILED' ? 'Error' : 'Success',
       body: message,
     });
+  }
+
+  private setSuffixToRow(row: Adw.ActionRow) {
+    const suffix = (row as any).spinnerWidget;
+    if (!suffix) {
+      const spinner = new Adw.Spinner({
+        width_request: 32,
+        height_request: 32,
+      });
+
+      row.add_suffix(spinner);
+      (row as any).spinnerWidget = spinner;
+    } else {
+      const spinner = suffix as Adw.Spinner;
+      row.remove(spinner);
+
+      const avatar = new Adw.Avatar({
+        size: 32,
+        icon_name: 'go-home',
+      });
+      row.add_suffix(avatar);
+    }
   }
 }

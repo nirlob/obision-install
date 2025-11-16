@@ -11,7 +11,7 @@ export class ApplicationsList {
   private scrolledWindow!: Gtk.ScrolledWindow;
   private dataService = DataService.instance;
   private utilsService = UtilsService.instance;
-  private applicationClickCallback: ((app: Application, installed: boolean) => void) | null = null;
+  private applicationClickCallback: ((app: Application, install: boolean) => void) | null = null;
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
@@ -97,7 +97,7 @@ export class ApplicationsList {
         );
 
         // Connect row activation
-        row.connect('notify::active', () => this.onSwitchRowActiveClick(row, app));
+        row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
 
         expanderRow.add_row(row);
       });
@@ -106,9 +106,9 @@ export class ApplicationsList {
     }
   }
 
-  private onSwitchRowActiveClick(row: Adw.SwitchRow, app: Application): void {
+  private onSwitchRowActiveClick(app: Application, install: boolean): void {
     if (this.applicationClickCallback) {
-      this.applicationClickCallback(app, row.active);
+      this.applicationClickCallback(app, install);
     }
   }
 

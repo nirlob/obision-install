@@ -82,43 +82,43 @@ export class ApplicationInfoDialog {
   }
 
   private loadProperties() : void {
-    try {
-      this.utilsService.executeCommand(
-        this.pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
-        this.pkg.packageType === "FLATPAK"
-          ? ["remote-info", "flathub",this.pkg.packageName]
-          : ["show", this.pkg.packageName]
-      ).then(({ stdout, stderr }) => {
-        const labels = stdout.split("\n");
-        labels.forEach((line) => {
-            // if (line.trim() === "") return;
+    // try {
+    //   this.utilsService.executeCommand(
+    //     this.pkg.packageType === "FLATPAK" ? "flatpak" : "apt",
+    //     this.pkg.packageType === "FLATPAK"
+    //       ? ["remote-info", "flathub",this.pkg.packageName]
+    //       : ["show", this.pkg.packageName]
+    //   ).then(({ stdout, stderr }) => {
+    //     const labels = stdout.split("\n");
+    //     labels.forEach((line) => {
+    //         // if (line.trim() === "") return;
 
-          const row = new Gtk.ListBoxRow({
-            activatable: false,
-          });
-        //   const hbox = new Gtk.Box({
-        //     orientation: Gtk.Orientation.HORIZONTAL,
-        //     spacing: 12,
-        //     margin_top: 6,
-        //     margin_bottom: 6,
-        //     margin_start: 6,
-        //     margin_end: 6,
-        //   });
+    //       const row = new Gtk.ListBoxRow({
+    //         activatable: false,
+    //       });
+    //     //   const hbox = new Gtk.Box({
+    //     //     orientation: Gtk.Orientation.HORIZONTAL,
+    //     //     spacing: 12,
+    //     //     margin_top: 6,
+    //     //     margin_bottom: 6,
+    //     //     margin_start: 6,
+    //     //     margin_end: 6,
+    //     //   });
 
-          const label = new Gtk.Label({
-            label: line.trim(),
-            wrap: true,
-            xalign: 0,
-          });
+    //       const label = new Gtk.Label({
+    //         label: line.trim(),
+    //         wrap: true,
+    //         xalign: 0,
+    //       });
 
-        //   hbox.append(label);
-        //   row.set_child(hbox);
-          row.set_child(label);
-          this.propertiesList.append(row);
-        });
-      });
-    } catch (error: any) {
-      console.error("Error loading properties:", error);
-    }
+    //     //   hbox.append(label);
+    //     //   row.set_child(hbox);
+    //       row.set_child(label);
+    //       this.propertiesList.append(row);
+    //     });
+    //   });
+    // } catch (error: any) {
+    //   console.error("Error loading properties:", error);
+    // }
   }
 }

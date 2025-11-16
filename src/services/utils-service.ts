@@ -1,6 +1,6 @@
-import Gio from "@girs/gio-2.0";
-import { Application } from "../interfaces/application";
-import { Gtk } from "@girs/gtk-4.0";
+import Gio from '@girs/gio-2.0';
+import { Application } from '../interfaces/application';
+import { Gtk } from '@girs/gtk-4.0';
 
 export class UtilsService {
   static _instance: UtilsService;
@@ -13,16 +13,12 @@ export class UtilsService {
     return UtilsService._instance;
   }
 
-  public executeCommand(
-    command: string,
-    args: string[] = []
-  ): Promise<{ stdout: string; stderr: string }> {
+  public executeCommandAsync(command: string, args: string[] = []): Promise<{ stdout: string; stderr: string }> {
     return new Promise((resolve, reject) => {
       try {
         const process = new Gio.Subprocess({
           argv: [command, ...args],
-          flags:
-            Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+          flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
         });
 
         process.init(null);
@@ -33,7 +29,7 @@ export class UtilsService {
             if (ok) {
               resolve({ stdout: stdout.trim(), stderr: stderr.trim() });
             } else {
-              reject(new Error("Failed to execute command"));
+              reject(new Error('Failed to execute command'));
             }
           } catch (error) {
             reject(error);
@@ -43,6 +39,30 @@ export class UtilsService {
         reject(error);
       }
     });
+  }
+
+  public executeCommand(command: string, args: string[] = []): string {
+    try {
+      const process = new Gio.Subprocess({
+        argv: [command, ...args],
+        flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+      });
+
+      process.init(null);
+
+      try {
+        const [ok, stdout, stderr] = process.communicate_utf8(null, null);
+        if (ok) {
+          return stdout.trim();
+        } else {
+          throw new Error('Failed to execute command');
+        }
+      } catch (error) {
+        throw error;
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   static getPackageDataFromRow(row: Gtk.ListBoxRow): Application | null {
@@ -55,18 +75,17 @@ export class UtilsService {
     }
   }
 
-  public async isApplicationInstalled(application: Application): Promise<boolean> {
+  public isApplicationInstalled(application: Application): boolean {
     try {
-      console.log("Checking installation status for:", application.packageName);
-      const { stdout, stderr } = await this.executeCommand(
-        application.packageType === "FLATPAK" ? "flatpak" : "apt",
-        application.packageType === "FLATPAK"
-          ? ["info", application.packageName]
-          : ["show", application.packageName]
+      console.log('Checking installation status for:', application.packageName);
+      const stdout = this.executeCommand(
+        application.packageType === 'FLATPAK' ? 'flatpak' : 'apt',
+        application.packageType === 'FLATPAK' ? ['info', application.packageName] : ['show', application.packageName]
       );
 
       return stdout.trim().length > 0;
     } catch (error: any) {
+      console.error(`Error checking installation status for ${application.packageName}:`, error);
       return false;
     }
   }
