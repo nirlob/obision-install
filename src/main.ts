@@ -2,6 +2,7 @@
 
 import Gio from '@girs/gio-2.0';
 import Gtk from '@girs/gtk-4.0';
+import Gdk from '@girs/gdk-4.0';
 import Adw from '@girs/adw-1';
 import { ApplicationsList } from './components/applications-list.js';
 import { Application } from './interfaces/application.js';
@@ -57,6 +58,19 @@ class ObisionInstallApplication {
   private onActivate(): void {
     console.log('Application activated');
 
+    // Load CSS
+    const cssProvider = new Gtk.CssProvider();
+    cssProvider.load_from_path('data/styles.css');
+    
+    const display = Gdk.Display.get_default();
+    if (display) {
+      Gtk.StyleContext.add_provider_for_display(
+        display,
+        cssProvider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+      );
+    }
+
     // Create and show the main window
     const window = this.createMainWindow();
     console.log('Window created, presenting...');
@@ -94,8 +108,8 @@ class ObisionInstallApplication {
 
       this.installButton = builder.get_object('install_button') as Gtk.Button;
       this.installButton.connect('clicked', () => { 
-        new InstallDialog(window, this.installApplicationsData);
-        console.log('Install button clicked');
+        const installDialog = new InstallDialog(window, this.installApplicationsData);
+        installDialog.setApplicationsInstalledCallback(() => this.onApplicationsInstalled());
       });
 
       // Create toast overlay
@@ -242,6 +256,11 @@ class ObisionInstallApplication {
     }
 
     this.installButton.set_sensitive(this.installApplicationsData.length > 0);
+  }
+
+  private onApplicationsInstalled(): void {
+    this.installApplicationsData = [];
+    this.installButton.set_sensitive(false);
   }
 
   public run(argv: string[]): number {

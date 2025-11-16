@@ -12,6 +12,7 @@ export class InstallDialog {
   private btnAddRemove!: Gtk.Button;
   private buttonCancel!: Gtk.Button;
   private utilsService = UtilsService.instance;
+  private applicationsInstalledCallback: (() => void) | null = null;
 
   constructor(private parentWindow: Adw.ApplicationWindow, private installApplicationsData: InstallApplicationData[]) {
     this.setupUI();
@@ -97,7 +98,7 @@ export class InstallDialog {
         vexpand: true,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
         vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-        height_request: installApplicationsData.length === 1 ? 100 : 200,
+        height_request: installApplicationsData.length === 1 ? 96 : 193,
       });
 
       const listBox = new Gtk.ListBox({
@@ -163,6 +164,9 @@ export class InstallDialog {
     Promise.allSettled(promises).then(results => {
       console.log(results);
       this.buttonCancel.set_sensitive(true);
+      if (this.applicationsInstalledCallback) {
+        this.applicationsInstalledCallback();
+      };
     });
 
     console.log('All installations processed.');
@@ -189,7 +193,11 @@ export class InstallDialog {
     });
   }
 
-  private setSuffixToRow(row: Adw.ActionRow) {
+  public setApplicationsInstalledCallback(callback: () => void): void {
+    this.applicationsInstalledCallback = callback;
+  }
+
+  private setSuffixToRow(row: Adw.ActionRow, error: boolean = false): void {
     const suffix = (row as any).spinnerWidget;
     if (!suffix) {
       const spinner = new Adw.Spinner({
@@ -203,11 +211,19 @@ export class InstallDialog {
       const spinner = suffix as Adw.Spinner;
       row.remove(spinner);
 
-      const avatar = new Adw.Avatar({
-        size: 32,
-        icon_name: 'go-home',
+      const image = new Gtk.Image({
+        icon_size: Gtk.IconSize.LARGE,
       });
-      row.add_suffix(avatar);
+
+      if (error) {
+        image.set_from_icon_name('process-stop');
+        image.add_css_class('install-error');
+      } else {
+        image.set_from_icon_name('object-select');
+        image.add_css_class('install-success');
+      }
+
+      row.add_suffix(image);
     }
   }
 }

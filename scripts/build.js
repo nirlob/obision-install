@@ -46,6 +46,7 @@ function cleanJSContent(content) {
         
         // Replace TypeScript generated references
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
+        .replace(/gdk_4_0_1\.default\./g, 'Gdk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/adw_1_1\.default\./g, 'Adw.')
@@ -61,6 +62,7 @@ const gjsHeader = `#!/usr/bin/env gjs
 
 const { Gio } = imports.gi;
 const { Gtk } = imports.gi;
+const { Gdk } = imports.gi;
 const { Adw } = imports.gi;
 const { Pango } = imports.gi;
 
@@ -218,6 +220,13 @@ const dataUiDest = path.join(BUILD_DIR, 'data/ui');
 const dataJsonDest = path.join(BUILD_DIR, 'data/json');
 const dataIconsSrc = 'data/icons';
 const dataIconsDest = path.join(BUILD_DIR, 'data/icons');
+const dataStylesSrc = 'data/styles.css';
+const dataStylesDest = path.join(BUILD_DIR, 'data/styles.css');
+
+// Copy styles.css
+if (fs.existsSync(dataStylesSrc)) {
+    execSync(`mkdir -p ${path.dirname(dataStylesDest)} && cp ${dataStylesSrc} ${dataStylesDest}`, { stdio: 'pipe' });
+}
 
 // Copy icons if they exist
 if (fs.existsSync(dataIconsSrc)) {
