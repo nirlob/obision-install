@@ -30,12 +30,12 @@ class ObisionInstallApplication {
   private onStartup(): void {
     console.log('Application starting up...');
 
-    const settings = Gio.Settings.new('org.gnome.desktop.app-folders');
-    const folders = settings.get_strv('folder-children');
-    console.log('Settings schema loaded:', folders);
-    folders.push('Obision Install');
-    settings.set_strv('folder-children', folders);
-    console.log('Updated folder-children:', settings.get_strv('folder-children'));
+    // const settings = Gio.Settings.new('org.gnome.desktop.app-folders');
+    // const folders = settings.get_strv('folder-children');
+    // console.log('Settings schema loaded:', folders);
+    // folders.push('Obision Install');
+    // settings.set_strv('folder-children', folders);
+    // console.log('Updated folder-children:', settings.get_strv('folder-children'));
 
     // Add application actions for menu
     const aboutAction = new Gio.SimpleAction({ name: 'about' });
@@ -69,14 +69,10 @@ class ObisionInstallApplication {
     // Load CSS
     const cssProvider = new Gtk.CssProvider();
     cssProvider.load_from_path('data/styles.css');
-    
+
     const display = Gdk.Display.get_default();
     if (display) {
-      Gtk.StyleContext.add_provider_for_display(
-        display,
-        cssProvider,
-        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-      );
+      Gtk.StyleContext.add_provider_for_display(display, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
 
     // Create and show the main window
@@ -115,7 +111,7 @@ class ObisionInstallApplication {
       console.log('Setting up UI with loaded content');
 
       this.installButton = builder.get_object('install_button') as Gtk.Button;
-      this.installButton.connect('clicked', () => { 
+      this.installButton.connect('clicked', () => {
         const installDialog = new InstallDialog(window, this.installApplicationsData, this.installInFolderToggleButton.get_active());
         installDialog.setApplicationsInstalledCallback(() => this.onApplicationsInstalled());
       });
@@ -157,15 +153,33 @@ class ObisionInstallApplication {
       (window as any).content = toastOverlay;
 
       const applicationsContent = builder.get_object('applications_content') as Gtk.Box;
-
-      if (applicationsContent) {
-        // Create our component and populate the existing listbox
-        const applicationsList = new ApplicationsList(window);
-        applicationsList.setInstallCallback((app, install) => this.onApplicationClick(app, install));
-        applicationsContent.append(applicationsList.getWidget());
-      }
+      
+      const applicationsList = new ApplicationsList(window);
+      applicationsList.setInstallCallback((app, install) => this.onApplicationClick(app, install));
+      applicationsContent.append(applicationsList.getWidget());
 
       mainContent.append(applicationsContent);
+
+      const searchEntry = new Gtk.SearchEntry({
+        hexpand: true,
+        placeholder_text: 'Search applications...',
+      });
+
+      searchEntry.connect('search-changed', () => {
+        const searchText = searchEntry.get_text().toLowerCase();
+        applicationsList.filterApplications(searchText);
+      });
+
+      headerBar.pack_start(searchEntry);
+
+      const expandAllCategoriesButton = new Gtk.Button({
+        tooltip_text: 'Expand all categories',
+        icon_name: 'view-list-symbolic',
+      });
+      expandAllCategoriesButton.connect('clicked', () => {
+        applicationsList.expandAllCategories();
+      });
+      headerBar.pack_end(expandAllCategoriesButton);
     }
 
     return window;

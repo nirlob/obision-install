@@ -119,4 +119,48 @@ export class ApplicationsList {
   public getWidget(): Gtk.ScrolledWindow {
     return this.scrolledWindow;
   }
+
+  public expandAllCategories() {
+    let child = this.listbox.get_first_child();
+    while (child) {
+      if (child instanceof Adw.ExpanderRow) {
+        child.set_expanded(true);
+      }
+      child = child.get_next_sibling();
+    }
+  }
+
+  public filterApplications(searchText: string): void {
+    let expanderRow = this.listbox.get_first_child();
+    while (expanderRow) {
+      if (expanderRow instanceof Adw.ExpanderRow) {
+        let hasVisibleApplications = false;
+
+        const expanderRowBox = expanderRow.get_first_child() as Gtk.Box;
+        const expanderRowListBox = expanderRowBox.get_first_child() as Gtk.ListBox;
+        console.log('Filtering applications in category:', expanderRow.get_title(), 'items count:', expanderRowListBox.get_children().length);
+
+        let switchRow = expanderRowListBox.get_first_child() as Adw.SwitchRow;
+        while (switchRow) {
+          console.log('Instance of switchRow:', switchRow.get_title());
+          if (switchRow instanceof Adw.ActionRow) {
+            const title = switchRow.get_title().toLowerCase();
+            const subtitle = switchRow.get_subtitle()?.toLowerCase() ?? '';
+
+            const isVisible = title.includes(searchText.toLowerCase()) || subtitle.includes(searchText.toLowerCase());
+            console.log(`Filtering "${switchRow.get_title()}": ${isVisible ? 'VISIBLE' : 'HIDDEN'}`);
+            switchRow.set_visible(isVisible);
+
+            if (isVisible) {
+              hasVisibleApplications = true;
+            }
+          }
+          switchRow = switchRow.get_next_sibling() as Adw.SwitchRow;
+        }
+
+        expanderRow.set_visible(hasVisibleApplications);
+      }
+      expanderRow = expanderRow.get_next_sibling();
+    }
+  }
 }
