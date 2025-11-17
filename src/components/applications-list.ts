@@ -137,18 +137,16 @@ export class ApplicationsList {
         let hasVisibleApplications = false;
 
         const expanderRowBox = expanderRow.get_first_child() as Gtk.Box;
-        const expanderRowListBox = expanderRowBox.get_first_child() as Gtk.ListBox;
-        console.log('Filtering applications in category:', expanderRow.get_title(), 'items count:', expanderRowListBox.get_children().length);
+        const expanderRowRevealer = expanderRowBox.get_first_child()?.get_next_sibling() as Gtk.Revealer;
+        const expanderRowListBox = expanderRowRevealer.get_first_child() as Gtk.ListBox;
 
         let switchRow = expanderRowListBox.get_first_child() as Adw.SwitchRow;
         while (switchRow) {
-          console.log('Instance of switchRow:', switchRow.get_title());
           if (switchRow instanceof Adw.ActionRow) {
             const title = switchRow.get_title().toLowerCase();
             const subtitle = switchRow.get_subtitle()?.toLowerCase() ?? '';
 
             const isVisible = title.includes(searchText.toLowerCase()) || subtitle.includes(searchText.toLowerCase());
-            console.log(`Filtering "${switchRow.get_title()}": ${isVisible ? 'VISIBLE' : 'HIDDEN'}`);
             switchRow.set_visible(isVisible);
 
             if (isVisible) {
@@ -158,6 +156,9 @@ export class ApplicationsList {
           switchRow = switchRow.get_next_sibling() as Adw.SwitchRow;
         }
 
+        if (hasVisibleApplications) {
+          expanderRow.set_expanded(true);
+        }
         expanderRow.set_visible(hasVisibleApplications);
       }
       expanderRow = expanderRow.get_next_sibling();

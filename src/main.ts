@@ -81,7 +81,7 @@ class ObisionInstallApplication {
     window.present();
   }
 
-  private createMainWindow(): Gtk.ApplicationWindow {
+  private createMainWindow(): Adw.ApplicationWindow {
     // Create the main window
     const window = new Adw.ApplicationWindow({
       application: this.application as any,
@@ -221,52 +221,6 @@ class ObisionInstallApplication {
         // Here you would implement the actual group creation logic
       }
       dialog.close();
-    });
-
-    dialog.present();
-  }
-
-  private showManageGroupsDialog(window: Gtk.ApplicationWindow): void {
-    const dialog = new Adw.MessageDialog({
-      heading: 'Manage Groups',
-      body: 'View and manage your application groups.',
-      modal: true,
-      transient_for: window,
-    });
-
-    dialog.add_response('close', 'Close');
-    dialog.set_response_appearance('close', Adw.ResponseAppearance.DEFAULT);
-
-    dialog.connect('response', (dialog: Adw.MessageDialog, response: string) => {
-      console.log('Managing groups...');
-      // Here you would implement the group management interface
-      dialog.close();
-    });
-
-    dialog.present();
-  }
-
-  private showGroupDetails(window: Gtk.ApplicationWindow, row: Gtk.ListBoxRow): void {
-    // Get the group name from the row (this is a simplified example)
-    const index = row.get_index();
-    const groupNames = ['Development Tools', 'Creative Suite', 'Web & Communication'];
-    const groupName = groupNames[index] || 'Unknown Group';
-
-    const dialog = new Adw.MessageDialog({
-      heading: `${groupName} Details`,
-      body: `View and manage applications in the "${groupName}" group.`,
-      modal: true,
-      transient_for: window,
-    });
-
-    dialog.add_response('close', 'Close');
-    dialog.add_response('manage', 'Manage Apps');
-    dialog.set_default_response('manage');
-
-    dialog.connect('response', (dialog, response) => {
-      if (response === 'manage') {
-        console.log(`Managing apps for ${groupName}...`);
-      }
     });
 
     dialog.present();

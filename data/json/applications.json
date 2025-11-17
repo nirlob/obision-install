@@ -32,6 +32,12 @@
     },
     {
       "id": 6,
+      "title": "Internet and Communication",
+      "description": "Applications for internet browsing, email, and communication.",
+      "icon": "data/icons/categories/internet.png"
+    },
+    {
+      "id": 7,
       "title": "Tools",
       "description": "Utility applications for system management and maintenance.",
       "icon": "data/icons/categories/tools.png"
@@ -43,70 +49,80 @@
       "description": "Brave Browser is a free and open-source web browser developed by Brave Software, Inc. based on the Chromium web browser. It is designed to prioritize user privacy and security by blocking ads and website trackers by default.",
       "packageName": "com.brave.Browser",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/brave.png"
+      "icon": "data/icons/applications/brave.png",
+      "categoryId": 6
     },
     {
       "title": "Calibre",
       "description": "Calibre is a free and open-source e-book manager. It allows users to organize, convert, and read e-books in various formats. Calibre also includes features for syncing with e-book readers and downloading news from the web to convert into e-book format.",
       "packageName": "com.calibre_ebook.calibre",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/calibre.png"
+      "icon": "data/icons/applications/calibre.png",
+      "categoryId": 3
     },
     {
       "title": "GIMP",
       "description": "GIMP (GNU Image Manipulation Program) is a free and open-source raster graphics editor used for tasks such as photo retouching, image editing, and image composition. It provides a wide range of tools and features for graphic designers, photographers, and illustrators.",
       "packageName": "org.gimp.GIMP",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/gimp.png"
+      "icon": "data/icons/applications/gimp.png",
+      "categoryId": 5
     },
     {
       "title": "Inkscape",
       "description": "Inkscape is a free and open-source vector graphics editor used for creating and editing scalable vector graphics (SVG) files. It offers a variety of tools for drawing, shaping, and text manipulation, making it suitable for graphic design, illustration, and web design.",
       "packageName": "org.inkscape.Inkscape",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/inkscape.png"
+      "icon": "data/icons/applications/inkscape.png",
+      "categoryId": 5
     },
     {
       "title": "Blender",
       "description": "Blender is a free and open-source 3D creation suite that supports the entire 3D pipeline, including modeling, rigging, animation, simulation, rendering, compositing, and motion tracking. It is widely used for creating animated films, visual effects, art, 3D printed models, and video games.",
       "packageName": "org.blender.Blender",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/blender.png"
+      "icon": "data/icons/applications/blender.png",
+      "categoryId": 5
     },
     {
       "title": "Krita",
       "description": "Krita is a free and open-source digital painting software designed for artists. It offers a wide range of brushes, tools, and features for creating stunning digital artwork.",
       "packageName": "org.kde.krita",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/krita.png"
+      "icon": "data/icons/applications/krita.png",
+      "categoryId": 5
     },
     {
       "title": "Audacity",
       "description": "Audacity is a free and open-source digital audio editor and recording application. It provides a range of tools for recording, editing, and mixing audio tracks, making it suitable for podcasting, music production, and sound design.",
       "packageName": "org.audacityteam.Audacity",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/audacity.png"
+      "icon": "data/icons/applications/audacity.png",
+      "categoryId": 4
     },
     {
       "title": "VLC Media Player",
       "description": "VLC Media Player is a free and open-source multimedia player that supports a wide range of audio and video formats. It is known for its versatility, ease of use, and ability to play almost any media file without the need for additional codecs.",
       "packageName": "org.videolan.VLC",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/vlc.png"
+      "icon": "data/icons/applications/vlc.png",
+      "categoryId": 4
     },
     {
       "title": "Photopea",
       "description": "Photopea is a free and open-source web-based image editor that supports various file formats, including PSD, XCF, and Sketch. It offers a wide range of tools for photo editing, graphic design, and digital art.",
       "packageName": "org.photopea.Photopea",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/photopea.svg"
+      "icon": "data/icons/applications/photopea.svg",
+      "categoryId": 5
     },
     {
       "title": "Chrome Browser",
       "description": "Chrome is a free and open-source web browser developed by Google. It is known for its speed, simplicity, and security features.",
       "packageName": "org.chromium.Chrome",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/chrome.png"
+      "icon": "data/icons/applications/chrome.png",
+      "categoryId": 6
     },
     {
       "title": "IntelliJ IDEA",
@@ -129,28 +145,32 @@
       "description": "Microsoft Edge is a free and open-source web browser developed by Microsoft. It is built on the Chromium engine and offers features such as enhanced security, privacy controls, and integration with Microsoft services.",
       "packageName": "com.microsoft.Edge",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/edge.png"
+      "icon": "data/icons/applications/edge.png",
+      "categoryId": 6
     },
     {
       "title": "OBS Studio",
       "description": "OBS Studio (Open Broadcaster Software) is a free and open-source software for video recording and live streaming. It provides a range of features for capturing and mixing video and audio in real-time.",
       "packageName": "com.obsproject.Studio",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/obs-studio.png"
+      "icon": "data/icons/applications/obs-studio.png",
+      "categoryId": 4
     },
     {
       "title": "Opera Browser",
       "description": "Opera is a free and open-source web browser developed by Opera Software. It offers a range of features such as a built-in ad blocker, VPN, and battery saver mode.",
       "packageName": "com.opera.Opera",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/opera.png"
+      "icon": "data/icons/applications/opera.png",
+      "categoryId": 6
     },
     {
       "title": "Transmission",
       "description": "Transmission is a lightweight and easy-to-use BitTorrent client that allows users to download and share files over the BitTorrent network.",
       "packageName": "com.transmissionbt.Transmission",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/transmission.png"
+      "icon": "data/icons/applications/transmission.png",
+      "categoryId": 6
     },
     {
       "title": "Steam",
@@ -173,21 +193,24 @@
       "description": "WPS Office is a free and open-source office suite that includes a word processor, spreadsheet application, and presentation software. It is compatible with Microsoft Office file formats.",
       "packageName": "com.wps.Office",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/wps.png"
+      "icon": "data/icons/applications/wps.png",
+      "categoryId": 3
     },
     {
       "title": "Shortwave Radio",
       "description": "Shortwave Radio is a free and open-source application for listening to shortwave radio stations from around the world. It provides a user-friendly interface and a wide selection of stations.",
       "packageName": "com.github.maoschanz.drawing",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/shortwave.png"
+      "icon": "data/icons/applications/shortwave.png",
+      "categoryId": 4
     },
     {
       "title": "Natron",
       "description": "Natron is a free and open-source node-based compositing software for visual effects and motion graphics. It offers a range of tools for 2D and 3D compositing, keying, and color correction.",
       "packageName": "fr.natron.Natron",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/natron.png"
+      "icon": "data/icons/applications/natron.png",
+      "categoryId": 5
     },
     {
       "title": "DBeaver",
@@ -202,56 +225,56 @@
       "description": "Monitoret is a free and open-source application for monitoring system resources and performance. It provides real-time graphs and statistics for CPU, memory, disk, and network usage.",
       "packageName": "com.github.jorchube.monitoret",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/monitorets.png"
+      "icon": "data/icons/applications/monitorets.png",
+      "categoryId": 7
     },
     {
       "title": "Opentoonz",
       "description": "Opentoonz is a free and open-source 2D animation software used for creating animated films and cartoons. It offers a range of tools for drawing, rigging, and animating characters and scenes.",
       "packageName": "io.github.OpenToonz",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/opentoonz.png"
+      "icon": "data/icons/applications/opentoonz.png",
+      "categoryId": 5
     },
     {
       "title": "LMMS",
       "description": "LMMS (Linux MultiMedia Studio) is a free and open-source digital audio workstation (DAW) used for music production. It provides a range of tools for composing, editing, and mixing music tracks.",
       "packageName": "io.lmms.LMMS",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/lmms.png"
+      "icon": "data/icons/applications/lmms.png",
+      "categoryId": 5
     },
     {
       "title": "Fluent Reader",
       "description": "Fluent Reader is a free and open-source RSS reader application that allows users to subscribe to and read RSS feeds in a user-friendly interface.",
       "packageName": "me.hyliu.fluentreader",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/fluentreader.png"
+      "icon": "data/icons/applications/fluentreader.png",
+      "categoryId": 3
     },
     {
       "title": "Scribus",
       "description": "Scribus is a free and open-source desktop publishing software used for creating professional-quality documents such as brochures, magazines, and newsletters.",
       "packageName": "net.scribus.Scribus",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/scribus.png"
-    },
-    {
-      "title": "Audacity",
-      "description": "Audacity is a free and open-source digital audio editor and recording application. It provides a range of tools for recording, editing, and mixing audio tracks, making it suitable for podcasting, music production, and sound design.",
-      "packageName": "org.audacityteam.Audacity",
-      "packageType": "FLATPAK",
-      "icon": "data/icons/applications/audacity.png"
+      "icon": "data/icons/applications/scribus.png",
+      "categoryId": 3
     },
     {
       "title": "Blender",
       "description": "Blender is a free and open-source 3D creation suite that supports the entire 3D pipeline, including modeling, rigging, animation, simulation, rendering, compositing, and motion tracking. It is widely used for creating animated films, visual effects, art, 3D printed models, and video games.",
       "packageName": "org.blender.Blender",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/blender.png"
+      "icon": "data/icons/applications/blender.png",
+      "categoryId": 5
     },
     {
       "title": "Darktable",
       "description": "Darktable is a free and open-source photography workflow application and raw developer. It provides a range of tools for managing and editing digital photos, including non-destructive editing and advanced color correction.",
       "packageName": "org.darktable.Darktable",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/darktable.png"
+      "icon": "data/icons/applications/darktable.png",
+      "categoryId": 5
     },
     {
       "title": "AisleRiot Solitaire",
@@ -266,7 +289,8 @@
       "description": "GNOME Boxes is a free and open-source virtualization application that allows users to create, manage, and run virtual machines on their GNOME desktop environment.",
       "packageName": "org.gnome.Boxes",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/boxes.png"
+      "icon": "data/icons/applications/boxes.png",
+      "categoryId": 7
     },
     {
       "title": "GNOME Builder",
@@ -281,63 +305,64 @@
       "description": "Font Downloader is a free and open-source application that allows users to browse, download, and install fonts from various online sources.",
       "packageName": "org.gustavoperedo.FontDownloader",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/fontdownloader.png"
+      "icon": "data/icons/applications/fontdownloader.png",
+      "categoryId": 7
     },
     {
       "title": "Inkscape",
       "description": "Inkscape is a free and open-source vector graphics editor used for creating and editing scalable vector graphics (SVG) files. It offers a variety of tools for drawing, shaping, and text manipulation, making it suitable for graphic design, illustration, and web design.",
       "packageName": "org.inkscape.Inkscape",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/inkscape.png"
+      "icon": "data/icons/applications/inkscape.png",
+      "categoryId": 5
     },
     {
       "title": "Libre Office",
       "description": "LibreOffice is a free and open-source office suite that includes a word processor, spreadsheet application, presentation software, and more. It is compatible with Microsoft Office file formats and offers a range of features for productivity and collaboration.",
       "packageName": "org.libreoffice.LibreOffice",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/libreoffice-logo.png"
+      "icon": "data/icons/applications/libreoffice-logo.png",
+      "categoryId": 3
     },
     {
       "title": "Mixxx",
       "description": "Mixxx is a free and open-source DJ software that allows users to mix and manipulate digital music tracks in real-time. It provides a range of features for DJs, including beatmatching, looping, and effects.",
       "packageName": "org.mixxx.Mixxx",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/mixxx.png"
+      "icon": "data/icons/applications/mixxx.png",
+      "categoryId": 5
     },
     {
       "title": "Thunderbird",
       "description": "Thunderbird is a free and open-source email client developed by the Mozilla Foundation. It offers a range of features for managing email accounts, including support for multiple accounts, advanced search, and customizable themes.",
       "packageName": "org.mozilla.Thunderbird",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/thunderbird.png"
+      "icon": "data/icons/applications/thunderbird.png",
+      "categoryId": 3
     },
     {
       "title": "Pencil2D",
       "description": "Pencil2D is a free and open-source 2D animation software used for creating hand-drawn animations. It offers a simple and intuitive interface with a range of tools for drawing, coloring, and animating.",
       "packageName": "org.pencil2d.Pencil2D",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/pencil2d.png"
+      "icon": "data/icons/applications/pencil2d.png",
+      "categoryId": 5
     },
     {
       "title": "Symfig Studio",
       "description": "Synfig Studio is a free and open-source 2D vector animation software used for creating high-quality animations. It offers a range of tools for vector drawing, keyframe animation, and special effects.",
       "packageName": "org.synfig.SynfigStudio",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/synfig.png"
+      "icon": "data/icons/applications/synfig.png",
+      "categoryId": 5
     },
     {
       "title": "Telegram",
       "description": "Telegram is a free and open-source instant messaging application that focuses on speed and security. It offers features such as end-to-end encryption, group chats, and multimedia sharing.",
       "packageName": "org.telegram.Telegram",
       "packageType": "FLATPAK",
-      "icon": "data/icons/applications/telegram.png"
-    },
-    {
-      "title": "VLC Media Player",
-      "description": "VLC Media Player is a free and open-source multimedia player that supports a wide range of audio and video formats. It is known for its versatility, ease of use, and ability to play almost any media file without the need for additional codecs.",
-      "packageName": "org.videolan.VLC",
-      "packageType": "FLATPAK",
-      "icon": "data/icons/applications/vlc.png"
+      "icon": "data/icons/applications/telegram.png",
+      "categoryId": 3
     },
     {
       "title": "Java JDK",
