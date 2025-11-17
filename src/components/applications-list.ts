@@ -78,14 +78,14 @@ export class ApplicationsList {
   private loadApplications(expanderRow: Adw.ExpanderRow, category: Category): void {
     try {
       this.dataService.getApplicationsByCategory(category.id).forEach(async app => {
-        const packageInstalled = await this.utilsService.isApplicationInstalled(app);
+        const isApplicationInstalled = await this.utilsService.isApplicationInstalled(app);
 
         const row = new Adw.SwitchRow({
           title: app.title,
           subtitle: app.description,
           activatable: true,
           subtitle_lines: 2,
-          active: packageInstalled,
+          active: isApplicationInstalled,
         });
 
         row.add_prefix(
@@ -96,7 +96,20 @@ export class ApplicationsList {
           })
         );
 
-        // Connect row activation
+        const infoButton = new Gtk.Button({
+          icon_name: 'help-about-symbolic',
+          tooltip_text: 'More information about this application',
+          valign: Gtk.Align.CENTER,
+          can_focus: false,
+          css_classes: ['flat'],
+        });
+        
+        infoButton.connect('clicked', () => {
+          new ApplicationInfoDialog(this.parentWindow, app);
+        });
+
+        row.add_suffix(infoButton);   
+
         row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
 
         expanderRow.add_row(row);
