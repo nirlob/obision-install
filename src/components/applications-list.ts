@@ -109,7 +109,7 @@ export class ApplicationsList {
 
             const infoButton = new Gtk.Button({
               icon_name: 'help-about-symbolic',
-              tooltip_text: 'More information about this application',
+              tooltip_text: `More information about ${app.title} application`,
               valign: Gtk.Align.CENTER,
               can_focus: false,
               css_classes: ['flat'],

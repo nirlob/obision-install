@@ -99,7 +99,7 @@ export class InstallDialog {
         vexpand: true,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
         vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-        height_request: installApplicationsData.length === 1 ? 96 : 193,
+        height_request: installApplicationsData.length > 1 ? 170 : 85,
       });
 
       const listBox = new Gtk.ListBox({
