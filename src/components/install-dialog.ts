@@ -129,7 +129,6 @@ export class InstallDialog {
 
   private installApplications(): void {
     let index = 1;
-    let wait = 1000;
     let promises: Promise<void>[] = [];
 
     this.btnAddRemove.set_visible(false);
@@ -140,17 +139,8 @@ export class InstallDialog {
       try {
         this.setSuffixToRow(appData.row!);
         console.log(`Starting installation for: ${appData.application.title}`);
-        wait += 2000;
+
         promises.push(
-          // new Promise<void>(resolve => {
-          //   setTimeout(() => {
-          //     const fraction = index++ / this.installApplicationsData.length;
-          //     this.progressBar.set_fraction(fraction);
-          //     console.log(`Finished installation for: ${appData.application.title}`);
-          //     this.setSuffixToRow(appData.row!);
-          //     resolve();
-          //   }, wait);
-          // })
           this.executeInstall(appData).then(() => {
             console.log(`Finished installation for: ${appData.application.title}`);
             this.setSuffixToRow(appData.row!);
@@ -180,6 +170,7 @@ export class InstallDialog {
 
     console.log('All installations processed.');
   }
+
   private createFolders() {
     throw new Error('Method not implemented.');
   }
@@ -189,20 +180,7 @@ export class InstallDialog {
 
     console.log(`Executing ${operation} for: ${appData.application.title}`);
 
-    try {
-      return this.utilsService.executeCommandAsync(appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', [operation, '-y', appData.application.packageName]);
-    } catch (error: any) {
-      const iconFile = appData.application.icon || '';
-      this.showMessage(`${appData.application.title}: ${error.message}`, 'FAILED', iconFile);
-      throw error;
-    }
-  }
-
-  private showMessage(message: string, status: 'FAILED' | 'SUCCESS', iconFile: string) {
-    const alertDialog = new Adw.MessageDialog({
-      title: status === 'FAILED' ? 'Error' : 'Success',
-      body: message,
-    });
+    return this.utilsService.executeCommandAsync(appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', [operation, '-y', appData.application.packageName]);
   }
 
   public setApplicationsInstalledCallback(callback: () => void): void {
@@ -229,10 +207,10 @@ export class InstallDialog {
 
       if (error) {
         image.set_from_icon_name('process-stop');
-        image.add_css_class('install-error');
+        image.add_css_class('error');
       } else {
         image.set_from_icon_name('object-select');
-        image.add_css_class('install-success');
+        image.add_css_class('success');
       }
 
       row.add_suffix(image);

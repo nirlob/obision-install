@@ -158,7 +158,7 @@ if (fs.existsSync(applicationInfoDialogFile)) {
     
     // Clean up TypeScript/CommonJS artifacts using our function
     applicationInfoDialogContent = cleanJSContent(applicationInfoDialogContent)
-        .replace(/UtilsService_1\./g, ''); // Additional cleanup for this component
+        .replace(/utils_service_1\./g, ''); // Additional cleanup for this component
 
     combinedContent += applicationInfoDialogContent + '\n';
 }
@@ -180,6 +180,7 @@ if (fs.existsSync(applicationsListFile)) {
         .replace(/InstallPackageDialog_js_1\./g, '')
         .replace(/PackageInfoDialog_js_1\./g, '')
         .replace(/utils_service_js_1\./g, '')
+        .replace(/application_info_dialog_js_1\./g, '')
         .replace(/data_service_js_1\./g, '');
 
     combinedContent += applicationsContent + '\n';

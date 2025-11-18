@@ -61,6 +61,9 @@ class ObisionInstallApplication {
 
     // Set keyboard shortcuts
     this.application.set_accels_for_action('app.quit', ['<Ctrl>Q']);
+
+    // Set resource path
+    // this.application.set_resource_base_path('/data');
   }
 
   private onActivate(): void {
@@ -201,29 +204,6 @@ class ObisionInstallApplication {
     });
 
     aboutDialog.present();
-  }
-
-  private showCreateGroupDialog(window: Gtk.ApplicationWindow): void {
-    const dialog = new Adw.MessageDialog({
-      heading: 'Create Group',
-      body: 'Create a new group to organize your applications.',
-      modal: true,
-      transient_for: window,
-    });
-
-    dialog.add_response('cancel', 'Cancel');
-    dialog.add_response('create', 'Create Group');
-    dialog.set_response_appearance('create', Adw.ResponseAppearance.SUGGESTED);
-
-    dialog.connect('response', (dialog: Adw.MessageDialog, response: string) => {
-      if (response === 'create') {
-        console.log('Creating new group...');
-        // Here you would implement the actual group creation logic
-      }
-      dialog.close();
-    });
-
-    dialog.present();
   }
 
   private onApplicationClick(app: Application, install: boolean): void {

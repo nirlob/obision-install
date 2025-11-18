@@ -93,6 +93,8 @@ export class ApplicationsList {
             file: app.icon,
             pixel_size: 64,
             margin_start: 30,
+            margin_top: 5,
+            margin_bottom: 5,
           })
         );
 
