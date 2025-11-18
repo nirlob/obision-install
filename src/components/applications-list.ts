@@ -107,6 +107,13 @@ export class ApplicationsList {
               })
             );
 
+            row.add_suffix(new Gtk.Separator({ 
+              orientation: Gtk.Orientation.VERTICAL, 
+              margin_start: 10, 
+              margin_top: 20, 
+              margin_bottom: 20
+            }));
+
             const infoButton = new Gtk.Button({
               icon_name: 'help-about-symbolic',
               tooltip_text: `More information about ${app.title} application`,
