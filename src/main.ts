@@ -71,7 +71,7 @@ class ObisionInstallApplication {
 
     // Load CSS
     const cssProvider = new Gtk.CssProvider();
-    cssProvider.load_from_path('data/styles.css');
+    cssProvider.load_from_path('data/style.css');
 
     const display = Gdk.Display.get_default();
     if (display) {

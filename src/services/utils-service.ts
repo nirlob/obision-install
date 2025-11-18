@@ -65,19 +65,10 @@ export class UtilsService {
     }
   }
 
-  static getPackageDataFromRow(row: Gtk.ListBoxRow): Application | null {
-    // Return stored package data or null
-    const storedData = (row as any).packageData;
-    if (storedData) {
-      return storedData;
-    } else {
-      return null;
-    }
-  }
-
   public isApplicationInstalled(application: Application): boolean {
     try {
-      console.log('Checking installation status for:', application.packageName);
+      // console.log('Checking installation status for:', application.packageName);
+
       const stdout = this.executeCommand(
         application.packageType === 'FLATPAK' ? 'flatpak' : 'apt',
         application.packageType === 'FLATPAK' ? ['info', application.packageName] : ['show', application.packageName]
@@ -86,7 +77,7 @@ export class UtilsService {
       return stdout.trim().length > 0;
     } catch (error: any) {
       console.error(`Error checking installation status for ${application.packageName}:`, error);
-      return false;
+      throw error;
     }
   }
 }

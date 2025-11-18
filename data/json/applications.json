@@ -77,14 +77,6 @@
       "categoryId": 5
     },
     {
-      "title": "Blender",
-      "description": "Blender is a free and open-source 3D creation suite that supports the entire 3D pipeline, including modeling, rigging, animation, simulation, rendering, compositing, and motion tracking. It is widely used for creating animated films, visual effects, art, 3D printed models, and video games.",
-      "packageName": "org.blender.Blender",
-      "packageType": "FLATPAK",
-      "icon": "data/icons/applications/blender.png",
-      "categoryId": 5
-    },
-    {
       "title": "Krita",
       "description": "Krita is a free and open-source digital painting software designed for artists. It offers a wide range of brushes, tools, and features for creating stunning digital artwork.",
       "packageName": "org.kde.krita",
@@ -307,14 +299,6 @@
       "packageType": "FLATPAK",
       "icon": "data/icons/applications/fontdownloader.png",
       "categoryId": 7
-    },
-    {
-      "title": "Inkscape",
-      "description": "Inkscape is a free and open-source vector graphics editor used for creating and editing scalable vector graphics (SVG) files. It offers a variety of tools for drawing, shaping, and text manipulation, making it suitable for graphic design, illustration, and web design.",
-      "packageName": "org.inkscape.Inkscape",
-      "packageType": "FLATPAK",
-      "icon": "data/icons/applications/inkscape.png",
-      "categoryId": 5
     },
     {
       "title": "Libre Office",

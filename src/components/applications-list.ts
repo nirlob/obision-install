@@ -15,7 +15,6 @@ export class ApplicationsList {
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
-    this.loadCategories();
   }
 
   private setupUI(): void {
@@ -25,6 +24,7 @@ export class ApplicationsList {
       vexpand: true,
       hscrollbar_policy: Gtk.PolicyType.NEVER,
       vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
+      css_classes: ['card'],
     });
 
     // Create listbox
@@ -33,27 +33,32 @@ export class ApplicationsList {
       css_classes: ['boxed-list'],
     });
 
-    // Connect row activation
-    this.listbox.connect('row-activated', (listbox: Gtk.ListBox, row: Gtk.ListBoxRow) => {
-      const packageData = UtilsService.getPackageDataFromRow(row);
-      if (!packageData) {
-        new Gtk.AlertDialog({
-          message: `Package data not found.`,
-          modal: true,
-        });
-        return;
-      }
+    this.scrolledWindow.set_child(
+      new Gtk.Label({
+        label: 'Loading applications...',
+        css_classes: ['heading'],
+      })
+    );
 
-      new ApplicationInfoDialog(this.parentWindow, packageData);
+    this.loadData().then(() => {
+      this.scrolledWindow.remove_css_class('card');
+      this.scrolledWindow.set_child(this.listbox);
     });
+  }
 
-    this.scrolledWindow.set_child(this.listbox);
+  private loadData(): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.loadCategories();
+        resolve();
+      }, 100); // Simulate a short delay for loading data
+    });
   }
 
   private loadCategories(): void {
     console.log('🔍 Starting to load categories');
     try {
-      this.dataService.getCategories().forEach(category => {
+      this.dataService.getCategories().sort((a, b) => a.title.localeCompare(b.title)).forEach(category => {
         const expanderRow = new Adw.ExpanderRow({
           title: category.title,
           subtitle: category.description,
@@ -77,45 +82,52 @@ export class ApplicationsList {
 
   private loadApplications(expanderRow: Adw.ExpanderRow, category: Category): void {
     try {
-      this.dataService.getApplicationsByCategory(category.id).forEach(async app => {
-        const isApplicationInstalled = await this.utilsService.isApplicationInstalled(app);
+      this.dataService
+        .getApplicationsByCategory(category.id)
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .forEach(app => {
+          try {
+            const isApplicationInstalled = this.utilsService.isApplicationInstalled(app);
 
-        const row = new Adw.SwitchRow({
-          title: app.title,
-          subtitle: app.description,
-          activatable: true,
-          subtitle_lines: 2,
-          active: isApplicationInstalled,
+            const row = new Adw.SwitchRow({
+              title: app.title,
+              subtitle: app.description,
+              activatable: true,
+              subtitle_lines: 2,
+              active: isApplicationInstalled,
+            });
+
+            row.add_prefix(
+              new Gtk.Image({
+                file: app.icon,
+                pixel_size: 64,
+                margin_start: 30,
+                margin_top: 5,
+                margin_bottom: 5,
+              })
+            );
+
+            const infoButton = new Gtk.Button({
+              icon_name: 'help-about-symbolic',
+              tooltip_text: 'More information about this application',
+              valign: Gtk.Align.CENTER,
+              can_focus: false,
+              css_classes: ['flat'],
+            });
+
+            infoButton.connect('clicked', () => {
+              new ApplicationInfoDialog(this.parentWindow, app);
+            });
+
+            row.add_suffix(infoButton);
+
+            row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
+
+            expanderRow.add_row(row);
+          } catch (error) {
+            console.error(`Error loading application ${app.title}:`, error);
+          }
         });
-
-        row.add_prefix(
-          new Gtk.Image({
-            file: app.icon,
-            pixel_size: 64,
-            margin_start: 30,
-            margin_top: 5,
-            margin_bottom: 5,
-          })
-        );
-
-        const infoButton = new Gtk.Button({
-          icon_name: 'help-about-symbolic',
-          tooltip_text: 'More information about this application',
-          valign: Gtk.Align.CENTER,
-          can_focus: false,
-          css_classes: ['flat'],
-        });
-        
-        infoButton.connect('clicked', () => {
-          new ApplicationInfoDialog(this.parentWindow, app);
-        });
-
-        row.add_suffix(infoButton);   
-
-        row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
-
-        expanderRow.add_row(row);
-      });
     } catch (error) {
       console.error('Error loading applications data:', error);
     }
