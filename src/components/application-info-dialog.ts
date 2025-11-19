@@ -113,6 +113,11 @@ export class ApplicationInfoDialog {
         .then(({ stdout, stderr }) => {
           const labels = stdout.split('\n');
           labels.forEach(line => {
+            const lineParts = line.split(':');
+            if (lineParts.length < 2) {
+              return;
+            }
+
             const row = new Gtk.ListBoxRow({
               activatable: false,
             });
@@ -125,8 +130,6 @@ export class ApplicationInfoDialog {
               margin_start: 6,
               margin_end: 6,
             });
-
-            const lineParts = line.split(': ');
 
             hbox.append(
               new Gtk.Label({
@@ -151,6 +154,8 @@ export class ApplicationInfoDialog {
             row.set_child(hbox);
             this.propertiesList.append(row);
           });
+        }).catch(error => {
+          console.error('Error executing command:', error);
         });
     } catch (error: any) {
       console.error('Error loading properties:', error);
