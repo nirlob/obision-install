@@ -1,39 +1,59 @@
-# Obision Install - TypeScript GNOME Application
+# Obision Install - Application Installer for GNOME
 
-A modern GNOME application built with TypeScript, GTK4, and Libadwaita, featuring a beautiful UI designed with Glade-style UI files.
+A modern GNOME application installer built with TypeScript, GTK4, and Libadwaita. Provides a user-friendly interface for managing application installations with support for both Flatpak and APT packages.
 
 ## Features
 
-- 🚀 **TypeScript Support**: Written in TypeScript for better development experience
+- 🚀 **TypeScript Support**: Written in TypeScript for better development experience and type safety
 - 📱 **Modern UI**: Built with GTK4 and Libadwaita for native GNOME integration
-- 🎨 **UI Files**: Declarative UI design using XML UI files
-- 🏗️ **Meson Build System**: Professional build system setup
-- 📦 **Resource Bundle**: UI files bundled as GResources
-- ⚙️ **Settings Schema**: GSettings integration for preferences
-- 🖥️ **Desktop Integration**: Proper desktop file and application icon
+- 📦 **Multi-Package Support**: Install Flatpak and Debian packages
+- 🗂️ **Category Organization**: Applications organized by categories (Development, Games, Office, etc.)
+- 🔍 **Search Functionality**: Quick search to find applications
+- 🏗️ **Meson Build System**: Professional build system setup with system-wide installation
+- 📋 **Batch Operations**: Install/remove multiple applications at once
+- 🖥️ **Desktop Integration**: Proper desktop file, GSettings schema, and GNOME Shell folder support
+- 📂 **App Folders**: Automatically organize installed apps into GNOME Shell folders by category
 
 ## Project Structure
 
 ```
 obision-install/
-├── src/                    # Source code
-│   └── main.ts            # Main TypeScript application file
-├── scripts/               # Build scripts
-│   └── build.js          # Node.js build script
-├── data/                   # Application data
-│   ├── ui/                # UI definition files
-│   │   └── main-window.ui # Main window UI layout
-│   ├── *.desktop.in       # Desktop file template
-│   ├── *.gschema.xml      # Settings schema
-│   └── *.gresource.xml    # Resource bundle definition
-├── types/                 # TypeScript type definitions
-│   └── gjs.d.ts          # GJS and GTK type declarations
-├── builddir/              # Generated files (created by build)
-│   ├── main.js           # Compiled JavaScript (ready for GJS)
-│   └── data/             # Copied UI resources
-├── meson.build           # Meson build configuration
-├── package.json          # NPM configuration
-└── tsconfig.json         # TypeScript configuration
+├── src/                          # Source code
+│   ├── main.ts                   # Main application file
+│   ├── components/               # UI components
+│   │   ├── applications-list.ts  # Application list with categories
+│   │   ├── install-dialog.ts     # Installation/removal dialog
+│   │   └── application-info-dialog.ts # App details dialog
+│   ├── services/                 # Business logic
+│   │   ├── data-service.ts       # Application data management
+│   │   └── utils-service.ts      # Utilities (package management, etc.)
+│   └── interfaces/               # TypeScript interfaces
+│       ├── application.ts        # Application data model
+│       ├── category.ts           # Category data model
+│       └── install-application.ts # Installation data model
+├── scripts/                      # Build scripts
+│   └── build.js                  # Custom TypeScript to GJS converter
+├── data/                         # Application data
+│   ├── ui/                       # UI definition files
+│   │   └── main-window.ui        # Main window layout
+│   ├── json/                     # Application data
+│   │   └── applications.json     # Applications and categories database
+│   ├── icons/                    # Application icons
+│   │   ├── applications/         # Individual app icons
+│   │   └── categories/           # Category icons
+│   ├── *.desktop.in              # Desktop file template
+│   ├── *.gschema.xml             # GSettings schema
+│   └── *.gresource.xml           # Resource bundle definition
+├── bin/                          # Executable scripts
+│   └── obi-install.in            # Launcher script template
+├── builddir/                     # Generated files (created by build)
+│   ├── main.js                   # Compiled JavaScript (ready for GJS)
+│   ├── components/               # Compiled components
+│   ├── services/                 # Compiled services
+│   └── data/                     # Copied resources
+├── meson.build                   # Meson build configuration
+├── package.json                  # NPM configuration
+└── tsconfig.json                 # TypeScript configuration
 ```
 
 ## Dependencies
@@ -44,32 +64,57 @@ obision-install/
 - **Libadwaita**: Modern GNOME widgets (>= 1.0)
 - **Meson**: Build system (>= 0.59.0)
 - **Node.js**: For TypeScript compilation (>= 16.0.0)
+- **pkg-config**: For dependency detection
+- **glib-compile-resources**: For resource bundling
+- **Flatpak**: For Flatpak package support (optional)
+- **APT**: For Debian package support (Debian/Ubuntu systems)
 
 ### Install system dependencies on Debian/Ubuntu:
 ```bash
-sudo apt install gjs libgtk-4-dev libadwaita-1-dev meson build-essential nodejs npm
+sudo apt-get update
+sudo apt-get install -y \
+  pkg-config \
+  libglib2.0-dev \
+  libgtk-4-dev \
+  libadwaita-1-dev \
+  gjs \
+  meson \
+  nodejs \
+  npm \
+  flatpak
 ```
 
 ### Install system dependencies on Fedora:
 ```bash
-sudo dnf install gjs gtk4-devel libadwaita-devel meson gcc nodejs npm
+sudo dnf install -y \
+  pkgconf \
+  glib2-devel \
+  gtk4-devel \
+  libadwaita-devel \
+  gjs \
+  meson \
+  gcc \
+  nodejs \
+  npm \
+  flatpak
 ```
 
 ## Building and Running
 
-### Quick Start
+### Quick Start (Development)
 ```bash
-# Clone or download the project
+# Clone the repository
+git clone https://github.com/nirlob/obision-install.git
 cd obision-install
 
-# Install dependencies and build
+# Install Node.js dependencies
 npm install
 
 # Build and run the application
 npm start
 ```
 
-### Development with TypeScript
+### Development Mode
 ```bash
 # Install npm dependencies (includes @girs type definitions)
 npm install
@@ -79,36 +124,74 @@ npm start
 
 # Or build and run separately
 npm run build
-gjs builddir/main.js
+./builddir/main.js
 
-# Development mode (watch for changes)
+# TypeScript watch mode (auto-rebuild on changes)
 npm run dev
 ```
 
-### Production Build with Meson
+### System-Wide Installation
+
+#### Install to system
 ```bash
-# Setup build directory
-meson setup builddir
+# Build the application
+npm run build
 
-# Compile the project
-meson compile -C builddir
+# Setup Meson with system prefix
+npm run meson-setup
 
-# Install system-wide (optional)
-sudo meson install -C builddir
+# Compile with Meson
+npm run meson-compile
+
+# Install system-wide (requires sudo)
+sudo npm run meson-install
+
+# Update desktop database and compile GSettings schemas
+sudo update-desktop-database /usr/share/applications
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+sudo gtk-update-icon-cache /usr/share/icons/hicolor/
+```
+
+Or use the all-in-one command:
+```bash
+# Build and install in one step
+sudo npm run meson-install
+
+# Then update system caches
+sudo update-desktop-database /usr/share/applications
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+sudo gtk-update-icon-cache /usr/share/icons/hicolor/
+```
+
+#### Uninstall from system
+```bash
+sudo npm run meson-uninstall
 ```
 
 ## NPM Scripts
 
-- `npm start`: Build and run the application (recommended)
-- `npm run build`: Build from TypeScript source with automatic conversion
-- `npm run dev`: Watch TypeScript files for changes
-- `npm run clean`: Clean build directory
-- `npm run setup`: Setup Meson build directory
-- `npm run compile`: Compile with Meson
+- `npm start`: Build and run the application in development mode (recommended for testing)
+- `npm run build`: Build from TypeScript source with automatic GJS conversion
+- `npm run dev`: Watch TypeScript files for changes (auto-rebuild)
+- `npm run clean`: Clean build and meson directories
+- `npm run meson-setup`: Setup Meson build directory with /usr prefix
+- `npm run meson-compile`: Compile with Meson build system
+- `npm run meson-install`: Complete build and system-wide installation (requires sudo)
+- `npm run meson-uninstall`: Uninstall application from system (requires sudo)
+- `npm run meson-clean`: Clean Meson build directory
 
-## Direct Commands
+## Running the Application
 
-- `gjs builddir/main.js`: Run the compiled application directly
+### After Development Build
+```bash
+./builddir/main.js
+```
+
+### After System Installation
+```bash
+obi-install
+```
+Or launch from GNOME Applications menu: Look for "Obision Install"
 
 ## TypeScript Development
 
@@ -137,42 +220,136 @@ The application uses declarative UI files (`data/ui/main-window.ui`) which are l
 
 ## Application Features
 
-### Current Features:
-1. **Main Window**: Modern Libadwaita application window
-2. **Interactive Counter**: Button click counter demonstration
-3. **About Dialog**: Standard GNOME about dialog
-4. **Settings Integration**: GSettings schema ready for preferences
-5. **Resource Loading**: UI files loaded from GResource bundle
+### Main Features:
+1. **Application Browser**: Browse applications organized by categories
+2. **Category Filtering**: Expandable categories (Development Tools, Games, Office, Multimedia, Design, Tools)
+3. **Search**: Real-time search to filter applications by name or description
+4. **Package Information**: View detailed information about each application
+5. **Installation Status**: Real-time detection of installed applications
+6. **Batch Operations**: Select multiple applications to install/remove at once
+7. **Progress Tracking**: Visual feedback during installation/removal operations
+8. **Flatpak & APT Support**: Install both Flatpak and native Debian packages
+9. **GNOME Shell Integration**: Automatically organize installed apps into folders
+10. **About Dialog**: Standard GNOME about dialog with application information
 
-### Extending the Application:
-1. Add new UI files in `data/ui/`
-2. Update `data/*.gresource.xml` to include new resources
-3. Modify TypeScript source in `src/`
-4. Rebuild with `./build.sh`
+### GNOME Shell Folder Integration:
+- When the "Folder Organization" toggle is enabled, installed applications are automatically organized into GNOME Shell folders by category
+- Empty folders are automatically removed when all apps from a category are uninstalled
+- Folders appear in the GNOME Shell application overview with category names
+
+### Adding New Applications:
+1. Edit `data/json/applications.json`
+2. Add application entry with package name, type (FLATPAK/DEBIAN), category, and icon
+3. Add application icon to `data/icons/applications/`
+4. Rebuild with `npm run build`
+
+### Applications Database Location:
+The application searches for `applications.json` in the following directories (in order):
+1. `./data/json/` - Development/local directory (highest priority)
+2. `/usr/share/applications/obi-install/` - System-wide installation
+3. `/usr/local/share/applications/obi-install/` - Local system installation
+4. `/var/lib/flatpak/exports/share/applications/obi-install/` - Flatpak system installations
+5. `/var/lib/obi-install/` - Alternative system location
+
+The first location where `applications.json` is found will be used. This allows you to:
+- Use local data during development (`./data/json/`)
+- Package custom application lists for system-wide deployment
+- Distribute application databases via Flatpak
+- Maintain different application lists for different environments
+
+### Supported Package Types:
+- **FLATPAK**: Applications from Flathub repository
+- **DEBIAN**: Native Debian/Ubuntu packages via APT
+
+## Architecture
+
+### Build System
+The project uses a **hybrid build system**:
+
+1. **TypeScript → JavaScript**: Node.js build script (`scripts/build.js`)
+   - Compiles TypeScript to CommonJS
+   - Strips TypeScript/CommonJS artifacts
+   - Converts `@girs` imports to GJS `imports.gi` syntax
+   - Combines all modules into single `builddir/main.js`
+   - Maintains execution order (services → components → main)
+
+2. **Meson Build**: For system installation
+   - Compiles GResources
+   - Configures desktop files
+   - Installs to system directories
+   - Creates launcher script
+
+**Important**: Always use `npm run build` instead of `tsc` directly.
+
+### Component Pattern
+Components are instantiated classes that manage GTK widgets:
+```typescript
+class MyComponent {
+  private widget: Gtk.Widget;
+  constructor(private parent: Adw.ApplicationWindow) {
+    this.setupUI();
+  }
+  public getWidget(): Gtk.Widget { return this.widget; }
+}
+```
+
+### Service Pattern
+Services use static singleton pattern:
+```typescript
+class MyService {
+  static _instance: MyService;
+  static get instance(): MyService {
+    if (!MyService._instance) {
+      MyService._instance = new MyService();
+    }
+    return MyService._instance;
+  }
+}
+```
 
 ## Troubleshooting
 
 ### Common Issues:
 
-1. **"Cannot find module" errors**: 
-   - Ensure all system dependencies are installed
-   - Check GJS version compatibility
+1. **Meson setup fails with "pkg-config not found"**:
+   ```bash
+   sudo apt-get install pkg-config libglib2.0-dev libgtk-4-dev libadwaita-1-dev
+   ```
 
-2. **UI file not found**:
-   - Verify UI files are in `data/ui/` directory
-   - Check GResource bundle compilation
+2. **Application doesn't appear in GNOME menu after installation**:
+   ```bash
+   sudo update-desktop-database /usr/share/applications
+   sudo gtk-update-icon-cache /usr/share/icons/hicolor/
+   ```
 
-3. **TypeScript compilation errors**:
-   - Update type definitions in `types/gjs.d.ts`
-   - Use `any` type for missing definitions temporarily
+3. **GSettings schema errors**:
+   ```bash
+   sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+   ```
+
+4. **Permission denied when cleaning mesonbuilddir**:
+   ```bash
+   sudo rm -rf mesonbuilddir
+   sudo chown -R $USER:$USER builddir
+   ```
+
+5. **Flatpak installation fails**:
+   - Ensure Flathub repository is added: `flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo`
+
+6. **TypeScript compilation errors**:
+   - Ensure `@girs` packages are installed: `npm install`
+   - Check TypeScript version: `npx tsc --version`
 
 ### Debug Mode:
 ```bash
 # Run with debug output
-GJS_DEBUG_OUTPUT=stderr gjs builddir/main.js
+GJS_DEBUG_OUTPUT=stderr ./builddir/main.js
 
 # Run with GJS debugger
 gjs --debugger builddir/main.js
+
+# Check system logs for installation issues
+journalctl -xe | grep obi-install
 ```
 
 ## Contributing

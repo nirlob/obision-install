@@ -1,0 +1,3 @@
+#!/usr/bin/env gjs
+
+import('file:///usr/share/@app_id@/main.js');

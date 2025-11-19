@@ -7,13 +7,11 @@
     "build": "node scripts/build.js",
     "dev": "tsc --watch",
     "start": "npm run build && ./builddir/main.js",
-    "start:en": "npm run build && node scripts/run-with-locale.js en",
-    "start:es": "npm run build && node scripts/run-with-locale.js es",
-    "start:fr": "npm run build && node scripts/run-with-locale.js fr",
     "clean": "rm -rf builddir && rm -rf mesonbuilddir",
-    "meson-setup": "meson setup mesonbuilddir",
+    "meson-setup": "meson setup mesonbuilddir --prefix=/usr",
     "meson-compile": "meson compile -C mesonbuilddir",
     "meson-install": "npm run build && npm run meson-setup && npm run meson-compile && cd mesonbuilddir && meson install",
+    "meson-uninstall": "cd mesonbuilddir && ninja uninstall && cd .. && npm run meson-clean",
     "meson-clean": "rm -rf mesonbuilddir"
   },
   "keywords": [

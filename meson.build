@@ -6,7 +6,7 @@ project('obision-install',
 gnome = import('gnome')
 
 # Application ID
-app_id = 'com.obision.obi-install'
+app_id = 'com.obision.ObiInstall'
 
 # Configuration
 conf = configuration_data()
@@ -54,24 +54,25 @@ install_data('data/' + app_id + '.gschema.xml',
   install_dir: datadir / 'glib-2.0' / 'schemas'
 )
 
-# Install icons
+# Install icons (commented out - icons don't exist yet)
 install_data('data/icons/hicolor/scalable/apps/' + app_id + '.svg',
   install_dir: datadir / 'icons' / 'hicolor' / 'scalable' / 'apps'
 )
 
-install_data('data/icons/hicolor/48x48/apps/' + app_id + '.png',
-  install_dir: datadir / 'icons' / 'hicolor' / '48x48' / 'apps'
-)
-
-install_data('data/icons/hicolor/64x64/apps/' + app_id + '.png',
-  install_dir: datadir / 'icons' / 'hicolor' / '64x64' / 'apps'
-)
-
-# Create launcher script (disabled - using npm workflow)
-# configure_file(
-#   input: 'bin/obision-install.in',
-#   output: 'obision-install',
-#   configuration: conf,
-#   install: true,
-#   install_dir: bindir,
+# install_data('data/icons/hicolor/48x48/apps/' + app_id + '.png',
+#   install_dir: datadir / 'icons' / 'hicolor' / '48x48' / 'apps'
 # )
+
+# install_data('data/icons/hicolor/64x64/apps/' + app_id + '.png',
+#   install_dir: datadir / 'icons' / 'hicolor' / '64x64' / 'apps'
+# )
+
+# Create launcher script
+configure_file(
+  input: 'bin/obi-install.in',
+  output: 'obi-install',
+  configuration: conf,
+  install: true,
+  install_dir: bindir,
+  install_mode: 'rwxr-xr-x',
+)
