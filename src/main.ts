@@ -133,7 +133,7 @@ class ObisionInstallApplication {
       headerBar.pack_end(menuButton);
 
       this.installInFolderToggleButton = new Gtk.ToggleButton({
-        tooltip_text: 'Generates a new folder in applications screen if not exists with the name of the category',
+        tooltip_text: 'Generates a new folder in applications screen, if not exists, with the name of the category and sets the applications there',
         icon_name: 'folder-symbolic',
       });
       headerBar.pack_end(this.installInFolderToggleButton);

@@ -114,7 +114,7 @@ export class InstallDialog {
         const row = new Adw.ActionRow({
           title: appData.application.title,
           subtitle: appData.application.description || '',
-          subtitle_lines: 3,
+          subtitle_lines: 2,
         });
 
         row.add_prefix(
