@@ -139,6 +139,7 @@ if (fs.existsSync(installDialogFile)) {
     
     // Clean up TypeScript/CommonJS artifacts using our function
     installDialogContent = cleanJSContent(installDialogContent)
+        .replace(/data_service_1\./g, '')
         .replace(/utils_service_1\./g, ''); // Additional cleanup for this component
 
     combinedContent += installDialogContent + '\n';
