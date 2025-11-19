@@ -5,12 +5,20 @@ import { Application } from "../interfaces/application";
 export class DataService {
   static _instance: DataService;
 
-  private readonly DATA_FILE_PATH = "./data/json/applications.json";
+  private readonly APPLICATIONS_FILE_DIRS = [
+    "./data/json/",
+    "/usr/share/applications/obi-install/",
+    "/usr/local/share/applications/obi-install/",
+    "/var/lib/flatpak/exports/share/applications/obi-install/",
+    "/var/lib/obi-install/"
+  ];
 
   private categories: Category[] = [];
   private applications: Application[] = [];
+  private applicationsFileDir: string = "";
 
   private constructor() {
+    this.searchApplicationsFileDir();
     this.loadDataFromJson();
   }
 
@@ -22,14 +30,26 @@ export class DataService {
     return DataService._instance;
   }
 
+  private searchApplicationsFileDir() {
+    for (const dir of this.APPLICATIONS_FILE_DIRS) {
+      const file = Gio.File.new_for_path(dir + "applications.json");
+      if (file.query_exists(null)) {
+        this.applicationsFileDir = dir;
+        return;
+      }
+    }
+
+    throw new Error("No applications.json file found in any of the specified directories.");
+  }
+
   private loadDataFromJson(): void {
     try {
       // Load applications data from applications.json
-      const dataFile = Gio.File.new_for_path(this.DATA_FILE_PATH);
+      const dataFile = Gio.File.new_for_path(this.applicationsFileDir + "applications.json");
       const [success, contents] = dataFile.load_contents(null);
 
       if (!success) {
-        console.error("Could not load applications.json");
+        throw new Error("Could not load applications.json");
       }
 
       const parsedData = JSON.parse(new TextDecoder().decode(contents));
@@ -37,7 +57,7 @@ export class DataService {
       this.categories = parsedData.categories;
       this.applications = parsedData.applications;
     } catch (error) {
-      console.error("Error loading JSON data:", error);
+      throw new Error("Error loading JSON data: " + error);
     }
   }
 

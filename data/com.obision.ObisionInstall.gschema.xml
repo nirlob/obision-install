@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="obision-install">
-  <schema id="com.obision.ObisionInstall" path="/com/obision/ObisionInstall/">
+<schemalist gettext-domain="obi-install">
+  <schema id="com.obision.obi-install" path="/com/obision/obi-install/">
     <key name="window-width" type="i">
       <default>800</default>
       <summary>Default window width</summary>

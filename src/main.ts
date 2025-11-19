@@ -18,7 +18,7 @@ class ObisionInstallApplication {
   constructor() {
     // Create the application
     this.application = new Adw.Application({
-      application_id: 'com.obision.ObisionInstall',
+      application_id: 'com.obision.obi-install',
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
     });
 
@@ -193,14 +193,14 @@ class ObisionInstallApplication {
       transient_for: parent,
       modal: true,
       application_name: 'Test GNOME App',
-      application_icon: 'com.obision.ObisionInstall',
+      application_icon: 'com.obision.obi-install',
       developer_name: 'Your Name',
       version: '1.0.0',
       developers: ['Your Name <your.email@example.com>'],
       copyright: '© 2024 Your Name',
       license_type: Gtk.License.GPL_3_0,
       website: 'https://example.com',
-      issue_url: 'https://github.com/yourusername/obision-install/issues',
+      issue_url: 'https://github.com/nirlob/obi-install/issues',
     });
 
     aboutDialog.present();
