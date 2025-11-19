@@ -30,13 +30,6 @@ class ObisionInstallApplication {
   private onStartup(): void {
     console.log('Application starting up...');
 
-    // const settings = Gio.Settings.new('org.gnome.desktop.app-folders');
-    // const folders = settings.get_strv('folder-children');
-    // console.log('Settings schema loaded:', folders);
-    // folders.push('Obision Install');
-    // settings.set_strv('folder-children', folders);
-    // console.log('Updated folder-children:', settings.get_strv('folder-children'));
-
     // Add application actions for menu
     const aboutAction = new Gio.SimpleAction({ name: 'about' });
     aboutAction.connect('activate', () => {
@@ -192,7 +185,7 @@ class ObisionInstallApplication {
     const aboutDialog = new Adw.AboutWindow({
       transient_for: parent,
       modal: true,
-      application_name: 'Test GNOME App',
+      application_name: 'Obision Install',
       application_icon: 'com.obision.obi-install',
       developer_name: 'Your Name',
       version: '1.0.0',
