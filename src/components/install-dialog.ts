@@ -102,7 +102,7 @@ export class InstallDialog {
         vexpand: true,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
         vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-        height_request: installApplicationsData.length > 1 ? 170 : 85,
+        height_request: installApplicationsData.length > 1 ? 140 : 70,
       });
 
       const listBox = new Gtk.ListBox({
@@ -111,16 +111,19 @@ export class InstallDialog {
       });
 
       installApplicationsData.forEach(async appData => {
-        const row = new Adw.ActionRow();
-        row.set_title(appData.application.title);
-        row.set_subtitle(appData.application.description || '');
-        row.set_subtitle_lines(3);
+        const row = new Adw.ActionRow({
+          title: appData.application.title,
+          subtitle: appData.application.description || '',
+          subtitle_lines: 3,
+        });
+
         row.add_prefix(
           new Gtk.Image({
             file: appData.application.icon,
             pixel_size: 64,
           })
         );
+
         appData.row = row;
         listBox.append(row);
       });
