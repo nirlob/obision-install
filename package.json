@@ -12,7 +12,8 @@
     "meson-compile": "meson compile -C mesonbuilddir",
     "meson-install": "npm run build && npm run meson-setup && npm run meson-compile && cd mesonbuilddir && meson install",
     "meson-uninstall": "cd mesonbuilddir && ninja uninstall && cd .. && npm run meson-clean",
-    "meson-clean": "rm -rf mesonbuilddir builddir"
+    "meson-clean": "rm -rf mesonbuilddir builddir",
+    "install-data": "sudo mkdir -p /var/lib/obision-install/data/icons && sudo cp data/applications.json /var/lib/obision-install/ && sudo cp -r data/icons/applications /var/lib/obision-install/data/icons/ && sudo cp -r data/icons/categories /var/lib/obision-install/data/icons/"
   },
   "keywords": [
     "gnome",

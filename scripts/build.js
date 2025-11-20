@@ -217,9 +217,9 @@ fs.chmodSync(appFile, 0o755);
 // Copy resources
 console.log('📁 Copying resources...');
 const dataUiSrc = 'data/ui';
-const dataJsonSrc = 'data/json';
+const dataJsonSrc = 'data/applications.json';
 const dataUiDest = path.join(BUILD_DIR, 'data/ui');
-const dataJsonDest = path.join(BUILD_DIR, 'data/json');
+const dataJsonDest = path.join(BUILD_DIR, 'data/applications.json');
 const dataIconsSrc = 'data/icons';
 const dataIconsDest = path.join(BUILD_DIR, 'data/icons');
 const dataStylesSrc = 'data/styles.css';
@@ -227,7 +227,7 @@ const dataStylesDest = path.join(BUILD_DIR, 'data/styles.css');
 
 // Copy styles.css
 if (fs.existsSync(dataStylesSrc)) {
-    execSync(`mkdir -p ${path.dirname(dataStylesDest)} && cp ${dataStylesSrc} ${dataStylesDest}`, { stdio: 'pipe' });
+    execSync(`cp ${dataStylesSrc} ${dataStylesDest}`, { stdio: 'pipe' });
 }
 
 // Copy icons if they exist
@@ -240,7 +240,7 @@ if (fs.existsSync(dataUiSrc)) {
 }
 
 if (fs.existsSync(dataJsonSrc)) {
-    execSync(`mkdir -p ${path.dirname(dataJsonDest)} && cp -r ${dataJsonSrc} ${path.dirname(dataJsonDest)}/`, { stdio: 'pipe' });
+    execSync(`cp ${dataJsonSrc} ${dataJsonDest}`, { stdio: 'pipe' });
 }
 
 console.log('✅ Build completed successfully!');
