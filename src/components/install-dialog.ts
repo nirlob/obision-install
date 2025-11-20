@@ -168,6 +168,7 @@ export class InstallDialog {
         console.log('Generating application folders...');
         this.createDesktopFolders();
       }
+      
       this.buttonCancel.set_sensitive(true);
 
       this.removeUninstalledAppsFromDesktopFolders();

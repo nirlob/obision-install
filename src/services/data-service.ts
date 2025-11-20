@@ -34,11 +34,12 @@ export class DataService {
     for (const dir of this.APPLICATIONS_FILE_DIRS) {
       const file = Gio.File.new_for_path(dir + "applications.json");
       if (file.query_exists(null)) {
+        console.log(`✅ Found applications.json file in directory: ${dir}`);
         this.applicationsFileDir = dir;
         return;
       }
     }
-
+    console.error("❌ applications.json file not found in any of the specified directories.");
     throw new Error("No applications.json file found in any of the specified directories.");
   }
 

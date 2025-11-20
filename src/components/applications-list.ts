@@ -1,5 +1,6 @@
 import Gtk from '@girs/gtk-4.0';
 import Adw from '@girs/adw-1';
+import GLib from '@girs/glib-2.0';
 import { Application } from '../interfaces/application.js';
 import { ApplicationInfoDialog } from './application-info-dialog.js';
 import { UtilsService } from '../services/utils-service.js';
@@ -15,6 +16,7 @@ export class ApplicationsList {
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
     this.setupUI();
+    this.loadData();
   }
 
   private setupUI(): void {
@@ -24,7 +26,6 @@ export class ApplicationsList {
       vexpand: true,
       hscrollbar_policy: Gtk.PolicyType.NEVER,
       vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-      css_classes: ['card'],
     });
 
     // Create listbox
@@ -33,25 +34,18 @@ export class ApplicationsList {
       css_classes: ['boxed-list'],
     });
 
-    this.scrolledWindow.set_child(
-      new Gtk.Label({
-        label: 'Loading applications...',
-        css_classes: ['heading'],
-      })
-    );
-
-    this.loadData().then(() => {
-      this.scrolledWindow.remove_css_class('card');
-      this.scrolledWindow.set_child(this.listbox);
-    });
+    this.scrolledWindow.set_child(this.listbox);
   }
 
-  private loadData(): Promise<void> {
-    return new Promise(resolve => {
-      setTimeout(() => {
+  private loadData(): void {
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
+      try {
         this.loadCategories();
-        resolve();
-      }, 100); // Simulate a short delay for loading data
+      } catch (error) {
+        console.error('❌ Error loading data:', error);
+      }
+
+      return GLib.SOURCE_REMOVE;
     });
   }
 
@@ -87,14 +81,13 @@ export class ApplicationsList {
         .sort((a, b) => a.title.localeCompare(b.title))
         .forEach(app => {
           try {
-            const isApplicationInstalled = this.utilsService.isApplicationInstalled(app);
-
+            // Create row without checking installation status initially
             const row = new Adw.SwitchRow({
               title: app.title,
               subtitle: app.description,
               activatable: true,
               subtitle_lines: 2,
-              active: isApplicationInstalled,
+              active: false, // Default to not installed
             });
 
             row.add_prefix(
@@ -128,9 +121,19 @@ export class ApplicationsList {
 
             row.add_suffix(infoButton);
 
-            row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
-
             expanderRow.add_row(row);
+
+            // Check installation status asynchronously after UI is rendered
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 0, () => {
+              try {
+                const isInstalled = this.utilsService.isApplicationInstalled(app);
+                row.set_active(isInstalled);
+                row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
+              } catch (error) {
+                console.error(`Error checking installation for ${app.title}:`, error);
+              }
+              return GLib.SOURCE_REMOVE;
+            });
           } catch (error) {
             console.error(`Error loading application ${app.title}:`, error);
           }

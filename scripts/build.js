@@ -48,6 +48,7 @@ function cleanJSContent(content) {
         .replace(/gtk_4_0_1\.default\./g, 'Gtk.')
         .replace(/gdk_4_0_1\.default\./g, 'Gdk.')
         .replace(/gio_2_0_1\.default\./g, 'Gio.')
+        .replace(/glib_2_0_1\.default\./g, 'GLib.')
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/adw_1_1\.default\./g, 'Adw.')
         
@@ -64,6 +65,7 @@ const { Gio } = imports.gi;
 const { Gtk } = imports.gi;
 const { Gdk } = imports.gi;
 const { Adw } = imports.gi;
+const { GLib } = imports.gi;
 const { Pango } = imports.gi;
 
 imports.gi.versions.Gtk = '4.0';
