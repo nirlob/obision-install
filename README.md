@@ -45,7 +45,7 @@ obision-install/
 │   ├── *.gschema.xml             # GSettings schema
 │   └── *.gresource.xml           # Resource bundle definition
 ├── bin/                          # Executable scripts
-│   └── obi-install.in            # Launcher script template
+│   └── obision-install.in            # Launcher script template
 ├── builddir/                     # Generated files (created by build)
 │   ├── main.js                   # Compiled JavaScript (ready for GJS)
 │   ├── components/               # Compiled components
@@ -189,7 +189,7 @@ sudo npm run meson-uninstall
 
 ### After System Installation
 ```bash
-obi-install
+obision-install
 ```
 Or launch from GNOME Applications menu: Look for "Obision Install"
 
@@ -246,10 +246,10 @@ The application uses declarative UI files (`data/ui/main-window.ui`) which are l
 ### Applications Database Location:
 The application searches for `applications.json` in the following directories (in order):
 1. `./data/json/` - Development/local directory (highest priority)
-2. `/usr/share/applications/obi-install/` - System-wide installation
-3. `/usr/local/share/applications/obi-install/` - Local system installation
-4. `/var/lib/flatpak/exports/share/applications/obi-install/` - Flatpak system installations
-5. `/var/lib/obi-install/` - Alternative system location
+2. `/usr/share/applications/obision-install/` - System-wide installation
+3. `/usr/local/share/applications/obision-install/` - Local system installation
+4. `/var/lib/flatpak/exports/share/applications/obision-install/` - Flatpak system installations
+5. `/var/lib/obision-install/` - Alternative system location
 
 The first location where `applications.json` is found will be used. This allows you to:
 - Use local data during development (`./data/json/`)
@@ -349,7 +349,7 @@ GJS_DEBUG_OUTPUT=stderr ./builddir/main.js
 gjs --debugger builddir/main.js
 
 # Check system logs for installation issues
-journalctl -xe | grep obi-install
+journalctl -xe | grep obision-install
 ```
 
 ## Contributing

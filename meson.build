@@ -6,7 +6,7 @@ project('obision-install',
 gnome = import('gnome')
 
 # Application ID
-app_id = 'com.obision.ObiInstall'
+app_id = 'com.obision.ObisionInstall'
 
 # Configuration
 conf = configuration_data()
@@ -28,6 +28,11 @@ install_data('builddir/main.js',
 
 # Install UI files
 install_subdir('data/ui',
+  install_dir: pkgdatadir,
+)
+
+# Install CSS file
+install_data('data/style.css',
   install_dir: pkgdatadir,
 )
 
@@ -69,8 +74,8 @@ install_data('data/icons/hicolor/scalable/apps/' + app_id + '.svg',
 
 # Create launcher script
 configure_file(
-  input: 'bin/obi-install.in',
-  output: 'obi-install',
+  input: 'bin/obision-install.in',
+  output: 'obision-install',
   configuration: conf,
   install: true,
   install_dir: bindir,

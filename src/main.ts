@@ -18,7 +18,7 @@ class ObisionInstallApplication {
   constructor() {
     // Create the application
     this.application = new Adw.Application({
-      application_id: 'com.obision.obi-install',
+      application_id: 'com.obision.obision-install',
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
     });
 
@@ -64,7 +64,12 @@ class ObisionInstallApplication {
 
     // Load CSS
     const cssProvider = new Gtk.CssProvider();
-    cssProvider.load_from_path('data/style.css');
+    // Try installed path first, then development path
+    try {
+      cssProvider.load_from_path('/usr/share/com.obision.ObisionInstall/style.css');
+    } catch (e) {
+      cssProvider.load_from_path('data/style.css');
+    }
 
     const display = Gdk.Display.get_default();
     if (display) {
@@ -91,7 +96,12 @@ class ObisionInstallApplication {
 
     // Fallback: load from file
     try {
-      builder.add_from_file('data/ui/main-window.ui');
+      // Try installed path first
+      try {
+        builder.add_from_file('/usr/share/com.obision.ObisionInstall/ui/main-window.ui');
+      } catch (e) {
+        builder.add_from_file('data/ui/main-window.ui');
+      }
       console.log('Loaded UI from file');
     } catch (e2) {
       console.error('Could not load UI file:', e2);
@@ -186,14 +196,14 @@ class ObisionInstallApplication {
       transient_for: parent,
       modal: true,
       application_name: 'Obision Install',
-      application_icon: 'com.obision.obi-install',
+      application_icon: 'com.obision.obision-install',
       developer_name: 'Your Name',
       version: '1.0.0',
       developers: ['Your Name <your.email@example.com>'],
       copyright: '© 2024 Your Name',
       license_type: Gtk.License.GPL_3_0,
       website: 'https://example.com',
-      issue_url: 'https://github.com/nirlob/obi-install/issues',
+      issue_url: 'https://github.com/nirlob/obision-install/issues',
     });
 
     aboutDialog.present();

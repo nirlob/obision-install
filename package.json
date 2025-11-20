@@ -1,5 +1,5 @@
 {
-  "name": "obi-install",
+  "name": "obision-install",
   "version": "1.0.0",
   "description": "Rapid applications installer",
   "main": "builddir/main.js",

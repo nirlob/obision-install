@@ -7,10 +7,10 @@ export class DataService {
 
   private readonly APPLICATIONS_FILE_DIRS = [
     "./data/json/",
-    "/usr/share/applications/obi-install/",
-    "/usr/local/share/applications/obi-install/",
-    "/var/lib/flatpak/exports/share/applications/obi-install/",
-    "/var/lib/obi-install/"
+    "/usr/share/applications/obision-install/",
+    "/usr/local/share/applications/obision-install/",
+    "/var/lib/flatpak/exports/share/applications/obision-install/",
+    "/var/lib/obision-install/"
   ];
 
   private categories: Category[] = [];
