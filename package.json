@@ -12,7 +12,7 @@
     "meson-compile": "meson compile -C mesonbuilddir",
     "meson-install": "npm run build && npm run meson-setup && npm run meson-compile && cd mesonbuilddir && meson install",
     "meson-uninstall": "cd mesonbuilddir && ninja uninstall && cd .. && npm run meson-clean",
-    "meson-clean": "rm -rf mesonbuilddir"
+    "meson-clean": "rm -rf mesonbuilddir builddir"
   },
   "keywords": [
     "gnome",

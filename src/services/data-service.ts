@@ -6,7 +6,7 @@ export class DataService {
   static _instance: DataService;
 
   private readonly APPLICATIONS_FILE_DIRS = [
-    "./data/json/",
+    "./data/",
     "/usr/share/applications/obision-install/",
     "/usr/local/share/applications/obision-install/",
     "/var/lib/flatpak/exports/share/applications/obision-install/",
