@@ -18,7 +18,7 @@ class ObisionInstallApplication {
   constructor() {
     // Create the application
     this.application = new Adw.Application({
-      application_id: 'com.obision.obision-install',
+      application_id: 'com.obision.ObisionInstall',
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
     });
 
@@ -196,13 +196,13 @@ class ObisionInstallApplication {
       transient_for: parent,
       modal: true,
       application_name: 'Obision Install',
-      application_icon: 'com.obision.obision-install',
-      developer_name: 'Your Name',
+      application_icon: 'com.obision.ObisionInstall',
+      developer_name: 'Jose Francisco Gonzalez',
       version: '1.0.0',
-      developers: ['Your Name <your.email@example.com>'],
-      copyright: '© 2024 Your Name',
+      developers: ['Jose Francisco Gonzalez <jfgs1609@gmail.com>'],
+      copyright: `© ${new Date().getFullYear()} Jose Francisco Gonzalez`,
       license_type: Gtk.License.GPL_3_0,
-      website: 'https://example.com',
+      website: 'https://obision.com',
       issue_url: 'https://github.com/nirlob/obision-install/issues',
     });
 
