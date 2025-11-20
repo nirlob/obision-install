@@ -55,11 +55,34 @@ export class DataService {
 
       const parsedData = JSON.parse(new TextDecoder().decode(contents));
 
-      this.categories = parsedData.categories;
-      this.applications = parsedData.applications;
+      // Resolve icon paths relative to applicationsFileDir
+      this.categories = parsedData.categories.map((cat: Category) => ({
+        ...cat,
+        icon: cat.icon ? this.resolveIconPath(cat.icon) : cat.icon
+      }));
+      
+      this.applications = parsedData.applications.map((app: Application) => ({
+        ...app,
+        icon: app.icon ? this.resolveIconPath(app.icon) : app.icon
+      }));
     } catch (error) {
       throw new Error("Error loading JSON data: " + error);
     }
+  }
+
+  private resolveIconPath(iconPath: string): string {
+    // If path is already absolute, return as-is
+    if (iconPath.startsWith('/')) {
+      return iconPath;
+    }
+    
+    // If applicationsFileDir already ends with "data/", just append the icon path
+    if (this.applicationsFileDir.endsWith('data/')) {
+      return this.applicationsFileDir + iconPath.replace(/^data\//, '');
+    }
+    
+    // Otherwise, append the full icon path (including "data/")
+    return this.applicationsFileDir + iconPath;
   }
 
   public getCategories(): Category[] {
