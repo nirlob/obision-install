@@ -126,12 +126,12 @@ export class ApplicationsList {
             // Check installation status asynchronously after UI is rendered
             GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 0, () => {
               try {
-                const isInstalled = this.utilsService.isApplicationInstalled(app);
-                row.set_active(isInstalled);
+                row.set_active(this.utilsService.isApplicationInstalled(app));
                 row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
               } catch (error) {
                 console.error(`Error checking installation for ${app.title}:`, error);
               }
+              
               return GLib.SOURCE_REMOVE;
             });
           } catch (error) {

@@ -3,6 +3,7 @@ import { Application } from '../interfaces/application';
 import Gtk from '@girs/gtk-4.0';
 import Pango from '@girs/pango-1.0';
 import { UtilsService } from '../services/utils-service';
+import GLib from '@girs/glib-2.0';
 
 export class ApplicationInfoDialog {
   private propertiesList!: Gtk.ListBox;
@@ -104,61 +105,33 @@ export class ApplicationInfoDialog {
   }
 
   private loadProperties(): void {
-    try {
-      this.utilsService
-        .executeCommandAsync(
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT_IDLE, 0, () => {
+      try {
+        const [stdout, stderr] = this.utilsService.executeCommand(
           this.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt',
           this.application.packageType === 'FLATPAK' ? ['remote-info', 'flathub', this.application.packageName] : ['show', this.application.packageName]
-        )
-        .then(({ stdout, stderr }) => {
-          const labels = stdout.split('\n');
-          labels.forEach(line => {
-            const lineParts = line.split(':');
-            if (lineParts.length < 2) {
-              return;
-            }
+        );
 
-            const row = new Gtk.ListBoxRow({
-              activatable: false,
-            });
+        const labels = stdout.split('\n');
+        labels.forEach(line => {
+          const lineParts = line.split(':');
+          if (lineParts.length < 2) {
+            return;
+          }
 
-            const hbox = new Gtk.Box({
-              orientation: Gtk.Orientation.HORIZONTAL,
-              spacing: 12,
-              margin_top: 6,
-              margin_bottom: 6,
-              margin_start: 6,
-              margin_end: 6,
-            });
-
-            hbox.append(
-              new Gtk.Label({
-                halign: Gtk.Align.START,
-                label: lineParts[0].trim(),
-                xalign: 0,
-                yalign: 0,
-                ellipsize: Pango.EllipsizeMode.END,
-                width_request: 200,
-                vexpand: true,
-              })
-            );
-
-            hbox.append(
-              new Gtk.Label({
-                label: lineParts[1].trim(),
-                wrap: true,
-                xalign: 0,
-              })
-            );
-
-            row.set_child(hbox);
-            this.propertiesList.append(row);
+          const row = new Adw.ActionRow({
+            activatable: false,
+            title: lineParts[0].trim(),
+            subtitle: lineParts[1].trim(),
+            css_classes: ['property'],
           });
-        }).catch(error => {
-          console.error('Error executing command:', error);
+          this.propertiesList.append(row);
         });
-    } catch (error: any) {
-      console.error('Error loading properties:', error);
-    }
+      } catch (error) {
+        console.error(`Error loading properties for ${this.application.title}:`, error);
+      }
+
+      return GLib.SOURCE_REMOVE;
+    });
   }
 }

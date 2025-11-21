@@ -4,6 +4,7 @@ import Gio from '@girs/gio-2.0';
 import { UtilsService } from '../services/utils-service';
 import { InstallApplicationData } from '../interfaces/install-application';
 import { DataService } from '../services/data-service';
+import GLib from '@girs/glib-2.0';
 
 export class InstallDialog {
   private dialog!: Adw.Dialog;
@@ -142,25 +143,46 @@ export class InstallDialog {
     this.buttonCancel.set_sensitive(false);
 
     this.installApplicationsData.forEach(appData => {
-      try {
-        this.setSuffixToRow(appData.row!);
-        console.log(`Starting installation for: ${appData.application.title}`);
+      this.setSuffixToRow(appData.row!);
 
-        promises.push(
-          this.executeInstall(appData).then(({stdout, stderr}) => {
-            console.log(`Finished installation for: ${appData.application.title}`);
-            this.setSuffixToRow(appData.row!, stderr);
-          }).catch((error) => {
-            console.log(`Installation failed for: ${appData.application.title}, error: ${error} `);
-            this.setSuffixToRow(appData.row!, error.toString());
-          }).finally(() => {
-            const fraction = index++ / this.installApplicationsData.length;
-            this.progressBar.set_fraction(fraction);
-          })
-        );
-      } catch (error) {
-        console.error(`Failed to install ${appData.application.title}:`, error);
-      }
+      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
+        try {
+          const operation = appData.install ? 'install' : appData.application.packageType === 'FLATPAK' ? 'uninstall' : 'remove';
+          console.log(`Executing ${operation} for: ${appData.application.title}`);
+          const [stdout, stderr] = this.utilsService.executeCommand(appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', [operation, '-y', appData.application.packageName]);
+
+          console.log(`Finished installation for: ${appData.application.title}`);
+          this.setSuffixToRow(appData.row!, stderr);
+
+          const fraction = index++ / this.installApplicationsData.length;
+          this.progressBar.set_fraction(fraction);
+        } catch (error) {
+          console.error(`Failed to ${appData.install ? 'install' : 'remove'} ${appData.application.title}:`, error);
+        } finally {
+        }
+        
+        return GLib.SOURCE_REMOVE;
+      });
+
+      // try {
+      //   this.setSuffixToRow(appData.row!);
+      //   console.log(`Starting installation for: ${appData.application.title}`);
+
+      //   promises.push(
+      //     this.executeInstall(appData).then(({stdout, stderr}) => {
+      //       console.log(`Finished installation for: ${appData.application.title}`);
+      //       this.setSuffixToRow(appData.row!, stderr);
+      //     }).catch((error) => {
+      //       console.log(`Installation failed for: ${appData.application.title}, error: ${error} `);
+      //       this.setSuffixToRow(appData.row!, error.toString());
+      //     }).finally(() => {
+      //       const fraction = index++ / this.installApplicationsData.length;
+      //       this.progressBar.set_fraction(fraction);
+      //     })
+      //   );
+      // } catch (error) {
+      //   console.error(`Failed to install ${appData.application.title}:`, error);
+      // }
     });
 
     Promise.allSettled(promises).then(results => {
@@ -342,14 +364,6 @@ export class InstallDialog {
       console.error('Error creating application folders:', error);
       // Don't throw - this is not critical for installation
     }
-  }
-
-  private executeInstall(appData: InstallApplicationData): Promise<{ stdout: string; stderr: string }> {
-    const operation = appData.install ? 'install' : appData.application.packageType === 'FLATPAK' ? 'uninstall' : 'remove';
-
-    console.log(`Executing ${operation} for: ${appData.application.title}`);
-
-    return this.utilsService.executeCommandAsync(appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', [operation, '-y', appData.application.packageName]);
   }
 
   public setApplicationsInstalledCallback(callback: () => void): void {
