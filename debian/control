@@ -1,7 +1,7 @@
 Source: obision-apps
 Section: utils
 Priority: optional
-Maintainer: Jose Francisco Gonzalez <jose@example.com>
+Maintainer: Jose Francisco Gonzalez <jfgs1609@gmail.com>
 Build-Depends: debhelper-compat (= 13),
                meson,
                nodejs,
