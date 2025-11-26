@@ -16,6 +16,8 @@ class ObisionAppsApplication {
   private installButton!: Gtk.Button;
   private installInFolderToggleButton!: Gtk.ToggleButton;
   private logger = LoggerService.instance;
+  private settings!: Gio.Settings;
+  private mainWindow!: Adw.ApplicationWindow;
 
   constructor() {
     // Create the application
@@ -23,6 +25,9 @@ class ObisionAppsApplication {
       application_id: 'com.obision.ObisionApps',
       flags: Gio.ApplicationFlags.DEFAULT_FLAGS,
     });
+
+    // Initialize settings
+    this.settings = new Gio.Settings({ schema_id: 'com.obision.obision-apps' });
 
     // Connect signals
     this.application.connect('activate', this.onActivate.bind(this));
@@ -79,9 +84,10 @@ class ObisionAppsApplication {
     }
 
     // Create and show the main window
-    const window = this.createMainWindow();
+    this.mainWindow = this.createMainWindow();
+    this.restoreWindowState();
     this.logger.info('Window created, presenting');
-    window.present();
+    this.mainWindow.present();
   }
 
   private createMainWindow(): Adw.ApplicationWindow {
@@ -89,8 +95,12 @@ class ObisionAppsApplication {
     const window = new Adw.ApplicationWindow({
       application: this.application as any,
       title: 'Obision Applications Install',
-      default_width: 1000,
-      default_height: 800,
+    });
+
+    // Save window state before closing
+    window.connect('close-request', () => {
+      this.saveWindowState();
+      return false;
     });
 
     // Load UI from resource
@@ -224,6 +234,58 @@ class ObisionAppsApplication {
   private onApplicationsInstalled(): void {
     this.installApplicationsData = [];
     this.installButton.set_sensitive(false);
+  }
+
+  private saveWindowState(): void {
+    const surface = this.mainWindow.get_surface();
+    if (!surface) {
+      this.logger.warning('Cannot save window state: surface not available');
+      return;
+    }
+
+    // Save maximized state
+    const isMaximized = this.mainWindow.is_maximized();
+    this.settings.set_boolean('window-maximized', isMaximized);
+    this.logger.debug('Saved window maximized state', { maximized: isMaximized });
+
+    // Only save size and position if not maximized
+    if (!isMaximized) {
+      const width = this.mainWindow.get_width();
+      const height = this.mainWindow.get_height();
+      
+      this.settings.set_int('window-width', width);
+      this.settings.set_int('window-height', height);
+      this.logger.debug('Saved window size', { width, height });
+
+      // Try to save position (GTK4 doesn't have get_position, so we skip this for now)
+      // Position will be managed by the window manager
+    }
+
+    this.logger.info('Window state saved successfully');
+  }
+
+  private restoreWindowState(): void {
+    const width = this.settings.get_int('window-width');
+    const height = this.settings.get_int('window-height');
+    const isMaximized = this.settings.get_boolean('window-maximized');
+
+    // Restore size
+    if (width > 0 && height > 0) {
+      this.mainWindow.set_default_size(width, height);
+      this.logger.debug('Restored window size', { width, height });
+    } else {
+      // Use default size
+      this.mainWindow.set_default_size(1000, 800);
+      this.logger.debug('Using default window size', { width: 1000, height: 800 });
+    }
+
+    // Restore maximized state
+    if (isMaximized) {
+      this.mainWindow.maximize();
+      this.logger.debug('Restored window maximized state');
+    }
+
+    this.logger.info('Window state restored successfully');
   }
 
   public run(argv: string[]): number {
