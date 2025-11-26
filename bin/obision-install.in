@@ -1,3 +1,8 @@
-#!/usr/bin/gjs -m
+#!/bin/sh
 
-import(`file:///usr/share/@app_id@/main.js`);
+# Detect if running in Flatpak or system
+if [ -f "/app/share/@app_id@/main.js" ]; then
+    exec gjs -m /app/share/@app_id@/main.js "$@"
+else
+    exec gjs -m /usr/share/@app_id@/main.js "$@"
+fi

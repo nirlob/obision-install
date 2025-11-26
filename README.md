@@ -168,6 +168,59 @@ sudo gtk-update-icon-cache /usr/share/icons/hicolor/
 sudo npm run meson-uninstall
 ```
 
+### Flatpak Installation
+
+**Note**: While Flatpak builds are supported, the application is **not recommended for Flatpak distribution** due to sandbox limitations. The app requires system-level access to execute `apt` and `flatpak` commands, which are blocked in the Flatpak sandbox.
+
+However, you can build and test the Flatpak for UI development:
+
+#### Build and install Flatpak (for testing only)
+```bash
+# Build and install locally
+npm run flatpak-build
+
+# Or build a distributable bundle
+npm run flatpak-bundle
+```
+
+#### Uninstall Flatpak
+```bash
+npm run flatpak-uninstall
+```
+
+#### Clean Flatpak build artifacts
+```bash
+npm run flatpak-clean
+```
+
+### Debian Package Installation
+
+You can also install the application using a pre-built Debian package:
+
+#### Build the .deb package
+```bash
+# Install build dependencies
+sudo apt install -y debhelper devscripts
+
+# Build the package
+npm run deb-build
+
+# The .deb file will be created in the parent directory
+```
+
+#### Install the .deb package
+```bash
+sudo dpkg -i ../obision-install_1.0.0_all.deb
+
+# If there are missing dependencies, fix them with:
+sudo apt-get install -f
+```
+
+#### Uninstall the package
+```bash
+sudo apt-get remove obision-install
+```
+
 ## NPM Scripts
 
 - `npm start`: Build and run the application in development mode (recommended for testing)
@@ -179,6 +232,13 @@ sudo npm run meson-uninstall
 - `npm run meson-install`: Complete build and system-wide installation (requires sudo)
 - `npm run meson-uninstall`: Uninstall application from system (requires sudo)
 - `npm run meson-clean`: Clean Meson build directory
+- `npm run flatpak-build`: Build and install Flatpak locally (for testing)
+- `npm run flatpak-bundle`: Create a distributable Flatpak bundle
+- `npm run flatpak-uninstall`: Uninstall the Flatpak package
+- `npm run flatpak-clean`: Clean Flatpak build artifacts
+- `npm run deb-build`: Build a Debian package (.deb)
+- `npm run deb-install`: Install the built .deb package (requires sudo)
+- `npm run deb-clean`: Clean Debian build artifacts
 
 ## Running the Application
 

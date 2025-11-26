@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "debian/control": "plaintext",
+    "debian/changelog": "plaintext",
+    "debian/copyright": "plaintext"
+  }
+}

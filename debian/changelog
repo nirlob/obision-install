@@ -1,0 +1,11 @@
+obision-install (1.0.0) unstable; urgency=medium
+
+  * Initial release
+  * GTK4/Libadwaita modern UI
+  * Support for Flatpak and APT package installation
+  * GNOME app folders integration
+  * Application categories organization
+  * Dynamic data loading from multiple system locations
+  * Icon and desktop entry integration
+
+ -- Jose Francisco Gonzalez <jose@example.com>  Tue, 26 Nov 2025 09:00:00 +0000
