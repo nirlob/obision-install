@@ -1,3 +1,14 @@
+obision-apps (1.2.0) unstable; urgency=medium
+
+  * Add centralized logging system with GLib integration
+  * Add window state persistence (size and maximized state)
+  * Extract settings management to SettingsService
+  * Fix npm start script with GSETTINGS_SCHEMA_DIR
+  * Dual output logging: console + journald
+  * Window remembers size and maximized state between sessions
+
+ -- Jose Francisco Gonzalez <jose@example.com>  Tue, 26 Nov 2025 10:45:00 +0000
+
 obision-apps (1.1.0) unstable; urgency=medium
 
   * Initial release
