@@ -1,6 +1,6 @@
 {
   "name": "obision-install",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Rapid applications installer",
   "main": "builddir/main.js",
   "scripts": {
@@ -20,6 +20,7 @@
     "flatpak-clean": "rm -rf flatpak-build-dir flatpak-repo obision-install.flatpak .flatpak-builder",
     "deb-build": "dpkg-buildpackage -us -uc -b",
     "deb-install": "sudo dpkg -i ../obision-install_1.0.0_all.deb && sudo apt-get install -f",
+    "deb-uninstall": "sudo apt-get remove obision-install -y",
     "deb-clean": "dh_clean || true"
   },
   "keywords": [
