@@ -7,7 +7,7 @@ obision-apps (1.2.0) unstable; urgency=medium
   * Dual output logging: console + journald
   * Window remembers size and maximized state between sessions
 
- -- Jose Francisco Gonzalez <jose@example.com>  Tue, 26 Nov 2025 10:45:00 +0000
+ -- Jose Francisco Gonzalez <jfgs1609@gmail.com>  Tue, 26 Nov 2025 10:45:00 +0000
 
 obision-apps (1.1.0) unstable; urgency=medium
 
@@ -19,4 +19,4 @@ obision-apps (1.1.0) unstable; urgency=medium
   * Dynamic data loading from multiple system locations
   * Icon and desktop entry integration
 
- -- Jose Francisco Gonzalez <jose@example.com>  Tue, 26 Nov 2025 09:00:00 +0000
+ -- Jose Francisco Gonzalez <jfgs1609@gmail.com>  Tue, 26 Nov 2025 09:00:00 +0000
