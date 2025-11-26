@@ -5,6 +5,7 @@ import { UtilsService } from '../services/utils-service';
 import { InstallApplicationData } from '../interfaces/install-application';
 import { DataService } from '../services/data-service';
 import GLib from '@girs/glib-2.0';
+import { LoggerService } from '../services/logger-service';
 
 export class InstallDialog {
   private dialog!: Adw.Dialog;
@@ -13,6 +14,7 @@ export class InstallDialog {
   private buttonCancel!: Gtk.Button;
   private utilsService = UtilsService.instance;
   private dataService = DataService.instance;
+  private logger = LoggerService.instance;
   private applicationsInstalledCallback: (() => void) | null = null;
 
   constructor(private parentWindow: Adw.ApplicationWindow, private installApplicationsData: InstallApplicationData[], private installInFolder: boolean) {
@@ -139,14 +141,14 @@ export class InstallDialog {
     this.buttonCancel.set_label('Close');
     this.buttonCancel.set_sensitive(false);
 
-    console.log('Beginning installation of applications...');
+    this.logger.info('Beginning installation of applications', { count: this.installApplicationsData.length });
 
     this.installApplicationsData.forEach(appData => {
       this.setSuffixToRow(appData.row!);
 
       GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
         const operation = appData.install ? 'install' : appData.application.packageType === 'FLATPAK' ? 'uninstall' : 'remove';
-        console.log(`Executing ${operation} for: ${appData.application.title}`);
+        this.logger.info(`Executing ${operation}`, { app: appData.application.title, packageType: appData.application.packageType });
 
         const process = new Gio.Subprocess({
           argv: [appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', operation, '-y', appData.application.packageName],
@@ -160,15 +162,15 @@ export class InstallDialog {
             const [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
             
             if (ok) {
-              console.log(`Finished installation for: ${appData.application.title}`);
+              this.logger.info('Installation completed successfully', { app: appData.application.title });
               this.setSuffixToRow(appData.row!, stderr.trim());
             } else {
-              console.error(`Failed to ${appData.install ? 'install' : 'remove'} ${appData.application.title}`);
+              this.logger.error(`Failed to ${appData.install ? 'install' : 'remove'}`, { app: appData.application.title });
             }
           } catch (error) {
-            console.error(`Failed to ${appData.install ? 'install' : 'remove'} ${appData.application.title}:`, error);
+            this.logger.error(`Exception during ${appData.install ? 'installation' : 'removal'}`, { app: appData.application.title, error: String(error) });
           } finally {
-            console.log('Finished processing application:', appData.application.title);
+            this.logger.debug('Finished processing application', { app: appData.application.title });
 
             const fraction = index++ / installApplicationsCount;
             this.progressBar.set_fraction(fraction);
@@ -177,7 +179,7 @@ export class InstallDialog {
 
             if (completed === installApplicationsCount) {
               if (this.installInFolder) {
-                console.log('Generating application folders...');
+                this.logger.info('Generating application folders for installed apps');
                 this.createDesktopFolders();
               }
 
@@ -258,15 +260,15 @@ export class InstallDialog {
           // If no apps remain, remove the folder from folder-children
           const updatedFolders = currentFolders.filter(folder => folder !== folderId);
           settings.set_strv('folder-children', updatedFolders);
-          console.log(`Removed empty app folder: ${category.title}`);
+          this.logger.info('Removed empty app folder', { category: category.title });
         }
 
-        console.log(`Removed ${existingApps.length - updatedApps.length} uninstalled apps from folder: ${category.title}`);
+        this.logger.info('Removed uninstalled apps from folder', { folder: category.title, removedCount: existingApps.length - updatedApps.length });
       });
 
-      console.log('Uninstalled applications removed from folders successfully');
+      this.logger.info('Uninstalled applications removed from folders successfully');
     } catch (error) {
-      console.error('Error removing uninstalled applications from folders:', error);
+      this.logger.error('Error removing uninstalled applications from folders', { error: String(error) });
     }
   }
 
@@ -340,21 +342,21 @@ export class InstallDialog {
         // Set translate to false to use literal name
         folderSettings.set_boolean('translate', false);
 
-        console.log(`Created/Updated app folder: ${folderName} with ${mergedApps.length} apps (${appIds.length} newly installed)`);
+        this.logger.info('Created/Updated app folder', { folder: folderName, totalApps: mergedApps.length, newApps: appIds.length });
       });
 
       // Update folder-children with new folders
       if (newFolders.length > 0) {
         const updatedFolders = [...currentFolders, ...newFolders];
         settings.set_strv('folder-children', updatedFolders);
-        console.log(`Added ${newFolders.length} new app folders to GNOME Shell`);
+        this.logger.info('Added new app folders to GNOME Shell', { count: newFolders.length });
       } else {
-        console.log('Updated existing app folders with newly installed applications');
+        this.logger.info('Updated existing app folders with newly installed applications');
       }
 
-      console.log('Application folders synchronized successfully');
+      this.logger.info('Application folders synchronized successfully');
     } catch (error) {
-      console.error('Error creating application folders:', error);
+      this.logger.error('Error creating application folders', { error: String(error) });
       // Don't throw - this is not critical for installation
     }
   }

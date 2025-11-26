@@ -1,9 +1,11 @@
 import Gio from '@girs/gio-2.0';
 import { Application } from '../interfaces/application';
 import { argv } from 'process';
+import { LoggerService } from './logger-service';
 
 export class UtilsService {
   static _instance: UtilsService;
+  private logger = LoggerService.instance;
 
   public static get instance(): UtilsService {
     if (!UtilsService._instance) {
@@ -44,7 +46,7 @@ export class UtilsService {
 
       return stdout.trim().length > 0;
     } catch (error: any) {
-      console.error(`Error checking installation status for ${application.packageName}:`, error);
+      this.logger.error('Error checking installation status', { package: application.packageName, error: String(error) });
       throw error;
     }
   }

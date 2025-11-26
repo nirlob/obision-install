@@ -1,6 +1,7 @@
 import Gio from "@girs/gio-2.0";
 import { Category } from "../interfaces/category";
 import { Application } from "../interfaces/application";
+import { LoggerService } from "./logger-service";
 
 export class DataService {
   static _instance: DataService;
@@ -16,6 +17,7 @@ export class DataService {
   private categories: Category[] = [];
   private applications: Application[] = [];
   private applicationsFileDir: string = "";
+  private logger = LoggerService.instance;
 
   private constructor() {
     this.searchApplicationsFileDir();
@@ -34,12 +36,12 @@ export class DataService {
     for (const dir of this.APPLICATIONS_FILE_DIRS) {
       const file = Gio.File.new_for_path(dir + "applications.json");
       if (file.query_exists(null)) {
-        console.log(`✅ Found applications.json file in directory: ${dir}`);
+        this.logger.info('Found applications.json file', { directory: dir });
         this.applicationsFileDir = dir;
         return;
       }
     }
-    console.error("❌ applications.json file not found in any of the specified directories.");
+    this.logger.error('applications.json file not found in any of the specified directories', { searchPaths: this.APPLICATIONS_FILE_DIRS });
     throw new Error("No applications.json file found in any of the specified directories.");
   }
 

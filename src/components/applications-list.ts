@@ -6,12 +6,14 @@ import { ApplicationInfoDialog } from './application-info-dialog.js';
 import { UtilsService } from '../services/utils-service.js';
 import { DataService } from '../services/data-service.js';
 import { Category } from '../interfaces/category.js';
+import { LoggerService } from '../services/logger-service.js';
 
 export class ApplicationsList {
   private listbox!: Gtk.ListBox;
   private scrolledWindow!: Gtk.ScrolledWindow;
   private dataService = DataService.instance;
   private utilsService = UtilsService.instance;
+  private logger = LoggerService.instance;
   private applicationClickCallback: ((app: Application, install: boolean) => void) | null = null;
 
   constructor(private parentWindow: Adw.ApplicationWindow) {
@@ -42,7 +44,7 @@ export class ApplicationsList {
       try {
         this.loadCategories();
       } catch (error) {
-        console.error('❌ Error loading data:', error);
+        this.logger.error('Error loading data', { error: String(error) });
       }
 
       return GLib.SOURCE_REMOVE;
@@ -50,7 +52,7 @@ export class ApplicationsList {
   }
 
   private loadCategories(): void {
-    console.log('🔍 Starting to load categories');
+    this.logger.info('Starting to load categories');
     try {
       this.dataService.getCategories().sort((a, b) => a.title.localeCompare(b.title)).forEach(category => {
         const expanderRow = new Adw.ExpanderRow({
@@ -70,7 +72,7 @@ export class ApplicationsList {
         this.listbox.append(expanderRow);
       });
     } catch (error) {
-      console.error('Error loading categories data:', error);
+      this.logger.error('Error loading categories data', { error: String(error) });
     }
   }
 
@@ -129,17 +131,17 @@ export class ApplicationsList {
                 row.set_active(this.utilsService.isApplicationInstalled(app));
                 row.connect('notify::active', () => this.onSwitchRowActiveClick(app, row.get_active()));
               } catch (error) {
-                console.error(`Error checking installation for ${app.title}:`, error);
+                this.logger.error('Error checking installation status', { app: app.title, error: String(error) });
               }
               
               return GLib.SOURCE_REMOVE;
             });
           } catch (error) {
-            console.error(`Error loading application ${app.title}:`, error);
+            this.logger.error('Error loading application', { app: app.title, error: String(error) });
           }
         });
     } catch (error) {
-      console.error('Error loading applications data:', error);
+      this.logger.error('Error loading applications data', { error: String(error) });
     }
   }
 

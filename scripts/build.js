@@ -52,6 +52,10 @@ function cleanJSContent(content) {
         .replace(/pango_1_0_1\.default\./g, 'Pango.')
         .replace(/adw_1_1\.default\./g, 'Adw.')
         
+        // Replace service references
+        .replace(/logger_service_1\.LoggerService\.instance/g, 'LoggerService.instance')
+        .replace(/logger_service_js_1\.LoggerService\.instance/g, 'LoggerService.instance')
+        
         // Remove other artifacts
         .replace(/\s*void 0;\s*\n?/g, '')
         .replace(/^\s*\n/gm, '') // Remove empty lines
@@ -90,6 +94,33 @@ if (fs.existsSync(categoryInterfaceFile)) {
     let categoryInterfaceContent = fs.readFileSync(categoryInterfaceFile, 'utf8');
     // Extract interface definitions (they will be removed by transpilation)
     console.log('📋 Adding interfaces...');
+}
+
+// Add LoggerService service (must be first, as other services depend on it)
+const loggerServiceFile = path.join(BUILD_DIR, 'services', 'logger-service.js');
+if (fs.existsSync(loggerServiceFile)) {
+    console.log('📋 Adding LoggerService service...');
+    let loggerServiceContent = fs.readFileSync(loggerServiceFile, 'utf8');
+
+    // Clean up the content - find the LogLevel enum start
+    const enumStartIndex = loggerServiceContent.indexOf('var LogLevel;');
+    if (enumStartIndex !== -1) {
+        loggerServiceContent = loggerServiceContent.substring(enumStartIndex);
+    }
+
+    // Clean up TypeScript/CommonJS artifacts
+    loggerServiceContent = loggerServiceContent
+        .replace(/exports\.\w+\s*=.*?;?\n?/g, '')
+        .replace(/Object\.defineProperty\(exports,.*?\n/g, '')
+        .replace(/"use strict";\s*\n?/g, '')
+        .replace(/var __importDefault.*?\n/g, '')
+        .replace(/const.*?require\(.*?\).*?;\s*\n?/g, '')
+        .replace(/glib_2_0_1\.default\./g, 'GLib.')
+        .replace(/\(LogLevel \|\| \(exports\.LogLevel = LogLevel = \{\}\)\);/, '(LogLevel || (LogLevel = {}));')
+        .replace(/exports\.LogLevel = /g, '')
+        .trim();
+
+    combinedContent += loggerServiceContent + '\n';
 }
 
 // Add UtilsService service

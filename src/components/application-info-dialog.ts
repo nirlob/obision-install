@@ -4,10 +4,12 @@ import Gtk from '@girs/gtk-4.0';
 import Pango from '@girs/pango-1.0';
 import { UtilsService } from '../services/utils-service';
 import GLib from '@girs/glib-2.0';
+import { LoggerService } from '../services/logger-service';
 
 export class ApplicationInfoDialog {
   private propertiesList!: Gtk.ListBox;
   private utilsService = UtilsService.instance;
+  private logger = LoggerService.instance;
 
   constructor(private parentWindow: Adw.ApplicationWindow, private application: Application) {
     this.setupUI();
@@ -128,7 +130,7 @@ export class ApplicationInfoDialog {
           this.propertiesList.append(row);
         });
       } catch (error) {
-        console.error(`Error loading properties for ${this.application.title}:`, error);
+        this.logger.error('Error loading properties', { app: this.application.title, error: String(error) });
       }
 
       return GLib.SOURCE_REMOVE;

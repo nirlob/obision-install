@@ -8,12 +8,14 @@ import { ApplicationsList } from './components/applications-list.js';
 import { Application } from './interfaces/application.js';
 import { InstallDialog } from './components/install-dialog.js';
 import { InstallApplicationData } from './interfaces/install-application.js';
+import { LoggerService } from './services/logger-service.js';
 
 class ObisionAppsApplication {
   private application: Adw.Application;
   private installApplicationsData: InstallApplicationData[] = [];
   private installButton!: Gtk.Button;
   private installInFolderToggleButton!: Gtk.ToggleButton;
+  private logger = LoggerService.instance;
 
   constructor() {
     // Create the application
@@ -28,7 +30,7 @@ class ObisionAppsApplication {
   }
 
   private onStartup(): void {
-    console.log('Application starting up...');
+    this.logger.info('Application starting up');
 
     // Add application actions for menu
     const aboutAction = new Gio.SimpleAction({ name: 'about' });
@@ -42,7 +44,7 @@ class ObisionAppsApplication {
 
     const preferencesAction = new Gio.SimpleAction({ name: 'preferences' });
     preferencesAction.connect('activate', () => {
-      console.log('Preferences action activated');
+      this.logger.info('Preferences action activated');
     });
     this.application.add_action(preferencesAction);
 
@@ -60,7 +62,7 @@ class ObisionAppsApplication {
   }
 
   private onActivate(): void {
-    console.log('Application activated');
+    this.logger.info('Application activated');
 
     // Load CSS
     const cssProvider = new Gtk.CssProvider();
@@ -78,7 +80,7 @@ class ObisionAppsApplication {
 
     // Create and show the main window
     const window = this.createMainWindow();
-    console.log('Window created, presenting...');
+    this.logger.info('Window created, presenting');
     window.present();
   }
 
@@ -86,7 +88,7 @@ class ObisionAppsApplication {
     // Create the main window
     const window = new Adw.ApplicationWindow({
       application: this.application as any,
-      title: 'Obision Install',
+      title: 'Obision Applications Install',
       default_width: 1000,
       default_height: 800,
     });
@@ -102,10 +104,10 @@ class ObisionAppsApplication {
       } catch (e) {
         builder.add_from_file('data/ui/main-window.ui');
       }
-      console.log('Loaded UI from file');
+      this.logger.info('Loaded UI from file');
     } catch (e2) {
-      console.error('Could not load UI file:', e2);
-      console.log('Using fallback UI');
+      this.logger.error('Could not load UI file', { error: String(e2) });
+      this.logger.info('Using fallback UI');
 
       this.application.quit();
     }
@@ -114,7 +116,7 @@ class ObisionAppsApplication {
     const mainContent = builder.get_object('main_content') as Gtk.Box;
 
     if (mainContent) {
-      console.log('Setting up UI with loaded content');
+      this.logger.info('Setting up UI with loaded content');
 
       this.installButton = builder.get_object('install_button') as Gtk.Button;
       this.installButton.connect('clicked', () => {
@@ -195,7 +197,7 @@ class ObisionAppsApplication {
     const aboutDialog = new Adw.AboutWindow({
       transient_for: parent,
       modal: true,
-      application_name: 'Obision Install',
+      application_name: 'Obision Applications Install',
       application_icon: 'com.obision.ObisionApps',
       developer_name: 'Jose Francisco Gonzalez',
       version: '1.0.0',
@@ -212,10 +214,8 @@ class ObisionAppsApplication {
   private onApplicationClick(app: Application, install: boolean): void {
     if (this.installApplicationsData.find(data => data.application.packageName === app.packageName)) {
       this.installApplicationsData = this.installApplicationsData.filter(data => data.application.packageName !== app.packageName);
-      console.log(`Uninstalling package: ${app.title}`);
     } else {
       this.installApplicationsData.push({ application: app, install });
-      console.log(`Installing package: ${app.title}`);
     }
 
     this.installButton.set_sensitive(this.installApplicationsData.length > 0);
