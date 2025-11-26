@@ -20,13 +20,13 @@ flatpak install -y flathub org.gnome.Platform//46 org.gnome.Sdk//46 org.freedesk
 Build and install locally:
 
 ```bash
-flatpak-builder --user --install --force-clean build-dir com.obision.ObisionInstall.yml
+flatpak-builder --user --install --force-clean build-dir com.obision.ObisionApps.yml
 ```
 
 ## Run Flatpak
 
 ```bash
-flatpak run com.obision.ObisionInstall
+flatpak run com.obision.ObisionApps
 ```
 
 ## Create Flatpak Bundle
@@ -34,14 +34,14 @@ flatpak run com.obision.ObisionInstall
 To create a distributable `.flatpak` bundle:
 
 ```bash
-flatpak-builder --repo=repo --force-clean build-dir com.obision.ObisionInstall.yml
-flatpak build-bundle repo obision-install.flatpak com.obision.ObisionInstall
+flatpak-builder --repo=repo --force-clean build-dir com.obision.ObisionApps.yml
+flatpak build-bundle repo obision-apps.flatpak com.obision.ObisionApps
 ```
 
 ## Install from Bundle
 
 ```bash
-flatpak install --user obision-install.flatpak
+flatpak install --user obision-apps.flatpak
 ```
 
 ## Submit to Flathub
@@ -49,8 +49,8 @@ flatpak install --user obision-install.flatpak
 To submit to Flathub:
 
 1. Fork https://github.com/flathub/flathub
-2. Create a new repository named `com.obision.ObisionInstall`
-3. Add the manifest file `com.obision.ObisionInstall.yml` and `flathub.json`
+2. Create a new repository named `com.obision.ObisionApps`
+3. Add the manifest file `com.obision.ObisionApps.yml` and `flathub.json`
 4. Submit a pull request to https://github.com/flathub/flathub
 
 ## Notes

@@ -1,5 +1,5 @@
 {
-  "name": "obision-install",
+  "name": "obision-apps",
   "version": "1.1.0",
   "description": "Rapid applications installer",
   "main": "builddir/main.js",
@@ -13,14 +13,14 @@
     "meson-install": "npm run build && npm run meson-setup && npm run meson-compile && cd mesonbuilddir && meson install",
     "meson-uninstall": "cd mesonbuilddir && ninja uninstall && cd .. && npm run meson-clean",
     "meson-clean": "rm -rf mesonbuilddir builddir",
-    "install-data": "sudo mkdir -p /var/lib/obision-install/data/icons && sudo cp data/applications.json /var/lib/obision-install/ && sudo cp -r data/icons/applications /var/lib/obision-install/data/icons/ && sudo cp -r data/icons/categories /var/lib/obision-install/data/icons/",
-    "flatpak-build": "flatpak-builder --user --install --force-clean flatpak-build-dir com.obision.ObisionInstall.yml",
-    "flatpak-bundle": "flatpak-builder --repo=flatpak-repo --force-clean flatpak-build-dir com.obision.ObisionInstall.yml && flatpak build-bundle flatpak-repo obision-install.flatpak com.obision.ObisionInstall",
-    "flatpak-uninstall": "flatpak uninstall --user com.obision.ObisionInstall -y",
-    "flatpak-clean": "rm -rf flatpak-build-dir flatpak-repo obision-install.flatpak .flatpak-builder",
+    "install-data": "sudo mkdir -p /var/lib/obision-apps/data/icons && sudo cp data/applications.json /var/lib/obision-apps/ && sudo cp -r data/icons/applications /var/lib/obision-apps/data/icons/ && sudo cp -r data/icons/categories /var/lib/obision-apps/data/icons/",
+    "flatpak-build": "flatpak-builder --user --install --force-clean flatpak-build-dir com.obision.ObisionApps.yml",
+    "flatpak-bundle": "flatpak-builder --repo=flatpak-repo --force-clean flatpak-build-dir com.obision.ObisionApps.yml && flatpak build-bundle flatpak-repo obision-apps.flatpak com.obision.ObisionApps",
+    "flatpak-uninstall": "flatpak uninstall --user com.obision.ObisionApps -y",
+    "flatpak-clean": "rm -rf flatpak-build-dir flatpak-repo obision-apps.flatpak .flatpak-builder",
     "deb-build": "dpkg-buildpackage -us -uc -b",
-    "deb-install": "sudo dpkg -i ../obision-install_1.0.0_all.deb && sudo apt-get install -f",
-    "deb-uninstall": "sudo apt-get remove obision-install -y",
+    "deb-install": "sudo dpkg -i ../obision-apps_1.1.0_all.deb && sudo apt-get install -f",
+    "deb-uninstall": "sudo apt-get remove obision-apps -y",
     "deb-clean": "dh_clean || true"
   },
   "keywords": [

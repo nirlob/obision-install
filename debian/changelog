@@ -1,4 +1,4 @@
-obision-install (1.0.0) unstable; urgency=medium
+obision-apps (1.1.0) unstable; urgency=medium
 
   * Initial release
   * GTK4/Libadwaita modern UI

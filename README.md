@@ -17,7 +17,7 @@ A modern GNOME application installer built with TypeScript, GTK4, and Libadwaita
 ## Project Structure
 
 ```
-obision-install/
+obision-apps/
 ├── src/                          # Source code
 │   ├── main.ts                   # Main application file
 │   ├── components/               # UI components
@@ -45,7 +45,7 @@ obision-install/
 │   ├── *.gschema.xml             # GSettings schema
 │   └── *.gresource.xml           # Resource bundle definition
 ├── bin/                          # Executable scripts
-│   └── obision-install.in            # Launcher script template
+│   └── obision-apps.in            # Launcher script template
 ├── builddir/                     # Generated files (created by build)
 │   ├── main.js                   # Compiled JavaScript (ready for GJS)
 │   ├── components/               # Compiled components
@@ -104,8 +104,8 @@ sudo dnf install -y \
 ### Quick Start (Development)
 ```bash
 # Clone the repository
-git clone https://github.com/nirlob/obision-install.git
-cd obision-install
+git clone https://github.com/nirlob/obision-apps.git
+cd obision-apps
 
 # Install Node.js dependencies
 npm install
@@ -210,7 +210,7 @@ npm run deb-build
 
 #### Install the .deb package
 ```bash
-sudo dpkg -i ../obision-install_1.0.0_all.deb
+sudo dpkg -i ../obision-apps_1.0.0_all.deb
 
 # If there are missing dependencies, fix them with:
 sudo apt-get install -f
@@ -218,7 +218,7 @@ sudo apt-get install -f
 
 #### Uninstall the package
 ```bash
-sudo apt-get remove obision-install
+sudo apt-get remove obision-apps
 ```
 
 ## NPM Scripts
@@ -249,7 +249,7 @@ sudo apt-get remove obision-install
 
 ### After System Installation
 ```bash
-obision-install
+obision-apps
 ```
 Or launch from GNOME Applications menu: Look for "Obision Install"
 
@@ -306,10 +306,10 @@ The application uses declarative UI files (`data/ui/main-window.ui`) which are l
 ### Applications Database Location:
 The application searches for `applications.json` in the following directories (in order):
 1. `./data/json/` - Development/local directory (highest priority)
-2. `/usr/share/applications/obision-install/` - System-wide installation
-3. `/usr/local/share/applications/obision-install/` - Local system installation
-4. `/var/lib/flatpak/exports/share/applications/obision-install/` - Flatpak system installations
-5. `/var/lib/obision-install/` - Alternative system location
+2. `/usr/share/applications/obision-apps/` - System-wide installation
+3. `/usr/local/share/applications/obision-apps/` - Local system installation
+4. `/var/lib/flatpak/exports/share/applications/obision-apps/` - Flatpak system installations
+5. `/var/lib/obision-apps/` - Alternative system location
 
 The first location where `applications.json` is found will be used. This allows you to:
 - Use local data during development (`./data/json/`)
@@ -409,7 +409,7 @@ GJS_DEBUG_OUTPUT=stderr ./builddir/main.js
 gjs --debugger builddir/main.js
 
 # Check system logs for installation issues
-journalctl -xe | grep obision-install
+journalctl -xe | grep obision-apps
 ```
 
 ## Contributing

@@ -1,11 +1,11 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Obision Install
+Name=Obision Apps
 Comment=A modern application installer and package manager
-Icon=com.obision.ObisionInstall
-Exec=obision-install
+Icon=com.obision.ObisionApps
+Exec=obision-apps
 Terminal=false
 Categories=Utility;System;
 StartupNotify=true
-StartupWMClass=com.obision.ObisionInstall
+StartupWMClass=com.obision.ObisionApps

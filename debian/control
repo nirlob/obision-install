@@ -1,4 +1,4 @@
-Source: obision-install
+Source: obision-apps
 Section: utils
 Priority: optional
 Maintainer: Jose Francisco Gonzalez <jose@example.com>
@@ -10,11 +10,11 @@ Build-Depends: debhelper-compat (= 13),
                libglib2.0-dev,
                libgtk-4-dev
 Standards-Version: 4.6.0
-Homepage: https://github.com/nirlob/obision-install
-Vcs-Git: https://github.com/nirlob/obision-install.git
-Vcs-Browser: https://github.com/nirlob/obision-install
+Homepage: https://github.com/nirlob/obision-apps
+Vcs-Git: https://github.com/nirlob/obision-apps.git
+Vcs-Browser: https://github.com/nirlob/obision-apps
 
-Package: obision-install
+Package: obision-apps
 Architecture: all
 Depends: ${misc:Depends},
          gjs,

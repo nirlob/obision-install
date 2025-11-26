@@ -1,12 +1,12 @@
-project('obision-install',
-  version: '1.0.0',
+project('obision-apps',
+  version: '1.1.0',
   meson_version: '>= 0.59.0',
 )
 
 gnome = import('gnome')
 
 # Application ID
-app_id = 'com.obision.ObisionInstall'
+app_id = 'com.obision.ObisionApps'
 
 # Configuration
 conf = configuration_data()
