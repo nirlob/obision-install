@@ -1,5 +1,6 @@
 import Gio from '@girs/gio-2.0';
 import { Application } from '../interfaces/application';
+import { argv } from 'process';
 
 export class UtilsService {
   static _instance: UtilsService;
@@ -11,34 +12,6 @@ export class UtilsService {
 
     return UtilsService._instance;
   }
-
-  // public executeCommandAsync(command: string, args: string[] = []): Promise<{ stdout: string; stderr: string }> {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       const process = new Gio.Subprocess({
-  //         argv: [command, ...args],
-  //         flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
-  //       });
-
-  //       process.init(null);
-
-  //       process.communicate_utf8_async(null, null, (proc, res) => {
-  //         try {
-  //           const [ok, stdout, stderr] = process.communicate_utf8_finish(res);
-  //           if (ok) {
-  //             resolve({ stdout: stdout.trim(), stderr: stderr.trim() });
-  //           } else {
-  //             reject(new Error('Failed to execute command'));
-  //           }
-  //         } catch (error) {
-  //           reject(error);
-  //         }
-  //       });
-  //     } catch (error) {
-  //       reject(error);
-  //     }
-  //   });
-  // }
 
   public executeCommand(command: string, args: string[] = []): [string, string] {
     try {

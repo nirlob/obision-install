@@ -15,11 +15,7 @@ export class InstallDialog {
   private dataService = DataService.instance;
   private applicationsInstalledCallback: (() => void) | null = null;
 
-  constructor(
-    private parentWindow: Adw.ApplicationWindow, 
-    private installApplicationsData: InstallApplicationData[],
-    private installInFolder: boolean
-  ) {
+  constructor(private parentWindow: Adw.ApplicationWindow, private installApplicationsData: InstallApplicationData[], private installInFolder: boolean) {
     this.setupUI();
   }
 
@@ -136,71 +132,68 @@ export class InstallDialog {
 
   private installApplications(): void {
     let index = 1;
-    let promises: Promise<void>[] = [];
+    let completed = 0;
+    const installApplicationsCount = this.installApplicationsData.length;
 
     this.btnAddRemove.set_visible(false);
     this.buttonCancel.set_label('Close');
     this.buttonCancel.set_sensitive(false);
 
+    console.log('Beginning installation of applications...');
+
     this.installApplicationsData.forEach(appData => {
       this.setSuffixToRow(appData.row!);
 
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
-        try {
-          const operation = appData.install ? 'install' : appData.application.packageType === 'FLATPAK' ? 'uninstall' : 'remove';
-          console.log(`Executing ${operation} for: ${appData.application.title}`);
-          const [stdout, stderr] = this.utilsService.executeCommand(appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', [operation, '-y', appData.application.packageName]);
+      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+        const operation = appData.install ? 'install' : appData.application.packageType === 'FLATPAK' ? 'uninstall' : 'remove';
+        console.log(`Executing ${operation} for: ${appData.application.title}`);
 
-          console.log(`Finished installation for: ${appData.application.title}`);
-          this.setSuffixToRow(appData.row!, stderr);
+        const process = new Gio.Subprocess({
+          argv: [appData.application.packageType === 'FLATPAK' ? 'flatpak' : 'apt', operation, '-y', appData.application.packageName],
+          flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+        });
 
-          const fraction = index++ / this.installApplicationsData.length;
-          this.progressBar.set_fraction(fraction);
-        } catch (error) {
-          console.error(`Failed to ${appData.install ? 'install' : 'remove'} ${appData.application.title}:`, error);
-        } finally {
-        }
-        
+        process.init(null);
+
+        process.communicate_utf8_async(null, null, (proc: any, res: any) => {
+          try {
+            const [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
+            
+            if (ok) {
+              console.log(`Finished installation for: ${appData.application.title}`);
+              this.setSuffixToRow(appData.row!, stderr.trim());
+            } else {
+              console.error(`Failed to ${appData.install ? 'install' : 'remove'} ${appData.application.title}`);
+            }
+          } catch (error) {
+            console.error(`Failed to ${appData.install ? 'install' : 'remove'} ${appData.application.title}:`, error);
+          } finally {
+            console.log('Finished processing application:', appData.application.title);
+
+            const fraction = index++ / installApplicationsCount;
+            this.progressBar.set_fraction(fraction);
+
+            completed++;
+
+            if (completed === installApplicationsCount) {
+              if (this.installInFolder) {
+                console.log('Generating application folders...');
+                this.createDesktopFolders();
+              }
+
+              this.buttonCancel.set_sensitive(true);
+
+              this.removeUninstalledAppsFromDesktopFolders();
+              if (this.applicationsInstalledCallback) {
+                this.applicationsInstalledCallback();
+              }
+            }
+          }
+        });
+
         return GLib.SOURCE_REMOVE;
       });
-
-      // try {
-      //   this.setSuffixToRow(appData.row!);
-      //   console.log(`Starting installation for: ${appData.application.title}`);
-
-      //   promises.push(
-      //     this.executeInstall(appData).then(({stdout, stderr}) => {
-      //       console.log(`Finished installation for: ${appData.application.title}`);
-      //       this.setSuffixToRow(appData.row!, stderr);
-      //     }).catch((error) => {
-      //       console.log(`Installation failed for: ${appData.application.title}, error: ${error} `);
-      //       this.setSuffixToRow(appData.row!, error.toString());
-      //     }).finally(() => {
-      //       const fraction = index++ / this.installApplicationsData.length;
-      //       this.progressBar.set_fraction(fraction);
-      //     })
-      //   );
-      // } catch (error) {
-      //   console.error(`Failed to install ${appData.application.title}:`, error);
-      // }
     });
-
-    Promise.allSettled(promises).then(results => {
-      if (this.installInFolder) {
-        console.log('Generating application folders...');
-        this.createDesktopFolders();
-      }
-      
-      this.buttonCancel.set_sensitive(true);
-
-      this.removeUninstalledAppsFromDesktopFolders();
-
-      if (this.applicationsInstalledCallback) {
-        this.applicationsInstalledCallback();
-      };
-    });
-
-    console.log('All installations processed.');
   }
 
   private removeUninstalledAppsFromDesktopFolders(): void {
@@ -211,20 +204,20 @@ export class InstallDialog {
 
       // Group uninstalled applications by category
       const uninstalledAppsByCategory = new Map<number, string[]>();
-      
+
       this.installApplicationsData.forEach(appData => {
         if (!appData.install && appData.application.categoryId) {
           const categoryId = appData.application.categoryId;
           if (!uninstalledAppsByCategory.has(categoryId)) {
             uninstalledAppsByCategory.set(categoryId, []);
           }
-          
+
           // Generate desktop file ID based on package name
           let desktopFileId = appData.application.packageName;
           if (!desktopFileId.endsWith('.desktop')) {
             desktopFileId += '.desktop';
           }
-          
+
           uninstalledAppsByCategory.get(categoryId)!.push(desktopFileId);
         }
       });
@@ -232,14 +225,14 @@ export class InstallDialog {
       // Remove uninstalled apps from their respective folders
       categories.forEach(category => {
         const uninstalledAppIds = uninstalledAppsByCategory.get(category.id);
-        
+
         // Skip if no apps were uninstalled for this category
         if (!uninstalledAppIds || uninstalledAppIds.length === 0) {
           return;
         }
 
         const folderId = category.title.replace(/\s+/g, '-');
-        
+
         // Check if folder exists
         if (!currentFolders.includes(folderId)) {
           return;
@@ -249,15 +242,15 @@ export class InstallDialog {
         const folderPath = `/org/gnome/desktop/app-folders/folders/${folderId}/`;
         const folderSettings = new Gio.Settings({
           schema_id: 'org.gnome.desktop.app-folders.folder',
-          path: folderPath
+          path: folderPath,
         });
 
         // Get existing apps in this folder
         const existingApps = folderSettings.get_strv('apps');
-        
+
         // Remove uninstalled apps from the folder
         const updatedApps = existingApps.filter(appId => !uninstalledAppIds.includes(appId));
-        
+
         // Update the folder with remaining apps
         folderSettings.set_strv('apps', updatedApps);
 
@@ -267,7 +260,7 @@ export class InstallDialog {
           settings.set_strv('folder-children', updatedFolders);
           console.log(`Removed empty app folder: ${category.title}`);
         }
-        
+
         console.log(`Removed ${existingApps.length - updatedApps.length} uninstalled apps from folder: ${category.title}`);
       });
 
@@ -283,27 +276,27 @@ export class InstallDialog {
 
       // Get or create the app-folders settings
       const settings = new Gio.Settings({ schema_id: 'org.gnome.desktop.app-folders' });
-      
+
       // Get current folder-children list
       const currentFolders = settings.get_strv('folder-children');
       const newFolders: string[] = [];
 
       // Group installed applications by category
       const installedAppsByCategory = new Map<number, string[]>();
-      
+
       this.installApplicationsData.forEach(appData => {
         if (appData.install && appData.application.categoryId) {
           const categoryId = appData.application.categoryId;
           if (!installedAppsByCategory.has(categoryId)) {
             installedAppsByCategory.set(categoryId, []);
           }
-          
+
           // Generate desktop file ID based on package name
           let desktopFileId = appData.application.packageName;
           if (!desktopFileId.endsWith('.desktop')) {
             desktopFileId += '.desktop';
           }
-          
+
           installedAppsByCategory.get(categoryId)!.push(desktopFileId);
         }
       });
@@ -311,7 +304,7 @@ export class InstallDialog {
       // Create folders for categories that have installed apps
       categories.forEach(category => {
         const appIds = installedAppsByCategory.get(category.id);
-        
+
         // Only create folder if there are apps for this category
         if (!appIds || appIds.length === 0) {
           return;
@@ -319,7 +312,7 @@ export class InstallDialog {
 
         const folderId = category.title.replace(/\s+/g, '-');
         const folderName = category.title;
-        
+
         // Add folder to list if not already present
         if (!currentFolders.includes(folderId)) {
           newFolders.push(folderId);
@@ -329,7 +322,7 @@ export class InstallDialog {
         const folderPath = `/org/gnome/desktop/app-folders/folders/${folderId}/`;
         const folderSettings = new Gio.Settings({
           schema_id: 'org.gnome.desktop.app-folders.folder',
-          path: folderPath
+          path: folderPath,
         });
 
         // Set folder name (displayed in GNOME Shell)
@@ -337,10 +330,10 @@ export class InstallDialog {
 
         // Get existing apps in this folder
         const existingApps = folderSettings.get_strv('apps');
-        
+
         // Merge with newly installed apps (avoid duplicates)
         const mergedApps = [...new Set([...existingApps, ...appIds])];
-        
+
         // Set the applications that belong to this folder
         folderSettings.set_strv('apps', mergedApps);
 
