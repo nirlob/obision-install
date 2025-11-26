@@ -55,6 +55,8 @@ function cleanJSContent(content) {
         // Replace service references
         .replace(/logger_service_1\.LoggerService\.instance/g, 'LoggerService.instance')
         .replace(/logger_service_js_1\.LoggerService\.instance/g, 'LoggerService.instance')
+        .replace(/settings_service_1\.SettingsService\.instance/g, 'SettingsService.instance')
+        .replace(/settings_service_js_1\.SettingsService\.instance/g, 'SettingsService.instance')
         
         // Remove other artifacts
         .replace(/\s*void 0;\s*\n?/g, '')
@@ -157,6 +159,24 @@ if (fs.existsSync(dataServiceFile)) {
     dataServiceContent = cleanJSContent(dataServiceContent);
 
     combinedContent += dataServiceContent + '\n';
+}
+
+// Add SettingsService service
+const settingsServiceFile = path.join(BUILD_DIR, 'services', 'settings-service.js');
+if (fs.existsSync(settingsServiceFile)) {
+    console.log('📋 Adding SettingsService service...');
+    let settingsServiceContent = fs.readFileSync(settingsServiceFile, 'utf8');
+
+    // Clean up the content - find the class definition start
+    const classStartIndex = settingsServiceContent.indexOf('class SettingsService {');
+    if (classStartIndex !== -1) {
+        settingsServiceContent = settingsServiceContent.substring(classStartIndex);
+    }
+
+    // Clean up TypeScript/CommonJS artifacts using our function
+    settingsServiceContent = cleanJSContent(settingsServiceContent);
+
+    combinedContent += settingsServiceContent + '\n';
 }
 
 // Add InstallDialog component
